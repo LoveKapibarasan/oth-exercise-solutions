@@ -1,0 +1,127 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forest}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.5}
+\title{Exercise 01}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+\section { Chebyshev’s inequality and the law of large numbers}
+
+\subsection*{T1}
+\textbf{Chebyshev's Inequality}
+
+$P(|X - \mu| < k\sigma) \geq 1 - \frac{1}{k^2}$ for $k > 0$
+
+\textbf{1.}
+\begin{align*}
+P(|X - 25| \geq 10) &\leq \frac{1}{25} \\
+P(15 < X < 35) &\geq 0.96 \\
+P(X \leq 35) &\geq 0.96
+\end{align*}
+
+\textbf{2.}
+\begin{align*}
+P(|X - 25| \geq 5) &\leq \frac{1}{6.25} = 0.16 \\
+P(20 < X < 30) &\geq 0.84 \\
+\therefore P(X \geq 20) &\geq 0.84
+\end{align*}
+
+\subsection*{T2}
+\begin{align*}
+P(40 - b \leq X \leq 40 + b) &\geq 0.95 \\
+P(|X - 40| \leq 5k) &\geq 1 - \frac{1}{k^2} \geq 0.95
+\end{align*}
+
+Therefore,
+\begin{align*}
+k &\geq 2\sqrt{5} \\
+b &\geq 10\sqrt{5}
+\end{align*}
+
+\subsection*{T3}
+\begin{align*}
+P(75 \leq X \leq 85) &= P(|X - 80| \leq 5 = k\sigma) \geq 0.9 \geq 1 - \frac{1}{k^2} \\
+1 - \frac{\sigma^2}{25} &\geq 0.9
+\end{align*}
+
+Therefore, $\boxed{\sigma \leq \sqrt{2.5}}$
+
+\subsection*{Ex1}
+$\mu \pm k \cdot \sigma$ rule: 68\% ($k = 1$), 95\% ($k = 2$), 99.7\% ($k = 3$) for normal distribution.
+
+\textbf{1.} $U(-1, 1)$
+
+\begin{align*}
+\mu &= 0, \quad \sigma^2 = \frac{1}{3} \\
+P(\mu - k\sigma \leq X \leq \mu + k\sigma) &= 
+\begin{cases} 
+k\sqrt{3}, & k\sigma < 1 \\ 
+1, & k\sigma \geq 1
+\end{cases}
+\end{align*}
+(Because the range $[-k\sigma, k\sigma]$ extends beyond $[-1, 1]$ when $k\sigma \geq 1$)
+
+\textbf{2.} $X \sim \text{Geometric}(1/2)$
+
+\begin{align*}
+\mu &= \frac{1}{p} = 2, \quad \sigma^2 = \frac{1-p}{p^2} = 2
+\end{align*}
+
+\subsubsection*{$k = 1$}
+\begin{align*}
+\mu \pm \sigma &= [0.586, 3.414]
+\end{align*}
+
+Therefore,
+\begin{align*}
+P(X \in \{1, 2, 3\}) &= \frac{1}{2} + \frac{1}{4} + \frac{1}{8} = \frac{7}{8}
+\end{align*}
+
+\subsection*{Ex2}
+$M_i = c + U_i$, where $E[U_i] = 0$, $\text{Var}(U_i) = 3$, and measurements are independent ($U_i$ is error).
+
+Thus: $E[M_i] = c$, $\text{Var}(M_i) = 3$
+
+Let the sample mean be: $\overline{M}_n = \frac{1}{n} \sum_{i=1}^{n} M_i$
+
+Then: $E[\overline{M}_n] = c$, $\text{Var}(\overline{M}_n) = \frac{\text{Var}(M_i)}{n} = \frac{3}{n}$ based on CLT.
+
+For a 90\% confidence interval:
+\begin{align*}
+P\left(|\overline{M}_n - c| < \frac{1}{2}\right) &\geq 1 - \frac{\text{Var}(\overline{M}_n)}{(1/2)^2} \geq 0.9 \\
+1 - \frac{3/n}{1/4} &\geq 0.9 \\
+n &\geq 120
+\end{align*}
+
+At least 120 measurements are required to be 90\% confident by Chebyshev's inequality that the sample mean is within 0.5 K of the true melting point.%=====
+\end{document}

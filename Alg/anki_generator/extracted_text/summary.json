@@ -1,0 +1,128 @@
+[
+  {
+    "pdf": "aa-main.pdf",
+    "txt": "aa-main.txt",
+    "pages": 150,
+    "chars": 87032
+  },
+  {
+    "pdf": "blackboard-notes.pdf",
+    "txt": "blackboard-notes.txt",
+    "pages": 28,
+    "chars": 40161
+  },
+  {
+    "pdf": "ex01\\01-Exercises_sol.pdf",
+    "txt": "ex01_01-Exercises_sol.txt",
+    "pages": 3,
+    "chars": 7083
+  },
+  {
+    "pdf": "ex02\\02-Exercises_sol.pdf",
+    "txt": "ex02_02-Exercises_sol.txt",
+    "pages": 3,
+    "chars": 5026
+  },
+  {
+    "pdf": "ex03\\03-Exercises_sol.pdf",
+    "txt": "ex03_03-Exercises_sol.txt",
+    "pages": 2,
+    "chars": 2547
+  },
+  {
+    "pdf": "ex04\\04-Exercises_sol.pdf",
+    "txt": "ex04_04-Exercises_sol.txt",
+    "pages": 4,
+    "chars": 7248
+  },
+  {
+    "pdf": "ex05\\05-Exercises_sol.pdf",
+    "txt": "ex05_05-Exercises_sol.txt",
+    "pages": 5,
+    "chars": 10666
+  },
+  {
+    "pdf": "ex05\\ex05.pdf",
+    "txt": "ex05_ex05.txt",
+    "pages": 7,
+    "chars": 9383
+  },
+  {
+    "pdf": "ex06\\06-Exercises_sol.pdf",
+    "txt": "ex06_06-Exercises_sol.txt",
+    "pages": 2,
+    "chars": 3113
+  },
+  {
+    "pdf": "ex06\\B-fastexpo.pdf",
+    "txt": "ex06_B-fastexpo.txt",
+    "pages": 14,
+    "chars": 30750
+  },
+  {
+    "pdf": "ex06\\ex06-1.pdf",
+    "txt": "ex06_ex06-1.txt",
+    "pages": 1,
+    "chars": 383
+  },
+  {
+    "pdf": "ex07\\07-Exercises.pdf",
+    "txt": "ex07_07-Exercises.txt",
+    "pages": 1,
+    "chars": 918
+  },
+  {
+    "pdf": "ex08\\08-Exercises.pdf",
+    "txt": "ex08_08-Exercises.txt",
+    "pages": 2,
+    "chars": 2775
+  },
+  {
+    "pdf": "ex09\\09-Exercises.pdf",
+    "txt": "ex09_09-Exercises.txt",
+    "pages": 1,
+    "chars": 1683
+  },
+  {
+    "pdf": "ex10\\10-Exercises.pdf",
+    "txt": "ex10_10-Exercises.txt",
+    "pages": 3,
+    "chars": 6181
+  },
+  {
+    "pdf": "ex10\\Ex10.pdf",
+    "txt": "ex10_Ex10.txt",
+    "pages": 6,
+    "chars": 8134
+  },
+  {
+    "pdf": "ex11\\11-Exercises.pdf",
+    "txt": "ex11_11-Exercises.txt",
+    "pages": 2,
+    "chars": 4248
+  },
+  {
+    "pdf": "ex12\\12-Exercises_sol.pdf",
+    "txt": "ex12_12-Exercises_sol.txt",
+    "pages": 8,
+    "chars": 18157
+  },
+  {
+    "pdf": "ex13\\13-Exercises_sol.pdf",
+    "txt": "ex13_13-Exercises_sol.txt",
+    "pages": 8,
+    "chars": 16910
+  },
+  {
+    "pdf": "ex14\\14-Exercises_sol.pdf",
+    "txt": "ex14_14-Exercises_sol.txt",
+    "pages": 8,
+    "chars": 14012
+  },
+  {
+    "pdf": "ex15\\15-Exercises_sol.pdf",
+    "txt": "ex15_15-Exercises_sol.txt",
+    "pages": 6,
+    "chars": 12792
+  }
+]

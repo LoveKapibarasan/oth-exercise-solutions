@@ -1,0 +1,55 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 6
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+Approximation
+6.1A complete undirected graphG= (V,E)with edge-weightsw:E→R + is called metric if it
+satisfies the triangle inequality, i.e., for each triple of nodesu,v,xit holdsw({u,x})≤w({u,v}) +
+w({v,x}).
+In other words: direct paths from a nodeuto a nodexare never longer than a path fromutoxthat
+goes over another nodev.
+Specify a polynomial time algorithm that, when given a metric TSP instance, computes a round trip
+that has at most double the cost of an optimal round trip.
+Argue why your algorithm is a 2-approximation, i.e., it returns a round trip of at most double the cost
+of an optimal round trip.
+Hints:Find a minimum spanning tree first and double each of its edges. This leads to a so-called
+multigraph (i.e., there may be multiple edges between two nodes). And this multigraph is Eulerian
+(hint, hint). In the end, look for abbreviations.
+Solution:
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Solution: Algorithm:
+1. Compute a minimum spanning tree (MST)Tof the given graphG(e.g., using Kruskal’s
+or Prim’s algorithm in polynomial time).
+2. Double every edge ofTto create a multigraphH. Since every node inHnow has an
+even degree,Hcontains an Eulerian cycle.
+3. Compute an Eulerian cycleC Euler inH(e.g., using our algorithm from sheet 1).
+4. TraverseC Euler to create a valid TSP tour (Hamiltonian cycle)C TSP : whenever the cycle
+visits a node that has already been visited, bypass it by taking a direct shortcut to the next
+unvisited node.
+Approximation Ratio (Proof of 2-approximation):
+• LetOPTbe the cost of an optimal TSP tour.
+• Removing one edge from the optimal tour yields a spanning path, which is a valid span-
+ning tree. SinceTis aminimumspanning tree, its cost is at most the cost of this path. Thus,
+cost(T)≤OPT.
+• Doubling the edges means the cost of the Eulerian cycle is exactly cost(C Euler ) =2·
+cost(T)≤2·OPT.
+• Converting the Eulerian cycleC Euler into the final TSP tourC TSP involves bypassing
+already visited nodes. Because the graph is metric, the triangle inequality guarantees
+that taking a direct shortcut is never strictly longer than taking a detour over intermediate
+nodes.
+• Therefore, the shortcut step does not increase the total cost: cost(CTSP )≤cost(C Euler )≤
+2·OPT.
+Exact Algorithms
+6.2Read Section B.1 on exact algorithms for 3SAT in this document by Jeff Erickson. Please note that
+this text is an unfinished manuscript and contains several typos and missing references. Neverthe-
+less, it provides an excellent and concise introduction to the topic. Rather than focusing too much
+on the formal mathematical derivations, concentrate on understanding the fundamental algorithmic
+ideas—particularly how systematic branching improves the overall runtime.
+As an exception, you may consult AI tools to clarify specific passages that are difficult to understand.
+T. Dose 2 SS2026

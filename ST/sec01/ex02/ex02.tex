@@ -1,0 +1,118 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\title{Exercise 02}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+\fancyhead[C]{Answer}   % Custom number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+
+\section* {2. Finite and infinite probability space}
+
+\subsection* {E1}
+\begin{enumerate}
+  \item $ \underline{\underline{ \frac{1}{2} }} $
+  \item $1 - \left( \frac{1}{2} \right) ^ 3 = \underline{\underline{ \frac{7}{8}  }}$
+  \item $ \frac{4}{12} = \underline{\underline{ \frac{1}{3} }}$
+\end{enumerate}
+
+\subsection* {E2}
+\begin{enumerate}
+  \item $\underline{\underline{ \frac{7}{15} }} $
+  \item $\underline{\underline{ \frac{4}{15}  }}$
+  \item $\frac{ | \{ 1, 2, 3, 4, 6, 8, 10. 12, 14 \} | }{12} = \underline{\underline{ \frac{9}{12} }}$
+  \item $\frac{ | \{  2,  4 \} | }{15} = \underline{\underline{ \frac{2}{15} }}$
+\end{enumerate}
+
+\subsection* {E3}
+\begin{enumerate}
+  \item $\frac{1 \cdot 4}{ C(5, 2) } = \underline{\underline{ \frac{2}{5} }} $
+\end{enumerate}
+
+\subsection* {E4}
+\begin{align*}
+|man| &= 10 \\
+|man \cap brown| &= 5 \\
+|brown| &= 30 / 2 = 15
+\end{align*}
+\begin{enumerate}
+  \item $\frac{10 + 15 - 5}{ 30 }= \underline{\underline{ \frac{2}{3} }} $
+\end{enumerate}
+
+\subsection* {E5}
+$$
+P(T)+P(H) = 1 \\
+P(H) = 2P(T)
+$$
+\begin{itemize}
+  \item $ P(H) = \underline{\underline{ \frac{1}{3} }} $
+  \item $ P(T) = \underline{\underline{ \frac{2}{3} }} $
+\end{itemize}
+
+
+\subsection* {E6}
+\begin{enumerate}
+  \item $1 - P(A) = \underline{\underline{ 0.4 }} $
+  \item $\underline{\underline{ 0.7 }} $
+  \item $P(A) + P(B) - P (A \cap B)=\underline{\underline{ 0.7 }} $
+  \item $\underline{\underline{ 0.3 }} $
+\end{enumerate}
+
+\subsection* {E7}
+\begin{enumerate}
+  \item $p_2 + p_4 + p_6 = \underline{\underline{ 0.6 }} $
+  \item $\underline{\underline{ 0.7 }} $
+  \item $p_1 + p_2 = \underline{\underline{ 0.4 }} $
+  \item $\underline{\underline{ 0 }} $
+\end{enumerate}
+
+\subsection* {E8}
+\begin{enumerate}
+  \item $1 - \left( P(a_2) + P(a_3) + P(a_4) \right) = \underline{\underline{ 0.3 }} $
+  \item
+	\begin{align*}
+	P(a_1) + P(a_2) + P(a_3) + P(a_4) &= 1 \\
+	P(a_1) &= 3P(a_2) \\
+	P(a_3) = P(a_4) &= 0.2 \\
+	P(a_2) &= \underline{\underline{\frac{3}{20}}} \\
+	P(a_1) &= \underline{\underline{\frac{9}{20}}}
+	\end{align*}
+\end{enumerate}
+
+
+\subsection* {E9}
+For all $y = l$, $x \in [k, k + 1)$ ($l \in \mathbb{R}$, $k \in \mathbb{Z}$), the center of coin $x_0$ must satisfy $\frac{k}{4} < x_0 < \frac{3k}{4}$ in a length 1 line.
+
+$$\underline{\underline{\frac{1}{2}}}$$
+
+
+%=====
+\end{document}

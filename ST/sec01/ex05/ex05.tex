@@ -1,0 +1,97 @@
+\documentclass[12pt, a4paper]{article}
+
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\title{Exercise 05}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+\fancyhead[C]{Answer}   % Custom number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+
+\section*{5. Independent events and independent repeated trials}
+
+\subsection* {E16}
+The sample space of A and B are independent.
+\begin{enumerate}
+  \item $P(A \cap B) = P_A(Red) \cdot P_B(red) = P(C)  =  \underline{\underline{ \frac{3}{8} }} $
+  \item $P(\text{Red and Blue } = P_A(\text{Red}) \cdot P_B(\text{Blue}) +   P_B(\text{Red}) \cdot P_A(\text{Blue}) =  \underline{\underline{ \frac{19}{40} }} $
+\end{enumerate}
+
+\subsection* {E17}
+
+\subsubsection*{case 1:}
+\begin{itemize}
+\item The sample space = \{BBB, BBG, BGB, BGG, GBB, GBG, GGB, GGG\}
+\item A (both sexes) = \{BBG, BGB, BGG, GBB, GBG, GGB \}
+\item B (at most one boy) = \{BGG, GBG, GGB, GGG\}
+\item $A \cap B$ \{ BGG, GBG, GGB \}
+\end{itemize}
+
+\subsubsection*{case 2:}
+\begin{itemize}
+\item The sample space = \{BB, BG, GB, GG\}
+\item A (both sexes) = \{BG, GB \}
+\item B (at most one boy) = \{BG, GB, GG \}
+\item $A \cap B$ \{ BG, GB \}
+\end{itemize}
+
+\begin{enumerate}
+  \item $ \underline{\underline{ \text{Independent because }  }} P(A) \cdot P(B) = P(A \cap B) = \frac{3}{8} $ 
+  \item $ \underline{\underline{ \text{Dependent because }  }} P(A) \cdot P(B) \neq P(A \cap B) $
+\end{enumerate}
+
+\subsection* {E18}
+
+\begin{itemize}
+\item The sample space = \{HHH, HHT, HTH, HTT, THH, THT, TTH, TTT\}
+\item Exactly 2 heads = \{HHT, HTH, THH \}
+\item Exactly 1 head = \{HTT, THT, TTH\}
+\end{itemize}
+\begin{enumerate}
+  \item $  \frac{1}{8} $ 
+  \item $  \frac{3}{8} $ 
+  \item $  \frac{3}{8} $ 
+  \item $  \frac{1}{8} $ 
+\end{enumerate}
+
+\subsection* {E19}
+
+\begin{itemize}
+\item A  = \{WWW, WWT, WTW, TWW \}
+\item B = \{WLT, WTL, LWT, LTW, TWL, TLW\}
+\end{itemize}
+
+\begin{enumerate}
+	\item $ P(A) = P(WW)\cdot (3P(T) + P(W)) = (0.6)^2 (3 \cdot 0.1 + 0.6 ) = 0.324 $ 
+	\item $ P(B) = P(W) \cdot P(L)\cdot P(T) = 0.108 $
+\end{enumerate}
+%=====
+\end{document}

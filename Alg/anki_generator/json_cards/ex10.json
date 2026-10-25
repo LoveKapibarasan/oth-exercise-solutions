@@ -1,0 +1,22 @@
+[
+  {
+    "sheet": "Exercise 10.1 a)",
+    "question": "For a game tree node $N$ with actual minimax score $S(N)=4$, trace the returned value $v$ and classification for these alpha-beta search windows $(\\alpha, \\beta)$:\n1. $(-5, 5)$\n2. $(-5, 0)$\n3. $(5, 10)$",
+    "answer": "* **Window $(-5, 5)$:** Returns $v=4$. Class: **EXACT** ($v = S(N)$). All nodes are fully evaluated.\n* **Window $(-5, 0)$:** Returns $v=0$. Class: **LOWER bound** (Fail-High, $v \\le S(N)$). A cutoff occurs and the last branch is pruned because a move already guarantees $\\ge 0$.\n* **Window $(5, 10)$:** Returns $v=5$. Class: **UPPER bound** (Fail-Low, $v \\ge S(N)$). All branches are pruned early because the player cannot reach the minimum expectation of 5."
+  },
+  {
+    "sheet": "Exercise 10.1 b) (Properties)",
+    "question": "State the three fundamental properties of Alpha-Beta search for a returned value $v = \\text{negamax}(N, \\text{depth}, \\alpha, \\beta)$ (where $\\alpha < \\beta$):",
+    "answer": "1. **Fail-Low (UPPER Bound):** If $v \\le \\alpha$, then $S(N) \\le v$.\n2. **Exact:** If $\\alpha < v < \\beta$, then $S(N) = v$.\n3. **Fail-High (LOWER Bound):** If $v \\ge \\beta$, then $S(N) \\ge v$.\n\n*Note: A Fail-Low means the actual score is even worse than the returned value (which is an upper bound). A Fail-High means the actual score is even better than the returned value (which is a lower bound).* "
+  },
+  {
+    "sheet": "Exercise 10.1 b) (Fail-High)",
+    "question": "Prove Case 3 (Fail-High: $v \\ge \\beta \\implies S(N) \\ge v$) in the induction step of the Alpha-Beta correctness proof.",
+    "answer": "* **Existence of Cutoff:** If the function returns $v \\ge \\beta$, it means there was at least one child $C_i$ that returned $r_i = -v_i$ such that the local $\\alpha$ was updated to $v_i \\ge \\beta$, triggering a cutoff.\n* **Window Analysis:** The child $C_i$ was called with the search window $[-\\beta, -\\alpha_{\\text{local}}]$. Since $v_i \\ge \\beta$, the child's return value $r_i = -v_i$ satisfies:\n  $$r_i \\le -\\beta$$\n* **Applying Induction Hypothesis:** Since $r_i \\le -\\beta$ (where $-\\beta$ is the lower bound/$\\alpha$ parameter for the child's call), this is a Fail-Low case for the child. By the I.H. (Case 1 for child), the child's exact minimax score satisfies:\n  $$S(C_i) \\le r_i = -v$$\n* **Minimax Definition:** Since $S(N) = \\max_j(-S(C_j))$, we have:\n  $$S(N) \\ge -S(C_i) \\ge -(-v) = v$$\nThus, $S(N) \\ge v$ holds."
+  },
+  {
+    "sheet": "Exercise 10.1 e)",
+    "question": "Prove that if a call $v = \\text{negamax}(N, \\text{depth}, \\alpha, \\beta)$ returns a Fail-High LOWER bound $v$ (where $S(N) \\ge v$), a subsequent re-search call $v_{\\text{new}} = \\text{negamax}(N, \\text{depth}, v, \\beta_{\\text{new}})$ with $\\beta_{\\text{new}} > v$ will return $v_{\\text{new}} \\ge v$.",
+    "answer": "The result $v_{\\text{new}}$ of the second call must fall into one of three logical cases:\n\n1. **Fail-Low ($v_{\\text{new}} \\le v$):** \n   By Property 1 (Fail-Low), $S(N) \\le v_{\\text{new}}$. Combined with the first call's result $S(N) \\ge v$, we get $v \\le S(N) \\le v_{\\text{new}} \\le v$, which implies $v_{\\text{new}} = v$. Thus $v_{\\text{new}} \\ge v$.\n2. **Exact ($v < v_{\\text{new}} < \\beta_{\\text{new}}$):** \n   Here, $v_{\\text{new}} > v$ by definition of the exact interval, so $v_{\\text{new}} \\ge v$.\n3. **Fail-High ($v_{\\text{new}} \\ge \\beta_{\\text{new}}$):** \n   Since $\\beta_{\\text{new}} > v$, it follows that $v_{\\text{new}} > v$, so $v_{\\text{new}} \\ge v$.\n\nIn all cases, the consistency property $v_{\\text{new}} \\ge v$ holds."
+  }
+]

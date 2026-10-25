@@ -1,0 +1,19 @@
+<h2 id="exercise-53-cardinalities-keys-foreign-keys-totality">Exercise 5.3 [Cardinalities, Keys, Foreign Keys, Totality]</h2>
+<h3 id="a">a)</h3>
+<ul>
+    <li>To ensure a one-to-one relationship between students and advisors, I need to add <strong>a UNIQUE constraint</strong> on <code>i_id</code>.</li>
+    <li>The existing primary key on <code>s_id</code> already ensures each student can have at most one advisor,
+        but without the UNIQUE constraint on <code>i_id</code>, multiple students could be assigned to the same instructor.</li>
+    <li>Adding UNIQUE on <code>i_id</code> ensures each instructor can advise at most one student, completing the one-to-one relationship.</li>
+</ul>
+<h3 id="b">b)</h3>
+<ul>
+    <li>A <strong>superkey</strong> is any set of attributes that can uniquely identify a tuple in a relation, though it may contain redundant attributes. </li>
+    <li>A <strong>candidate key</strong> is a minimal superkey—it uniquely identifies tuples but contains no unnecessary attributes that could be removed while still maintaining uniqueness. </li>
+    <li>A <strong>primary key</strong> is the candidate key chosen by the database designer to be the main identifier for the relation, and it cannot contain null values.</li>
+</ul>
+<h3 id="c">c)</h3>
+<ul>
+    <li>In SQL, we cannot express that the A-side is total  because key and foreign key constraints only enforce referential integrity in one direction—from the referencing table to the referenced table. </li>
+    <li>The foreign key in the <code>A</code>_<code>B</code> relationship table references <code>A</code>, but there is no mechanism in standard SQL key/foreign key constraints to enforce that every tuple in <code>A</code> must have a corresponding tuple in <code>A_B</code>.</li>
+</ul>

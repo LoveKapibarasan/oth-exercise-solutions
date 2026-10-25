@@ -1,0 +1,22 @@
+[
+  {
+    "sheet": "Exercise 13.1",
+    "question": "Calculate Euler's Totient function $\\phi(2075)$ showing all steps.",
+    "answer": "1. **Prime Factorization:**\n   $$2075 = 25 \\times 83 = 5^2 \\times 83^1$$\n   (Both 5 and 83 are prime numbers).\n2. **Apply Multiplicativity of $\\phi$:**\n   Since $\\gcd(5^2, 83) = 1$:\n   $$\\phi(2075) = \\phi(5^2) \\cdot \\phi(83)$$\n3. **Calculate for Prime Powers:**\n   * For $\\phi(p^k) = p^k - p^{k-1}$:\n     $$\\phi(5^2) = 5^2 - 5^1 = 20$$\n   * For $\\phi(p) = p - 1$:\n     $$\\phi(83) = 83 - 1 = 82$$\n4. **Final Product:**\n   $$\\phi(2075) = 20 \\times 82 = 1640$$"
+  },
+  {
+    "sheet": "Exercise 13.2",
+    "question": "What is the Index of Coincidence (IC) in Vigenère cryptanalysis and how is it used to find the password length?",
+    "answer": "The **Index of Coincidence (IC)** is the probability that two randomly chosen letters from a text are identical.\n\n* **Calculation:** For a text of length $n$ with letter counts $\\alpha_1, \\dots, \\alpha_k$:\n  $$\\text{IC} \\approx \\sum_{i=1}^k \\left(\\frac{\\alpha_i}{n}\\right)^2$$\n* **Expected Values (for English/German):**\n  * A random string: $\\text{IC} \\approx \\frac{1}{26} \\approx 0.0384$.\n  * Natural language text: $\\text{IC} \\approx 0.065$ to $0.075$.\n* **Finding Password Length ($t$):** We write the ciphertext in a grid of width $t$ and read it column-wise to form $t$ subtexts. If $t$ is a multiple of the password length, each subtext is encrypted with a single key character, preserving language frequencies and yielding an average $\\text{IC} \\approx 0.065$. If $t$ is incorrect, the frequency distribution is \"blurred\" (close to random), yielding an average $\\text{IC}$ close to $0.0384$."
+  },
+  {
+    "sheet": "Exercise 13.3 (Group size identity)",
+    "question": "Prove that for any finite commutative group $(G, \\cdot)$ of size $n$ with neutral element $e$, every element $g \\in G$ satisfies $g^n = e$.",
+    "answer": "Let $G = \\{a_1, a_2, \\dots, a_n\\}$ be the elements of $G$.\n\n1. **Define a scaled set:** Multiply each element by $g$ to get: \n   $$\\{g \\cdot a_1, g \\cdot a_2, \\dots, g \\cdot a_n\\}$$\n2. **Prove elements are distinct:** If $g \\cdot a_i = g \\cdot a_j$, multiplying by $g^{-1}$ yields $a_i = a_j$. Since all $a_i$ are distinct, these $n$ new elements are also distinct and all lie in $G$.\n3. **Equate the products:** Since the sets are identical and multiplication is commutative:\n   $$(g \\cdot a_1) \\cdot (g \\cdot a_2) \\dots (g \\cdot a_n) = a_1 \\cdot a_2 \\dots a_n$$\n4. **Rearrange factors:** Pulling out the $n$ factors of $g$:\n   $$g^n \\cdot (a_1 \\cdot a_2 \\dots a_n) = (a_1 \\cdot a_2 \\dots a_n)$$\n5. **Cancel product:** Let $P = a_1 \\cdot a_2 \\dots a_n$. Multiplying by $P^{-1}$ yields:\n   $$g^n = e$$"
+  },
+  {
+    "sheet": "Exercise 13.3 (Fermat's Little Theorem)",
+    "question": "How does the group theory identity $g^{|G|} = e$ prove Fermat's Little Theorem?",
+    "answer": "* **Fermat's Little Theorem:** For a prime $p$ and any $a \\not\\equiv 0 \\pmod p$, $a^{p-1} \\equiv 1 \\pmod p$.\n* **Proof:** The set of units $\\mathbb{Z}_p^* = \\{1, 2, \\dots, p-1\\}$ forms a commutative group under multiplication modulo $p$.\n* The size of the group is $|G| = \\phi(p) = p-1$, and the neutral element $e$ is $1$.\n* Since $a \\in \\mathbb{Z}_p^*$ (coprime to $p$), applying the general identity $g^{|G|} = e$ directly yields:\n  $$a^{p-1} \\equiv 1 \\pmod p$$"
+  }
+]

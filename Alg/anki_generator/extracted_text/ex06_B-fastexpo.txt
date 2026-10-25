@@ -1,0 +1,615 @@
+--- Page 1 ---
+Wouldn’t the sentence “I want to put a hyphen between the words Fish and And and And and
+Chips in my Fish-And-Chips sign.” have been clearer if quotation marks had been placed
+before Fish, and between Fish and and, and and and And, and And and and, and and and
+And, and And and and, and and and Chips, as well as after Chips? /one.Alt.oldstyle
+— Martin Gardner, Aha! Insight (/one.oldstyle/nine.oldstyle/seven.oldstyle8)
+BMO: I /uniFB01nished with my computations! As I thought, it’s a real language they are speaking
+based on intonations! [speaking to Chips and Ice Cream] Chips? Chips chips chips!
+Ice cream?
+Chips: Chips chips chips!
+Ice Cream: Ice cream ice cream!
+— “Chips and Ice Cream”, Adventure Time season 6, episode /three.oldstyle/four.oldstyle (April /three.oldstyle/zero.oldstyle, /two.oldstyle/zero.oldstyle/one.oldstyle/five.oldstyle)
+For every polynomial-time algorithm you have,
+there is an exponential algorithm that I would rather run.
+— Alan Perlis (/uniFB01rst Turing Award winner)
+B
+Faster Exponential Algorithms
+[Read Chapters /two.oldstyle, /three.oldstyle, and /one.oldstyle/two.oldstyle /uniFB01rst.]
+Status: Un/uniFB01nished.
+There are many useful problems—including but not limited to the set of all NP-hard
+problems—for which the fastest algorithm known runs in exponential time. Moreover,
+there is very strong evidence (but alas, no proof) that it isimpossible to solve these
+problems in less than exponential time—it’s not that we’re all stupid; the problems really
+are that hard!
+But sometimes we have to solve these problems anyway. In these circumstances, it is
+important to ask:Which exponential? An algorithm that runs inO(2n) time, while still
+/zero.oldstyleIf you ever decide to read this sentence out loud, be sure to pause brieﬂy between ‘Fish and and’ and
+‘and and and And’, ‘and and and And’ and ‘and And and and’, ‘and And and and’ and ‘and and and And’,
+‘and and and And’ and ‘and And and and’, and ‘and And and and’ and ‘and and and Chips’!
+Did you notice the punctuation I carefully inserted between ‘Fish and and’ and ‘and’, ’and’ and ’and and
+and And’, ‘and and and And’ and ’and and and And’, ‘and and and And’ and ’and’, ’and’ and ‘and And and
+and’, ‘and And and and’ and ‘and And and and’, ‘and And and and’ and ’and’, ’and’ and ‘and and and And’,
+‘and and and And’ and ‘and and and And’, ‘and and and And’ and ‘and’, ‘and’ and ‘and And and and’, ‘and
+And and and’ and ‘and’, ‘and’ and ‘and And and and’, ‘and And and and’ and ‘and’, and ‘and’ and ‘and and
+and Chips’?
+© /two.oldstyle/zero.oldstyle/one.oldstyle8 Jeff Erickson
+http:/ /algorithms.wtf /one.oldstyle
+--- Page 2 ---
+B. F/A.c2sc/S.c2sc/T.c2sc/E.c2sc/R.c2sc E/X.c2sc/P.c2sc/O.c2sc/N.c2sc/E.c2sc/N.c2sc/T.c2sc/I.c2sc/A.c2sc/L.c2sc A/L.c2sc/G.c2sc/O.c2sc/R.c2sc/I.c2sc/T.c2sc/H.c2sc/M.c2sc/S.c2sc
+unusable for large instances, is still signiﬁcantly better than an algorithm that runs in
+O(4n) time; an algorithm that runs inO(1.5n) or O(1.25n) is better still.
+ThemoststraightforwardmethodtoﬁndanoptimalsolutiontoanNP-hardproblemto
+recursively generateallpossible solutions via recursive backtracking and check each one:
+all satisfying assignments, or all vertex colorings, or all subsets, or all permutations, or
+whatever. However, many (perhaps even most) NP-hard problems have some additional
+structure that allows us to prune away most of the branches of the recursion tree, thereby
+drastically reducing the running time.
+B./one.oldstyle/three.oldstyleS/A.c2sc/T.c2sc
+Let’s consider the mother of all NP-hard problems:/three.oldstyleSat. Given a boolean formula
+in conjunctive normal form, with at most three literals in each clause, our task is to
+determinewhetheranyassignmentofvaluesofthevariablesmakestheformulatrue. Yes,
+this problem is NP-hard, which means that a polynomial algorithm is almost certainly
+impossible. Too bad; we have to solve the problem anyway.
+The trivial solution is to try every possible assignment. We’ll evaluate the running
+time of our/three.oldstyleSatalgorithms in terms of two variables:n is the number of variables in the
+input formula, andm is the number of clauses. There are2n possible assignments, and
+we can evaluate each assignment inO(m) time, so the overall running time isO(2nm).
+Assuming no clause appears in the input formula more than once—a condition that we
+can easily enforce in polynomial time—thenm = O(n3), so the running time is at most
+O(2nn3).
+Polynomial factors liken3 are essentially noise when the overall running time is
+exponential, so from now on I’ll writepoly(n) to represent any polynomial function ofn;
+in other words,poly(n) := nO(1). For example, the trivial algorithm for/three.oldstyleSatruns in time
+O(2n poly(n)).
+One Clause
+Recall that all /three.oldstyleCNF formulas have the following recursive structure
+A /three.oldstyleCNF formula is either nothing
+or (a clause with three literals)∧ (a /three.oldstyleCNF formula)
+Suppose we want to decide whether some /three.oldstyleCNF formulaΦ with n variables is satisﬁable.
+Of course this is trivial ifΦ is the empty formula, so suppose
+Φ = ( x∨ y∨ z)∧ Φ′
+for some literalsx, y, z and some /three.oldstyleCNF formulaΦ′. By distributing the∧ across the∨s,
+we can rewriteΦ as follows:
+Φ = ( x∧ Φ′)∨ ( y∧ Φ′)∨ (z∧ Φ′)
+/two.oldstyle
+--- Page 3 ---
+B./one.oldstyle./three.oldstyleS/A.c2sc/T.c2sc
+For any boolean formulaΨ and any literalx, let Ψ|x (pronounced “sigh given eks")
+denote the simpler boolean formula obtained by settingx to Trueand simplifying as
+much as possible. IfΨ has n variables, thenΨ|x has at mostn− 1 variables.
+It’s not hard to prove by induction (hint, hint) thatx∧ Ψ = x∧ (Ψ|x), and therefore
+Φ = ( x∧ (Φ′|x))∨ ( y∧ (Φ′| y))∨ (z∧ (Φ′|z)).
+Thus, for any satisfying assignment forΦ, either
+• x is true andΦ′|x is satisﬁable, or
+• y is true andΦ′| y is satisﬁable, or
+• z is true andΦ′|z is satisﬁable.
+Each of the smaller formulasΦ′|x, Φ′| y, and Φ′|z has at mostn− 1 variables. If we
+recursively check all three possibilities, we get the running time recurrence
+T (n)≤ 3T (n− 1) + poly(n),
+whose solution isO(3n poly(n)). So we’ve actually doneworse!
+But these three recursive cases are not mutually exclusive! IfΦ′|x is not satisﬁable,
+then x mustbefalseinanysatisfyingassignmentfor Φ. Soinsteadofrecursivelychecking
+Φ′| y in the second step, we can check the even simpler formulaΦ′|¯x y = ( Φ′|¯x)| y.
+Similarly, ifΦ′|¯x y is not satisﬁable, then we know thaty must be false in any satisfying
+assignment, so we can recursively checkΦ′|¯x ¯yz in the third step.
+/three.oldstyleSat(Φ):
+if Φ = ∅
+return True
+(x∨ y∨ z)∧ Φ′← Φ
+if /three.oldstyleSat(Φ′|x)
+return True
+if /three.oldstyleSat(Φ′|¯x y )
+return True
+return /three.oldstyleSat(Φ′|¯x ¯yz )
+The running time oﬀ this algorithm obeys the recurrence
+T (n) = T (n− 1) + T (n− 2) + T (n− 3) + poly(n),
+where poly(n)denotesthepolynomialtimerequiredtosimplifybooleanformulas,handle
+control ﬂow, move stuﬀ into and out of the recursion stack, and so on.
+How do we solve this recurrence? It isn’t simple enough to let us guess an accurate
+solution and check it by induction. Fortunately, there is a standard mechanical solution
+for all backtracking recurrences of the form
+T (n)≤ poly(n) +
+k∑
+i=1
+T (n− ai),
+/three.oldstyle
+--- Page 4 ---
+B. F/A.c2sc/S.c2sc/T.c2sc/E.c2sc/R.c2sc E/X.c2sc/P.c2sc/O.c2sc/N.c2sc/E.c2sc/N.c2sc/T.c2sc/I.c2sc/A.c2sc/L.c2sc A/L.c2sc/G.c2sc/O.c2sc/R.c2sc/I.c2sc/T.c2sc/H.c2sc/M.c2sc/S.c2sc
+where k, a1, a2, . . . ,ak areconstants. Assumewithoutlossofgeneralitythattheconstants
+ai are indexed in non-increasing order:a1≤ a2≤···≤ ak. The fundamental theorem
+of algebra implies that thecharacteristic polynomial
+r ak−
+k∑
+i=1
+r ak−ai
+(where r is a formal variable) has exactlyk complex roots, some of which may be
+equal. Letλ be the root with largest magnitude. Then the solution to the recurrence
+is T (n) = O(λn poly(n)). This technique is described in more detail in the appendix;
+in particular, we can actually derivedexact closed form solutions to backtracking-style
+recurrences from the complete sequence of characteristic roots and base cases, if the
+polynomial terms and base cases are speciﬁed exactly.
+The recurrenceT (n) = T (n− 1) + T (n− 2) + T (n− 3) + poly(n) has characteristic
+polynomial r 3− r 2− r− 1, whose roots are approximately
+1.83928676, −0.419643337 + 0.60629073i, −0.419643337− 0.60629073i.
+(Thank you, Wolfram Alpha!) The ﬁrst root has larger magnitude than the other two, so
+we get the solution
+T (n) = O(λn poly(n)) = O(1.83929n).
+(Notice that we cleverly eliminated the polynomial noise by ever so slightly increasing
+the base of the exponent.)
+Pure Literals
+We can improve this algorithm further by eliminatingpure literals from the formula
+before recursing. A literalx is pure in if it appears in the formulaΦ but its negation¯x
+does not. It’s not hard to prove (hint, hint) that ifΦ has a satisfying assignment, then it
+has a satisfying assignment where every pure literal is true. IfΦ = ( x∨ y∨ z)∧ Φ′ has
+no pure literals, then some clause inΦ contains the literal¯x, so we can write
+Φ = ( x∨ y∨ z)∧ (¯x∨ u∨ v)∧ Φ′
+for some literalsu and v (each of which might bey, ¯y, z, or ¯z). It follows that the
+ﬁrst recursive formulaΦ|x contains the clause(u∨ v). We can recursively eliminate the
+variables u and v just as we eliminated the variablesy and x in the second and third
+cases of our previous algorithm:
+Φ|x = (u∨ v)∧ Φ′|x = (u∧ Φ′|xu)∨ (v∧ Φ′|x ¯uv).
+Our new faster algorithm is shown in Figure??. The running time T (n) of this
+algorithm satisﬁes the recurrence
+T (n) = poly(n) + max
+ T (n− 1)
+2T (n− 2) + 2T (n− 3)
+
+/four.oldstyle
+--- Page 5 ---
+B./one.oldstyle./three.oldstyleS/A.c2sc/T.c2sc
+Faster/three.oldstyleSat(Φ):
+if Φ = ∅
+return True
+if Φ has a pure literalx
+return Faster/three.oldstyleSat(Φ|x)
+(x∨ y∨ z)∧ (¯x∨ u∨ v)∧ Φ′← Φ
+if Faster/three.oldstyleSat(Φ|xu)
+return True
+if Faster/three.oldstyleSat(Φ|x ¯uv)
+return True
+if Faster/three.oldstyleSat(Φ|¯x y )
+return True
+return Faster/three.oldstyleSat(Φ|¯x ¯yz )
+Figure B./one.oldstyle.A faster backtracking algorithm for /three.oldstyleS/A.c2sc/T.c2sc.
+To solve this recurrence, we solve each case separately and take the larger of the two
+solutions. Here, the comparison is easy; the ﬁrst case yields apolynomialbound, while
+the second case clearly yields an exponential bound, so for purposes of worst-case
+analysis, we can simplify the recurrence toT (n) = O(poly(n)) + 2T (n− 2) + 2T (n− 3).
+The solution to this simpler recurrence is
+T (n) = O(λn poly(n)) = O(1.76930n),
+whereλ≈ 1.76929235 is the largest root of the characteristic polynomialr 3− 2r− 2.
+Local Search
+We can get an even faster algorithm using a diﬀerent backtracking strategy, calledlocal
+search. Instead of constructing a satisfying assignment recursively, we search for a path
+through the set of all assignments that ends at a satisfying assignment.
+The Hamming distancebetweentwodiﬀerentassignmentsisthenumberofvariables
+where the two assignments diﬀer./two.oldstyleSuppose we could somehow magically ﬁnd an
+assignment that isalmost satisfying, meaning that its Hamming distance from some
+satisfying assignment is small. Then instead of searching over the entire space of2n
+assignments, we only need to look at the assignments that are close to the assignment
+we already have. Moreover, we can guide the search by considering only the clauses that
+are not satisﬁed by our current assignment.
+To make this concrete, letA be our current assignment, and suppose there is a
+satisfying assignmentA∗ that has Hamming distancer from A. Consider any clause ofΦ
+/two.oldstyleRichard Hamming was an early giant of computer and information science, who earned PhD in
+mathematics at Illinois in /one.Alt.oldstyle/nine.oldstyle/four.oldstyle/two.oldstyle, programmed IBM calculating machines for the Manhattan project in /one.Alt.oldstyle/nine.oldstyle/four.oldstyle/five.oldstyle,
+and then went on to create the ﬁrst error-correcting codes. Arguably the greatest recognition of his
+achievements is that his name is attached to the number of indices where two bit vectors diﬀer.
+/five.oldstyle
+--- Page 6 ---
+B. F/A.c2sc/S.c2sc/T.c2sc/E.c2sc/R.c2sc E/X.c2sc/P.c2sc/O.c2sc/N.c2sc/E.c2sc/N.c2sc/T.c2sc/I.c2sc/A.c2sc/L.c2sc A/L.c2sc/G.c2sc/O.c2sc/R.c2sc/I.c2sc/T.c2sc/H.c2sc/M.c2sc/S.c2sc
+that isnot satisﬁed byA; at least one the three variables in that clause has a diﬀerent
+value inA∗. Thus, if we change that particular variable’s value, the resulting assignment
+hasHammingdistance r− 1from A∗. Ofcourse, wedon’tknowwhichvariabletochange,
+so we have to try all three of them. And we don’t know the target assignmentA∗, so we
+just check at every stage of recursion whether our current assignment is satisfying. The
+resulting backtracking algorithm, shown in Figure??, runs inO(3r poly(n)) time.
+Local/three.oldstyleSat(Φ, A, r):
+if AsatisﬁesΦ
+return True
+if r = 0
+return False
+C← any clause ofΦ that Adoes not satisfy
+x, y, z← variables ofC
+A[x]←¬ A[x]
+if Local/three.oldstyleSat(Φ, A, r− 1) = True
+return True
+A[x]←¬ A[x]
+A[ y]←¬ A[ y]
+if Local/three.oldstyleSat(Φ, A y , r− 1) = True
+return True
+A[ y]←¬ A[ y]
+A[z]←¬ A[z]
+return Local/three.oldstyleSat(Φ, Az, r− 1)
+Figure B./two.oldstyle.A local search algorithm for /three.oldstyleS/A.c2sc/T.c2sc.
+It must be emphasized that the local search algorithm isnot explicitly considering
+every assignment within Hamming distancer of the starting assignmentA.
+Now we apply the following trivial observation: In any satisfying truth assignment,
+either at least half the variables areTrueor at least half the variables areFalse. Thus,
+every satisfying assignment has Hamming distance at mostn/2 from either the all-True
+assignment or the all-Falseassignment. So using the local search strategy, we can solve
+/three.oldstyleSatin O(3n/2 poly(n)) = O(1.73206n) time.
+nRandom Starting Assignments
+We can improve the local search algorithm further, at the expense of a small probability
+of a false negative, by repeatedly choosingrandom starting assignments and searching
+within a small radius of each.
+First let’s do some preliminary math. LetV(r ) denote the number of assignments
+within Hamming distancer of any ﬁxed assignment. Suppose we run the local search
+algorithm starting with a random assignment; letP(r) denote the probability that
+the algorithm ﬁnds a satisfying assignment (assuming one exists). A simple counting
+6
+--- Page 7 ---
+B./one.oldstyle./three.oldstyleS/A.c2sc/T.c2sc
+argument implies thatP(r )≥ V(r )/2n. If we chooseN (r)random assignments and run
+the local search algorithm starting at each one, the probability ofnot ﬁnding a satisfying
+assignment (if one exists) isat most (1− P(r))N (r). Thus, if we setN(r ) = n2n/V(r ),
+this failure probability is at most
+(1− P(r))n2n/V (r)≤
+
+1− V (r)
+2n
+2n/V (r)n
+≤ e−n.
+The overall running time of our algorithm is
+O(N (r) 3r poly(n)) = O
+ n
+P(r)· 3r poly(n)
+
+= O
+ 2n3r
+V (r) poly(n)
+
+.
+To complete the analysis, we need to estimate the volumeV (r) and choose an
+appropriate value ofr. For any constant 0<α< 1, Stirling’s approximationn!∼p
+2πn (n/e)n implies the lower bound
+V (αn) =
+r∑
+i=0
+n
+i
+
+= Ω
+ 
+H(α)n/pn
+
+where H(α) is thebinary entropy function:
+H(α) =
+ 1
+α
+α 1
+1−α
+1−α
+.
+Thus, if we setr =αn, the running time of our algorithm becomes
+O
+ 2n3αn
+H(α)n poly(n)
+
+= O
+  
+2(3α)α(1−α)1−αn
+poly(n)
+
+We can ﬁnd the value ofα that minimizes the base of the exponential part of this upper
+bound using a bit of calculus.
+d
+dα ln
+ 
+(3α)α(1−α)1−α
+= d
+dα
+ 
+α ln(3α) + (1−α) ln(1−α)
+
+= ln(3α)− ln(1−α) = 0
+=⇒ α = 1/4.
+Finally, if we setα = 1/4 (or equivalently,r = n/4), the algorithm runs in
+O
+ 
+2(3/4)1/4(3/4)3/4n
+poly(n)
+
+= O
+ 
+(3/2)n poly(n)
+
+time.
+/seven.oldstyle
+--- Page 8 ---
+B. F/A.c2sc/S.c2sc/T.c2sc/E.c2sc/R.c2sc E/X.c2sc/P.c2sc/O.c2sc/N.c2sc/E.c2sc/N.c2sc/T.c2sc/I.c2sc/A.c2sc/L.c2sc A/L.c2sc/G.c2sc/O.c2sc/R.c2sc/I.c2sc/T.c2sc/H.c2sc/M.c2sc/S.c2sc
+Further Extensions
+Naturally, these approaches can be extended much further. Since /one.Alt.oldstyle/nine.oldstyle/nine.oldstyle/eight.oldstyle, at least ﬁfteen
+diﬀerent/three.oldstyleSatalgorithms have been published, each improving the running time by
+a small amount; while a few of these improvements use pure backtracking, most of
+them are based on some variant of local search. For example, in /one.Alt.oldstyle/nine.oldstyle/nine.oldstyle/nine.oldstyle, Uwe Schöning
+the running time of the randomized local search algorithm toO((4/3)n poly(n)), still
+with an exponentially small error probability, by replacing the backtracking search with
+a random walk of length3n. As of /two.oldstyle/zero.oldstyle/one.Alt.oldstyle/six.oldstyle, the fastest deterministic algorithm for/three.oldstyleSat
+runs inO(1.3303n) time/three.oldstyle, and the fastestrandomized algorithm runs inO(1.30704n)
+expected time/four.oldstyle, but there is good reason to believe that these arenot the best possible.
+There is a thriving industry of practicalSatsolvers, which combine backtracking,
+local search, random restarts, and other more sophisticated algorithmic techniques with
+domain-speciﬁc heuristics. With these tools in hand, most real-world instances ofSat
+are actually easy to solve in practice; modernSatsolvers routinely resolve instances
+with millions of variables and clauses.Satsolvers have become an indispensable tool in
+several areas of computing, including hardware and software veriﬁcation, operations
+research, and computational biology. The practically ofSatdoes not contradict the
+fact that the fastest algorithms require exponential timein the worst case; it just means
+that the worst case is rare in practice. Unfortunately, a proper discussion of practical
+techniques forSatis beyond both the scope of this text and the expertise of its author.
+B./two.oldstyle Maximum Independent Set
+Now suppose we are given an undirected graphG and are asked to ﬁnd the size of the
+largest independent set , that is, the largest subset of the vertices ofG with no edges
+between them. Once again, we have an obvious recursive algorithm: Try every subset of
+nodes, and return the largest subset with no edges. Expressed recursively, we obtain the
+following algorithm, whereN (v) denotes theneighborhood of v: the set containingv
+and all of its neighbors.
+MaximumIndSetSize(G):
+if G = ∅
+return 0
+else
+v← any node inG
+withv← 1 + MaximumIndSetSize(G\ N (v))
+withoutv← MaximumIndSetSize(G\{ v})
+return max{withv, withoutv}.
+/three.oldstyleKazuhisa Makino, Suguru Tamaki, Masaki Yamamoto. Derandomizing the HSSW algorithm for /three.oldstyle-SAT.
+Algorithmica /six.oldstyle/seven.oldstyle(/two.oldstyle):/one.Alt.oldstyle/one.Alt.oldstyle/two.oldstyle–/one.Alt.oldstyle/two.oldstyle/four.oldstyle (/two.oldstyle/zero.oldstyle/one.Alt.oldstyle/three.oldstyle)
+/four.oldstyleTimon Hertli. /three.oldstyle-SAT faster and simpler: Unique-SAT Bounds for PPSZ gold in general.SIAM J. Comput.
+/four.oldstyle/three.oldstyle(/two.oldstyle):/seven.oldstyle/one.Alt.oldstyle/eight.oldstyle–/seven.oldstyle/two.oldstyle/nine.oldstyle (/two.oldstyle/zero.oldstyle/one.Alt.oldstyle/four.oldstyle).
+8
+--- Page 9 ---
+B./two.oldstyle. Maximum Independent Set
+Our algorithm exploits the fact that if an independent set containsv, then by
+deﬁnition it contains none ofv’s neighbors. In the worst case,v has no neighbors, so
+G\{ v} = G\ N (v). Thus, the running time of this algorithm satisﬁes the recurrence
+T (n) = 2T (n− 1) + poly(n) = O(2n poly(n)). Surprise, surprise.
+Thisalgorithmismirroringacruderecursiveupperboundforthenumberof maximal
+independent sets in a graph; an independent set is maximal if every vertex inG is
+either already in the set or a neighbor of a vertex in the set. If the graph is non-empty,
+then every maximal independent set either includes or excludes each vertex. Thus, the
+number of maximal independent sets satisﬁes the recurrenceM (n)≤ 2M (n− 1), with
+base caseM (1) = 1. We can easily guess and conﬁrm the solutionM (n)≤ 2n− 1. The
+only subset that we aren’t counting with this upper bound is the empty set!
+Smarter Case Analysis
+We can speed up our algorithm by making several careful modiﬁcations to avoid the
+worst case of the running-time recurrence.
+Degree /zero.oldstyle.If any vertexv has no neighbors, thenN (v) ={v}, and both recursive calls
+consider a graph withn− 1 nodes. But in this case,v is ineverymaximal independent
+set, so one of the recursive calls is redundant. On the other hand, ifv has at least
+one neighbor, thenG\ N (v) has at mostn− 2 nodes. So now we have the following
+recurrence.
+T (n)≤ poly(n) + max
+ T (n− 1)
+T (n− 1) + T (n− 2)
+
+= O(1.61804n)
+As before, the upper bound is derived by solving each case separately using characteristic
+polynomials and taking the larger of the two solutions. The ﬁrst case gives usT (n) =
+poly(n); the second case yields our old friends the Fibonacci numbers. Here and in later
+multi-case recurrences, I’ve typeset the worst case of the recurrence inbold.
+Degree /one.Alt.oldstyle.We can improve this bound even more by examining the new worst case:
+some vertexv has exactly one neighborw. In this case, eitherv or w appears in every
+maximalindependentset. However,givenanyindependentsetthatincludes w,removing
+w and addingv creates another independent set of the same size. It follows thatsome
+maximum independent set includes v, so we don’t need to search the graphG\{ v}, and
+the G\ N (v) has at mostn− 2 nodes. On the other hand, if the degree ofv is at least2,
+then G\ N (v) has at mostn− 3 nodes.
+/nine.oldstyle
+--- Page 10 ---
+B. F/A.c2sc/S.c2sc/T.c2sc/E.c2sc/R.c2sc E/X.c2sc/P.c2sc/O.c2sc/N.c2sc/E.c2sc/N.c2sc/T.c2sc/I.c2sc/A.c2sc/L.c2sc A/L.c2sc/G.c2sc/O.c2sc/R.c2sc/I.c2sc/T.c2sc/H.c2sc/M.c2sc/S.c2sc
+T (n)≤ poly(n) + max
+
+
+
+T (n− 1)
+T (n− 2)
+T (n− 1) + T (n− 3)
+
+
+
+= O(1.46558n)
+The base of the exponent is the largest root of the characteristic polynomialr 3− r 2− 1.
+Degree≥ /three.oldstyle.Now the worst-case is a graph where every node has degree at least2;
+we split this worst case into two subcases. IfG has a nodev with degree3 or more, then
+G\ N (v) has at mostn− 4 nodes. Otherwise (since we have already considered nodes of
+degree 0 and 1), every node inG has degree2. Let u, v, w be a path of three nodes inG
+(possibly withu adjacent tow). In any maximal independent set, eitherv is present and
+u, w are absent, oru is present and its two neighbors are absent, orw is present and its
+two neighbors are absent. In all three cases, we recursively count maximal independent
+sets in a graph withn− 3 nodes.
+T (n)≤ poly(n) + max
+
+
+
+T (n− 1)
+T (n− 2)
+T (n− 1) + T (n− 4)
+3T (n− 3)
+
+
+
+= O(3n/3 poly(n))
+= O(1.44225n)
+The base of the exponent is
+3p
+3, the largest root of the characteristic polynomialr 3− 3.
+The third case would give us a bound ofO(1.38028n), where the base is the largest root
+of the characteristic polynomialr 4− r 3− 1.
+Degree /two.oldstyle.Now the worst case for our algorithm is a graph with an extraordinarily
+special structure: Every node has degree /two.oldstyle. In other words, every component ofG is a
+cycle. It is easy to prove that the largest independent set in a cycle of lengthk has size
+⌊k/2⌋. So we can handle this case directly in polynomial time, with no recursion at all!
+T (n)≤ poly(n) + max
+
+
+
+T (n− 1)
+T (n− 2)
+T (n− 1) + T (n− 4)
+
+
+
+= O(1.38028n)
+Again, the base of the exponential running time is the largest root of the characteristic
+polynomial r 4− r 3− 1. The ﬁnal algorithm after all these improvements is shown in
+Figure ??.
+/one.oldstyle/zero.oldstyle
+--- Page 11 ---
+B./three.oldstyle. Dynamic Programming
+MaximumIndSetSize(G):
+if G = ∅
+return 0
+else ifG has a nodev with degree0 or 1
+return 1 + MaximumIndSetSize(G\ N (v)) 〈〈≤ n− 1〉〉
+else ifG has a nodev with degree greater than2
+withv← 1 + MaximumIndSetSize(G\ N (v)) 〈〈≤ n− 4〉〉
+withoutv← MaximumIndSetSize(G\{ v}) 〈〈≤ n− 1〉〉
+return max{withv, withoutv}
+else〈〈every node in G has degree 2〉〉
+total← 0
+for each component ofG
+k← number of vertices in the component
+total← total +⌊k/2⌋
+return total
+Figure B./three.oldstyle.A fast backtracking algorithm for M/A.c2sc/X.c2scI/N.c2sc/D.c2sc/E.c2sc/P.c2sc/E.c2sc/N.c2sc/D.c2sc/E.c2sc/N.c2sc/T.c2scS/E.c2sc/T.c2sc
+Further Improvements
+As with/three.oldstyleSat, there are faster but increasingly complex algorithms forMaxIndependent-
+Set. For example, in /one.Alt.oldstyle/nine.oldstyle/seven.oldstyle/seven.oldstyle, Bob Tarjan and Anthony Trojanowski published a complex
+backtracking algorithm that considers several dozen cases, each with its own running
+time recurrence. Most of these cases are clearly dominated by others; for example, even
+without solving the recurrences, it’s easy to see that the recurrenceT (n)≤ poly(n) +
+T (n− 4) + T (n− 5) has a smaller solution thanT (n)≤ poly(n) + T (n− 3) + T (n− 5).
+After discarding all such dominated cases, Tarjan and Trojanowski are left with the
+rather impressive recurrence shown in Figure??. The solution to this recurrence is
+T (n) = O(1.256032) = O(2n/3), where the base of the exponent is the largest root of
+the characteristic polynomialr 10− r 8− r 2− 2 of the third case (in bold).
+As of /two.oldstyle/zero.oldstyle/one.Alt.oldstyle/six.oldstyle, the fastest published algorithm for computing maximum independent sets
+runs inO(1.2114n) time/five.oldstyle. However, in an unpublished technical report, Mike Robson
+describes a computer-generated algorithm that runs inO(2n/4 poly(n)) = O(1.1889n)
+time; just the description of this algorithm requires more than /one.Alt.oldstyle/five.oldstyle pages./six.oldstyle
+B./three.oldstyle Dynamic Programming
+ÆÆÆWarmup: Bellman-Held-Karp TSP in O(2n poly(n)) time. (Leave as exercise?)
+ÆÆÆ/five.oldstyleNicolas Bourgeois, Bruno Escoﬃer, Vangelis Paschos, and Johan M. M. can Rooij. Fast algorithms for
+max independent set. Algorithmica /six.oldstyle/two.oldstyle(/one.Alt.oldstyle):/three.oldstyle/eight.oldstyle/two.oldstyle–/four.oldstyle/one.Alt.oldstyle/five.oldstyle, /two.oldstyle/zero.oldstyle/one.Alt.oldstyle/zero.oldstyle.
+/six.oldstyleJohn Michael Robson. Finding a maximum independent set in timeO(2n/4). Technical report /one.Alt.oldstyle/two.oldstyle/five.oldstyle/one.Alt.oldstyle-/zero.oldstyle/one.Alt.oldstyle,
+LaBRI, /two.oldstyle/zero.oldstyle/zero.oldstyle/one.Alt.oldstyle.〈http://www.labri.fr/perso/robson/mis/techrep.ps〉.
+/one.oldstyle/one.oldstyle
+--- Page 12 ---
+B. F/A.c2sc/S.c2sc/T.c2sc/E.c2sc/R.c2sc E/X.c2sc/P.c2sc/O.c2sc/N.c2sc/E.c2sc/N.c2sc/T.c2sc/I.c2sc/A.c2sc/L.c2sc A/L.c2sc/G.c2sc/O.c2sc/R.c2sc/I.c2sc/T.c2sc/H.c2sc/M.c2sc/S.c2sc
+T (n)≤ poly(n) + max
+
+
+
+T (n− 2) + T (n− 6)
+T (n− 2) + 2T (n− 8)
+T (n− 2) + T (n− 8) + 2T (n− 10)
+T (n− 3) + T (n− 5)
+T (n− 4) + T (n− 6) + T (n− 8)
+T (n− 4) + 2T (n− 7)
+T (n− 4) + T (n− 8) + 3T (n− 11)
+T (n− 4) + 2T (n− 8) + T (n− 10)
+T (n− 4) + T (n− 9) + 2T (n− 12)
+T (n− 4) + 4T (n− 10)
+T (n− 5) + 4T (n− 9)
+T (n− 5) + 6T (n− 11) + 4T (n− 14) + T (n− 17)
+
+
+
+Figure B./four.oldstyle.The (simpli/uniFB01ed!) running time recurrence for Tarjan and Trojanowski’s independent set algorithm.
+/three.oldstyle-coloring inO(2n poly(n)) time. Let OP T (X ) = T/R.c2sc/U.c2sc/E.c2scif there is a /three.oldstyle-coloring in which every
+vertex in X is red. Then
+OP T (X ) =
+
+
+
+F/A.c2sc/L.c2sc/S.c2sc/E.c2scif X is not an independent set
+T/R.c2sc/U.c2sc/E.c2scif G[V\ X ] is bipartite⋁
+v∈V\X
+OP T (X∪{ v}) otherwise
+Lawlar improved the running time to O(3n/3 poly(n)) by observing that we only need to care
+about OP T (X ) when X is a maximal independent set. There are O(3n/3) maximal indepen-
+dent sets, which can be listed in O(3n/3 poly(n)) time.
+Alternatively, /three.oldstyle-coloring inO(2n poly(n)) time by backtracking through the vertices in
+some /uniFB01xed whatever-/uniFB01rst order. Each vertex must be colored differently from is parent (and
+possibly other vertices) and without loss of generality, the /uniFB01rst tow nodes are red and green,
+respectively. So we consider only 2n−2 possible colorings, but memoization doesn’t help.
+(Can we do better by looking in max-adjacency order?)
+ÆÆÆ Lawler’s algorithm for chromatic number inO((1 + 31/3)n poly n) time: Let OP T (X ) denote
+the chromatic number of the subgraph G[X ] induced by the vertex subset X⊆ V . Then
+OP T (X ) =
+¨
+0 if X = ∅
+1 + min
+
+OP T (X\ I)
+ maximal ind. set I in G[X ]
+	
+otherwise
+There are O(3k/3) maximal independent sets of sizek, which can be listed inO(3k/3 poly(n))
+time.
+ÆÆÆ
+/one.oldstyle/two.oldstyle
+--- Page 13 ---
+B./three.oldstyle. Dynamic Programming
+Other techniques to include?
+• Horowitz-Sahni partitioning to solve S/U.c2sc/B.c2sc/S.c2sc/E.c2sc/T.c2scS/U.c2sc/M.c2scin O(2n/2 poly(n)) time? (See also:
+/three.oldstyleSUM)
+• Decision via counting via Inclusion-Exclusion?
+Exercises
+/one.Alt.oldstyle. (a)Prove that any n-vertex graph has at most3n/3 maximal independent sets.
+[Hint: Modify the MaximumIndSetSi/z.scealgorithm so that it lists all maximal
+independent sets.]
+(b) Describe ann-vertex graph with exactly3n/3 maximal independent sets, for every
+integer n that is a multiple of3.
+/two.oldstyle. (a) Describe an algorithm forkSatwhose running time satisﬁes the recurrence
+T (n) = 2T (n− 1)− T (n− k + 1) + poly(n).
+(b) Describe an algorithm forkSatwhose running time satisﬁes the recurrence
+T (n) = T (n− 1) + 2T (n− 2)− 2T (n− k + 1) + poly(n).
+[Hint: Modify the backtracking algorithms for /three.oldstyleSatdescribed in the text. No,
+your algorithm will not make negative recursive calls.]
+n/three.oldstyle.Describe an algorithm that solves/three.oldstyleSatin O(φn poly(n)) time, whereφ = ( 1 +p
+5)/2≈ 1.618034. [Hint: Prove that in each recursive call, either you have just
+eliminated a pure literal, or the formula has a clause with at most two literals. What
+recurrence leads to this running time?]
+/four.oldstyle.Describe an algorithm to determine whether a graph is /four.oldstyle-colorable inO(2n poly(n))
+time. [Hint: Consider red and green together , but separately from blue and yellow .]
+/five.oldstyle. (a) Prove the following upper bound for all constant0<α< 1:
+ n
+αn
+
+≤
+αn∑
+i=0
+n
+i
+
+<
+ 1
+α
+α 1
+1−α
+1−αn
+[Hint: Expand the expression (α + (1−α))n = 1 using the binomial theorem.]
+(b) Prove the following lower bound for all constant0<α< 1:
+ n
+αn
+
+≥
+ 1
+α
+α 1
+1−α
+1−αn
+· Ω(1/pn)
+[Hint: Use Stirling’s approximation:
+p
+2πn (n/e)n≤ n!≤ 2pπn (n/e)n.]
+ÆÆÆNeed a few more exercises.
+/one.oldstyle/three.oldstyle
+--- Page 14 ---
+B. F/A.c2sc/S.c2sc/T.c2sc/E.c2sc/R.c2sc E/X.c2sc/P.c2sc/O.c2sc/N.c2sc/E.c2sc/N.c2sc/T.c2sc/I.c2sc/A.c2sc/L.c2sc A/L.c2sc/G.c2sc/O.c2sc/R.c2sc/I.c2sc/T.c2sc/H.c2sc/M.c2sc/S.c2sc
+© /two.oldstyle/zero.oldstyle/one.oldstyle8 Jeff Erickson
+http:/ /algorithms.wtf
+/one.oldstyle/four.oldstyle

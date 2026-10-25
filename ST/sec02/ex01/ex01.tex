@@ -1,0 +1,174 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forest}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.5}
+\title{Exercise 01}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+\section { Random variables and expected value}
+
+\subsection* {T1}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    $x_i \in X$ & $-3$ & $-1$ & $2$ & $5$ \\
+    \hline
+    $P(x_i)$  & $\frac{3}{10}$ & $\frac{1}{10}$ & $\frac{1}{5}$ & $\frac{2}{5}$ \\
+    \hline
+  \end{tabular}
+  \caption{Distribution of $X$}
+  \label{tab:distribution}
+\end{table}
+where $k = 3 \quad (\because \sum P(x_i) = 1  )$
+$$
+E(X) = \sum_{x_i \in X}^{ } x_i \cdot P(x_i) = \frac{7}{5}
+$$
+
+
+\subsection* {T2}
+\subsubsection*{Binomial Distribution}
+
+\begin{align*}
+P(X = x) &= \binom{4}{x} \cdot \left(\frac{1}{2}\right)^4 \quad (x = 0,1,2,3,4) \\
+E(X) &= 4 \cdot \frac{1}{2} = 2
+\end{align*}
+
+\subsection* {T3}
+$$
+S = \{ (a,b) | a \in \{1,2,3,4,5 \} = C , b \in C, a \neq b \}, |S| = C(5, 2) = 10 \\
+$$
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    $x_i \in X$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ \\
+    \hline
+    $n(S)$ & $1$ & $1$ & $2$ & $2$ & $2$ & $1$ & $1$ \\
+    \hline
+    $P(x_i)$ & $\frac{1}{10}$ & $\frac{1}{10}$ & $\frac{1}{5}$ & $\frac{1}{5}$ & $\frac{1}{5}$ & $\frac{1}{10}$ & $\frac{1}{10}$ \\
+    \hline
+  \end{tabular}
+  \caption{Distribution of $X$ (Sum of Two Cards)}
+  \label{tab:sum_distribution}
+\end{table}
+$$
+E(X) = \sum_{x_i \in X}^{ } x_i \cdot P(x_i) = 6
+$$
+
+\subsection* {T4}
+$$
+\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  $x_i \in X$ & $1$ & $2$ & $3$ & $4$  \\
+  \hline
+  $n(S)$ & $4$ & $3$ & $2$ & $1$ \\ 
+  \hline
+  $P(x_i)$  & $\frac{2}{5}$ & $\frac{3}{10}$ & $\frac{1}{5}$ & $\frac{1}{10}$  \\
+  \hline
+\end{tabular}
+$$
+
+What is $X(Y)$ ??
+
+$$
+E(Y) = \sum_{y_i \in Y}^{ } y_i \cdot P(y_i) = 2
+$$
+
+
+\subsection* {T5}
+$$
+\begin{tabular}{|c|c|c|c|}
+  \hline
+  $x_i \in X$ & $3$ & $1$ & $k$   \\
+  \hline
+  $n(S)$ & $1$ & $2$ & $1$  \\ 
+  \hline
+  $P(x_i)$  & $\frac{1}{4}$ & $\frac{1}{2}$ & $\frac{1}{2}$  \\
+  \hline
+\end{tabular}
+$$
+where $E(X) = 0$ and $x_i$ refers to the number of euros to win.
+
+The player should lose $|k| = \underline{\underline{5€}}$ if no heads occur for the game to be fair.
+
+\subsection* {T6}
+$$
+S = \{ \text{N},  \text{DN}, \text{DDN}, \text{DDDN}, \}
+$$
+
+$$
+\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  $s_i \in S$ & $\text{N}$ & $\text{DN}$ & $\text{DDN}$ & $\text{DDDN}$   \\
+  \hline
+  $P(s_i)$  & $\frac{5}{8}$ & $\frac{5}{8} \cdot \frac{3}{7}$ & $\frac{5}{56}$ & $\frac{1}{56}$  \\
+  \hline
+\end{tabular}
+$$
+
+$$
+E(S) = \sum_{s_i \in S}^{ } y_i \cdot P(s_i) = \frac{3}{2}
+$$
+
+\subsection* {E1}
+\subsubsection* {Binomial Distribution}
+
+\begin{align*}
+E(X) &= \sum_{s_i \in S}^{ } x_i \cdot P(x_i) \\
+     &= \sum_{i = 0 }^{ \infty } i \cdot q^{i-1} p \\
+     &=  \frac{d}{dq}\left( \frac{ 1 }{ 1 - q } \right) \cdot p ( \because  0 < 1-p \leq 1) \\
+     &= \frac{1}{p}
+\end{align*}
+
+\subsection* {E2}
+
+$$
+\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  $x_i \in X$ & $10$ & $5$ & $3$ & $0$    \\
+  \hline
+	$\text{Area (cm)}^2$ & $\pi$ & $8\pi$ & $16\pi$ & $\text{NaN}$ \\ 
+  \hline
+  $P(x_i)$  & $\frac{1}{50}$ & $\frac{4}{25}$ & $\frac{8}{25}$ & $\frac{1}{2}$  \\
+  \hline
+\end{tabular}
+$$
+
+$$
+E(X) = \sum_{x_i \in X }^{} x_i \cdot P(x_i) = \frac{27}{25}
+$$
+
+%=====
+\end{document}

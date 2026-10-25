@@ -1,0 +1,185 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forest}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.5}
+\title{Exercise 02}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+\section* {2. Mean, Variance and standard deviation}
+
+
+\subsection* {T7}
+\begin{align*}
+S_\text{original} &=  \{ 1,2,3,4,5,6 \}  \\
+X &: \{ x \} \in S \rightarrow 2x ( \in \{ 2,4,6,8,10,12 \} ) (\text{ each probability is }\frac{1}{6}  ) \\
+X^2 &: \{ y \} \in X(S) \rightarrow y^2 ( \in \{ 4,16,36,64,100,144 \}) (\text{ each probability is }\frac{1}{6} \text{ and } y \in \mathbb{R} \\
+& \text{ and I can regard this as randam function(variable)  } \\
+\mu_X = E[X] &= \frac{2+4+6+8+10+12}{6} = 7 \\
+E[ X^2 ] &= \frac{2^2+4^2+6^2+8^2+10^2+12^2}{6} = \frac{182}{3} \\
+\sigma_X^2 &= E[X^2] - (E[X])^2 = \frac{182}{3} - 49 = \frac{182 - 147}{3} = \boxed{\frac{35}{3}} \\
+\sigma_X &= \sqrt{\frac{35}{3}} = \boxed{\frac{\sqrt{105}}{3}}
+\end{align*}
+
+\subsection* {T8}
+\begin{align*}
+S_\text{original} &=  \{ 1,2,3,4,5,6 \}  \\
+Y &: \{ x \} \in S \rightarrow \begin{cases} 
+1 & (\text{if } x \in \{ 1,3,5 \} \text{ with probability } \frac{3}{6} ) \\ 
+3 & (\text{if } x \in \{ 2,4,6 \}  \text{ with probability } \frac{3}{6} )  \\
+\end{cases} \\[0.5em]
+Y^2 &: \{ y \} \in Y(S) \rightarrow y^2 \; (y \in \mathbb{R})  \\
+	& \text{ and I can regard this as randam function(variable)  } \\
+	\mu_Y = E[Y] &=  1 \cdot \frac{1}{2} + 3 \cdot \frac{1}{2} = 2 \\ 
+E[ Y^2 ] &= 1 \cdot \frac{1}{2} + 3^2 \cdot  \frac{1}{2} = 5 \\
+{\sigma_Y}^2 &= (E[Y^2]) - (E[Y])^2 = 1
+\end{align*}
+
+
+\subsection* {E3}
+
+\begin{align*}
+Z &: \{ s \} \in S \rightarrow X(s) + Y(s) \\
+Z &: (x \in X, y \in Y) \rightarrow x + y \\
+\end{align*}
+
+Because of the dependency of the domain of $X$ and $Y$ , $Z$ is defined as the formarand I can regard $Z$ as random variable function with probability space $(S, E, h)$ .
+
+\begin{equation*}
+\begin{array}{|c|c|c|c|}
+\hline
+\text{Die}  & X = 2 \cdot \text{Die} & Y & Z = X + Y \\
+\hline
+1 &  2 & 1 & 3 \\
+2 &  4 & 3 & 7 \\
+3 & 6 & 1 & 7 \\
+4 &  8 & 3 & 11 \\
+5 & 10 & 1 & 11 \\
+6 &  12 & 3 & 15 \\
+\hline
+\end{array}
+\end{equation*}
+\begin{align*}
+h(\{z\}) &= \begin{cases}
+\frac{1}{6} & \text{if } z = 3 \\
+\frac{2}{6} = \frac{1}{3} & \text{if } z = 7 \\
+\frac{2}{6} = \frac{1}{3} & \text{if } z = 11 \\
+\frac{1}{6} & \text{if } z = 15
+\end{cases} \\
+&\text{where } \{z\} \in S
+\end{align*}
+
+$$
+E[Z] = \sum_{ \{ z \} \in S}^{} z \cdot h(z) = 9 = E[X] + E[Y] \square
+$$
+
+\subsection* {E4}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+x & 1 & 2 & 3 \\
+\hline
+P(x) & 0.3 & 0.5 & 0.2 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{align*}
+\mu_X = E(X) &= 1^2(0.3) + 2^2(0.5) + 3^2(0.2) = \boxed{ 1.9 } \\
+	{\sigma_X}^2 &= E[Z] = \boxed{0.49 } \\
+Z &: \{ s \} \in S \rightarrow ( X(s) - \mu_X ) ^ 2 \\
+	\sigma_X &= E[Z] = \boxed{0.7} 
+\end{align*}
+
+\begin{align*}
+Y_1 &: \{ s \} \in S \rightarrow ( X(s) ) ^ 3 \\
+Y_2 &: \{ s \} \in S \rightarrow 2^{X(s)}  \\
+Y_3 &: \{ s \} \in S \rightarrow  X(s)^2 + 3 \cdot X(s) + 4 \\
+	\mu_{Y_1} = E[Y_1] &= 1^3(0.3) + 2^3(0.5) + 3^3(0.2) = \boxed{9.7}   \\
+	\sigma_{Y_1}^2 &=  \boxed{84.01}\\  
+	\sigma_{Y_1} &=  \boxed{9.17}\\
+	\mu_{Y_2} = E[Y_2] &=  \boxed{4.2}\\
+	\sigma_{Y_2}^2 &= \boxed{4.36}\\ 
+	\sigma_{Y_2} &=  \boxed{\sqrt{4.36}}\\
+	\mu_{Y_3} = E[Y_3] &=  E[X^2] + 3E[X] + 4 = \boxed{13.8} \\
+	\sigma_{Y_3}^2 &=  \boxed{23.56}   \\
+	\sigma_{Y_3} &=  \boxed{\sqrt{23.56}} \\
+\end{align*}
+
+
+\subsection* {E5}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+x & 1 & 3 & 5 & 7 \\
+\hline
+P(X = x) & 0.4 & 0.3 & 0.2 & 0.1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{align*}
+	\mu_X = E[X] &=   1(0.4) + 3(0.3) + 5(0.2) + 7(0.1) = \boxed{3.0} \\
+	E[X^2] &= 13.0 \\
+	\sigma_{X}^2 &= \boxed{4.0} \\  
+	\sigma_{X} &=  \boxed{2.0}\\
+\end{align*}
+
+$$
+Z : \{ s \} \in S \rightarrow \frac{X(s) - \mu_X}{\sigma_X}  \\
+$$
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+X & 1 & 3 & 5 & 7 \\
+\hline
+$Z = \frac{X - 3.0}{2.0}$ & $-1$ & $0$ & $1$ & $2$ \\
+\hline
+$P(Z = z)$ & $0.4$ & $0.3$ & $0.2$ & $0.1$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{align*}
+	\mu_Z = E[Z] &= \boxed{0} \checkmark \\
+	E[Z^2] &= 1.0 \\
+	\sigma_Z^2 &= E[Z^2] - (\mu_Z)^2 = \boxed{1.0} \checkmark \\
+	\sigma_Z &= \sqrt{1.0} = \boxed{1} \checkmark \\
+\end{align*}
+
+%=====
+\end{document}

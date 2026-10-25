@@ -1,0 +1,35 @@
+\begin{problem}[Reduction from 3SAT to CLIQUE]
+
+Consider the following Boolean formula in 3-CNF:
+
+\[
+\varphi
+=
+(x_1 \lor \neg x_2 \lor x_3)
+\land
+(\neg x_1 \lor x_2 \lor x_4)
+\land
+(x_1 \lor x_3 \lor \neg x_4).
+\]
+
+Using the standard polynomial-time reduction from \textsc{3SAT} to \textsc{CLIQUE}:
+
+\begin{enumerate}
+    \item Construct the graph \(G_\varphi\) corresponding to \(\varphi\).
+    
+    \item Clearly specify the vertices and edges of \(G_\varphi\).
+    
+    \item Determine whether \(G_\varphi\) contains a clique of size \(3\).
+    
+    \item If such a clique exists, give the corresponding satisfying assignment for \(\varphi\).
+    
+    \item Briefly explain why, in general,
+    \[
+    \varphi \in \textsc{3SAT}
+    \iff
+    \langle G_\varphi, m \rangle \in \textsc{CLIQUE},
+    \]
+    where \(m\) is the number of clauses in \(\varphi\).
+\end{enumerate}
+
+\end{problem}

@@ -1,0 +1,511 @@
+\documentclass[11pt]{beamer}
+
+% --- テーマ設定 ---
+\usetheme{Madrid} % シンプルでビジネスに適したテーマ
+\usecolortheme{default}
+\usefonttheme{serif} % 読みやすさ重視
+
+% --- パッケージ ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{pifont} % アイコン用
+
+% --- タイトル情報 ---
+\title[Internship Presentation]{My Internship at Ai-Charge Technologies}
+\subtitle{Final Report and Achievements}
+\author{Takanori Nagashima}
+\institute{OTH Regensburg / International Computer Science}
+\date{\today}
+
+\begin{document}
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{ Table of Contents }
+    \tableofcontents[currentsection]
+  \end{frame} 
+} 
+
+% タイトルページ
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% 目次
+\begin{frame}{Outline}
+    \tableofcontents
+\end{frame}
+
+
+
+% --- セクション1: Introduction ---
+\section{Introduction}
+
+\begin{frame}{Introduction}
+    % 概要をブロックで囲んで強調
+    \begin{block}{Internship Overview}
+        \begin{itemize}
+            \item \textbf{Period:} 18 weeks (Aug 4, 2025 -- Dec 14, 2025)
+            \item \textbf{Host Organization:} AI-Charge Technologies (at Techbase)
+            \item \textit{*Note: This report covers both the internship and working student period.}
+        \end{itemize}
+    \end{block}
+
+    \vspace{0.3cm}
+    
+    \textbf{Primary Goals \& Responsibilities:}
+    \begin{itemize}
+        \item[\ding{51}] \textbf{OCPP Workflow:} Analyzing and understanding the OCPP(Open Charge Point Protocol).
+        \item[\ding{51}] \textbf{Backend Deployment:} Developing and deploying backend servers for EV (Electric Vehicle) charging stations.
+        \item[\ding{51}] \textbf{Web UI \& Payment:} Implementing web interfaces and payment system integration.
+        \item[\ding{51}] \textbf{Optimization:} Enhancing charging strategies using Reinforcement Learning (RL).
+    \end{itemize}    
+\end{frame}
+
+
+% --- セクション2: Project Overview ---
+\section{Glossary} 
+\begin{frame}{Glossary: Key Protocols in EV Ecosystem}
+    % OCPP
+    \begin{block}{What is OCPP?}
+        \textbf{Open Charge Point Protocol (OCPP)} is the global standard for communication between EV charging stations and a Central Management System (CSMS).
+    \end{block}
+
+    \begin{itemize}
+        \item \textbf{Global Interoperability:} Enables hardware from any vendor to work with any software provider (like a "common language").
+        \item \textbf{Core Functions:} Facilitates real-time transaction processing, remote monitoring, and diagnostics.
+        \item \textbf{Latest Version:} We utilized \textbf{OCPP 2.0.1}, which offers enhanced security and smart charging features.
+    \end{itemize}
+\end{frame}        
+
+\begin{frame}[allowframebreaks]{Glossary: Key Terms in EV Ecosystem}
+    
+    % --- EV ---
+    \begin{block}{Industry Standard Terms}
+        \begin{description}
+            \item[CPO] \textbf{Charge Point Operator:} Our role. Managing and operating charging infrastructure.
+            \item[EVSE] \textbf{Electric Vehicle Supply Equipment:} The physical hardware (charging station).
+            \item[Fleet] \textbf{Commercial Fleets:} Groups of commercial vehicles (e.g., DHL trucks/Lorry).
+            \item[CSMS] \textbf{Charging Station Management System:} The backend system to manage EVSEs.
+        \end{description}
+    \end{block}
+
+    \framebreak
+
+    % --- Technical ---
+    \begin{block}{Technical Stack}
+        \begin{description}
+            \item[RL] \textbf{Reinforcement Learning:} AI method used for optimizing charging schedules.
+            \item[OSS] \textbf{Open Source Software:} Software with source code that anyone can inspect and modify.
+            \item[ORM] \textbf{Object-Relational Mapping:} A bridge between objects and DB (e.g., JDBC).
+            \item[Redis] \textbf{In-memory Database:} A high-speed cache database (similar to H2).
+            \item[UUID] \textbf{Universally Unique Identifier:} A 128-bit label used for unique identification.
+        \end{description}
+    \end{block}
+
+\end{frame}
+
+\section{Projects Overview}
+\begin{frame}{Projects Overview}
+    During my internship, I primarily focused on the following two projects:
+    
+    \vspace{0.5cm}
+    
+    \begin{enumerate}
+        \item \textbf{Deployment in Production}
+        \begin{itemize}
+            \item Deploying the backend server and management system.
+            \item Ensuring system stability and infrastructure management.
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        
+        \item \textbf{Optimizing Charging Plans}
+        \begin{itemize}
+            \item Developing AI-driven charging schedules.
+            \item Improving energy efficiency using Reinforcement Learning.
+            \item This will be continued in my future role as a working student.        
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+
+\begin{frame}{First Project: Deployment in Production}
+    \begin{itemize}
+        \item \textbf{Objective:} Deploy CitrineOS into a live production environment.
+        \item \textbf{The Challenge:} CitrineOS is \textbf{Open Source} CSMS implementation and maintained by a small group in the USA.
+    \end{itemize}
+
+    \pause
+    \begin{center}
+        \textit{"Have you ever joined a small OSS project? "}
+    \end{center}
+
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{The "User" Experience}
+                \small
+                \textbf{Easy \& Polished:}
+                \begin{itemize}
+                    \item Windows: Click \texttt{.msi}
+                    \item Linux: \texttt{sudo pacman -Syu \$pkg}
+                    \item It just works!
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{The "Developer" Reality}
+                \small
+                \textbf{Complex \& Raw:}
+                \begin{itemize}
+                    \item Massive dependencies (Message Brokers, Cache DBs).
+                    \item Tremendous errors!
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{The Reality of OSS Deployment}
+    \textbf{Common Pitfalls I Faced:}
+    \begin{itemize}
+        \item \textbf{Version Mismatch:} One project updated its DB schema, while a dependent library was archived a year ago.
+        \item \textbf{Incompatibility:} The hardware we needed to connect simply didn't "speak" the same version of the protocol yet.
+        \item \textbf{Hidden Bugs:} Long-term execution revealed critical \textbf{memory leaks} that weren't documented.
+    \end{itemize}
+    \vfill
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center,rounded=true]{palette secondary}
+        \textbf{Result: You will be driven crazy more than 100 times.}
+    \end{beamercolorbox}
+\end{frame}
+
+\section{Challenges \& Results}
+\begin{frame}[allowframebreaks]{Case 1: Addressing Architecture Gaps}
+    \textbf{The Evolution of Charging Structures}
+    \begin{itemize}
+        \item \textbf{OCPP 1.6:} Flat structure (Station $\rightarrow$ Connector).
+        \item \textbf{OCPP 2.0.1:} Three-layer architecture for flexibility.
+    \end{itemize}
+    \begin{exampleblock}{Advantage of 3-Layer Structure}
+        Enables distinct profiles within one station. 
+        Example: \textbf{Connector 1} for E-scooters vs. \textbf{Connector 2} for Trucks (Lorry) in a \textbf{EVSE}.
+    \end{exampleblock}
+    \framebreak 
+    \begin{center}
+            \includegraphics[width=0.7\textwidth]{./assets/threeLayer.png} 
+    \end{center}
+\end{frame}
+
+
+\begin{frame}{Technical Contribution: Bug Fix in CitrineOS}
+    \textbf{The Challenge: Database Unique Constraints}
+    \begin{itemize}
+        \item During my internship, I found a logic gap in how \textbf{CitrineOS} handled the transition to the 3-layer model.
+    \end{itemize}
+
+    \begin{table}[]
+        \small
+        \begin{tabular}{l|l|l}
+        \textbf{Version} & \textbf{Unique Constraint (ORM)} & \textbf{Issue} \\ \hline
+        OCPP 1.6 & \texttt{@Unique('station-connector')} & Correct for old model \\
+        OCPP 2.0.1 & \texttt{@Unique('evse-connector')} & \textbf{The DB was still using 1.6 logic!} \\
+        \end{tabular}
+    \end{table}
+
+    \begin{alertblock}{SequelizeError at Upserting}
+        Since the system tried to enforce the old \texttt{station-connector} constraint, it crashed when a station had multiple EVSEs with overlapping connector IDs.
+    \end{alertblock}
+    
+    \centering
+    \textbf{$\rightarrow$ I submitted a Pull Request (PR) to Github Repository.}
+\end{frame}
+
+
+% --- Slide 4: Real-World Deployment Issues ---
+\begin{frame}{Case 2: Memory Leak on AWS instance}
+    \textbf{The Environment:} Deploying CitrineOS in a live production environment on AWS.
+    \begin{itemize}
+        \item \textbf{The Symptom:} After several hours of operation, the system suffered from a critical \textbf{Memory Leak}, leading to server crashes.
+        \item \textbf{The Root Cause:} A flawed indexing logic in the caching layer (Redis / Node.js Map).
+    \end{itemize}
+
+    \begin{alertblock}{Flawed Logic: Non-Unique Keys}
+        The system used a combination of \texttt{ChargingStationID} + \texttt{TenantID} as the unique key for tracking transactions.
+    \end{alertblock}
+\end{frame}
+
+% --- Slide 5: Race Conditions & Memory Leak ---
+\begin{frame}{Analysis: Collision in the Cache Layer}
+    \textbf{What happened when multiple EVSEs were active?}
+    \begin{enumerate}
+        \item Two different EVSEs under the same Station send transactions simultaneously.
+        \item The CSMS looks up the cache using the non-unique key (\texttt{Station + Tenant}).
+        \item Result: The system retrieves the wrong record or returns "Not Found" for the second request.
+        \item \textbf{Impact:} Unresolved requests and error logs accumulated in the memory, eventually causing a leak.
+    \end{enumerate}
+
+    \begin{exampleblock}{My Solution: UUID-based Indexing}
+        I refactored the caching logic to use the \textbf{Message UUID} as the primary key in the Redis database.
+        \begin{itemize}
+            \item[\ding{51}] Ensures 100\% uniqueness across all messages.
+            \item[\ding{51}] Eliminated cross-EVSE record collisions.
+            \item[\ding{51}] Stabilized the production environment on AWS.
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+
+
+
+\begin{frame}{Autonomous Development Process}
+    \begin{block}{Working Environment: Extreme Autonomy}
+        \begin{itemize}
+            \item \textbf{Independent Contributor:} No direct tutor or supervisors or colleagues in the office.
+            \item \textbf{Self-Directed Behavior:} The highest freedom in the world with a requirement for high self-discipline and accountability.
+        \end{itemize}
+    \end{block}
+
+    \begin{itemize}
+        \item \textbf{My Philosophy:} 
+            \textit{"Work should be 99\% learning and 1\% implementation."}
+        \item \textbf{Core Principle:} Every task should be broken down until it is as simple as $1 + 1$.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{The "Before vs. After" Gap: Technical Growth}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Before: "Lecture Level"}
+                \small
+                \begin{itemize}
+                    \item \textbf{Docker:} Knew basic commands (\texttt{-d}, \texttt{run}).
+                    \item \textbf{Git:} Created PRs and manage simple repository.
+                    \item \textbf{TypeScript:} Followed basic syntax.
+                \end{itemize}
+                \centering \textit{"I thought I knew it."}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{The Reality: "Pro Level"}
+                \small
+                \begin{itemize}
+                    \item \textbf{Docker:} Multi-stage builds, Cache management (\texttt{prune} not only \texttt{down}).
+                    \item \textbf{Git:} Branching strategies (\texttt{main} vs. \texttt{rc}), Rebase, Best practices.
+                    \item \textbf{TS/Zod:} Strict type-safety and runtime validation.
+                \end{itemize}
+                \centering \textit{"I had to master it."}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Reflections on Full-Stack Engineering}
+    \begin{itemize}
+        \item \textbf{The Startup Reality:} Wearing many hats (Frontend, Backend, Security, Logging).
+        \item \textbf{Key Lesson:} To avoid information overload, a Learning Cycle is essential.
+    \end{itemize}
+
+    \begin{quote}
+        "Mastering 50+ tools in 6 months isn't about memorizing; it's about building a foundation to learn how to learn."
+    \end{quote}
+
+    \begin{exampleblock}{Reflection: My Growth Philosophy}
+        \begin{itemize}
+            \item \textbf{Simplify:} Break tasks down into $1+1$.
+            \item \textbf{Balance:} 99\% Deep Learning + 1\% Implementation.
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{The Importance of the "Learning Cycle"}    
+    \begin{enumerate}
+        \item \textbf{Research:} Deep dive into official documentation (The primary source).
+        \item \textbf{Caching:} Structuring my own knowledge base (Markdown + MkDocs).
+        \item \textbf{Validation:} Running small-scale experiments to verify theories.
+        \item \textbf{Integration:} Translating verified experiments into production code.
+    \end{enumerate}
+
+    \begin{exampleblock}{My Development Philosophy}
+        \centering
+        \textit{"I don't just 'write' code at work; I perform experiments and safely integrate verified solutions from my private knowledge base."}
+    \end{exampleblock}
+
+    \vfill
+    \begin{itemize}
+\item[\ding{43}] \textbf{Key Insight:} \textbf{Learn by Necessity.} Without the "need" of a real-world problem, true knowledge never sticks.    \end{itemize}
+\end{frame}
+
+
+\section{Result of the first project}
+
+\begin{frame}{Final Result: Live somewhere in Nürnberg}
+    \begin{itemize}
+        \item \textbf{The Solution:} Developed a custom-patched version of CitrineOS (Core, Payment, and Operator UI).
+        \item \textbf{Real-world Deployment:}
+    \end{itemize}
+
+    \begin{exampleblock}{Success Metric}
+        My patched CitrineOS is currently \textbf{running in a production environment in Nürnberg}, managing real EV charging transactions.
+        (I only know server's IP address.)
+    \end{exampleblock}
+
+    \begin{center}
+        \textit{"Bridging the gap between unstable open-source projects and reliable industrial requirements."}
+    \end{center}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Theme 1: Secure, Robust and Fast Programming}
+    \begin{itemize}
+        \item \textbf{Memory Safety \& Stability}
+            \begin{itemize}
+                \item Eliminated memory leaks by optimizing resource management within the CitrineOS environment.
+                \item I encountered critical memory issues, including memory leaks and OOM (Out Of Memory) errors.
+            \end{itemize}
+        \item \textbf{Strict Type Definition}
+            \begin{itemize}
+                \item "The compiler complains a lot at first, but it's a lifesaver."
+                \item Mastered \textbf{Zod} for runtime schema validation to ensure data integrity.
+            \end{itemize}
+        \item \textbf{Security: Encryptions}
+            \begin{itemize}
+                \item Implemented \textbf{mTLS (Mutual TLS)} connection based on OCPP Profile 3.
+                \item Ensuring secure, encrypted communication between chargers and CSMS.
+            \end{itemize}
+
+    \framebreak 
+
+        \item \textbf{Observability \& Tracking}
+            \begin{itemize}
+                \item Graduated from \texttt{console.log} to a professional \textbf{Grafana Stack} (Alloy, Loki, Faro).
+                \item Utilized \textbf{Portainer.io} to manage and monitor containerized environments efficiently.
+            \end{itemize}
+        \item \textbf{Performance Optimization}
+            \begin{itemize}
+                \item Reduced latency by combining API requests and applying \textbf{Cache Theory}.
+                \item Exploring \textbf{Rust} to minimize calculation costs and memory overhead.
+            \end{itemize}
+    \end{itemize}
+
+    \begin{block}{The "Vim" Philosophy}
+        At first, these strict rules and tools feel complex and restrictive and the most of beginners dislike it. But once understood, they transform programming "ultra faster".
+    \end{block}
+
+    \vspace{0.2cm}
+    \centering
+    \textit{"Graduating from 'It works' to 'It is professionally engineered.'"}
+\end{frame}
+
+\section{ Future Goals }
+\section{Project 2}
+\begin{frame}{Future Work: FleetRL \& Master's Thesis}
+    \begin{block}{Goal: From Internship Experience to Academic Research}
+        Applying professional engineering standards to my final thesis project.
+    \end{block}
+
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \textbf{Project: Deploy FleetRL}
+            \begin{itemize}
+                \item Optimizing EV charging plans via \textbf{Reinforcement Learning}.
+                \item Environment: \textbf{Gymnasium}.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Technical Stack}
+            \begin{itemize}
+                \item \textbf{Rust (Actix-web)}: Fast and safe REST API structure.
+                \item \textbf{ML-Driven}: Focusing on calculation cost and efficiency.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{The Plan:}
+            \begin{enumerate}
+                \item Implement a memory-safe backend with Rust.
+                \item Integrate ML environments for robust fleet management.
+                \item Apply the "99\% Learning" workflow to ensure research quality.
+            \end{enumerate}
+    \end{itemize}
+
+    \vfill
+    \centering
+    \textbf{Final Mission: Bridging Professional Engineering and ML Research.}
+\end{frame}
+
+
+\section{Personal Projects \& Future Ventures}
+\begin{frame}{Beyond the Internship: Rustify \& Entrepreneurship}
+    \begin{columns}[T]
+        \begin{column}{0.6\textwidth}
+            \textbf{Rustify: Japanese Chess (Shogi) Web App}
+            \begin{itemize}
+                \item Built with \textbf{TypeScript Full-stack} based on professional engineering standards.
+                \item Current focus: High-performance logic and real-time interaction.
+            \end{itemize}
+            
+            \vspace{0.3cm}
+            \textbf{Next Steps (Establishing my Startup company)}
+            \begin{itemize}
+                \item \textbf{Mobile Expansion:} Converting Rustify into a mobile app using \textbf{Flutter}.
+                \item \textbf{New Platform:} Launching a secondary application with \textbf{SpringBoot}.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+        \begin{center}
+            %\includegraphics[width=\textwidth]{example-image} % Dummy
+            \includegraphics[width=\textwidth]{./assets/picture.png}
+            \end{center}
+        \end{column}
+    \end{columns}
+
+    \vfill
+    \begin{beamercolorbox}[sep=8pt,center,rounded=true]{palette secondary}
+        \textbf{I am establishing my own company.} \\
+        If you are interested in collaboration or my projects, let's talk!
+    \end{beamercolorbox}
+\end{frame}
+
+
+
+\section{References}
+\begin{frame}{Important Links \& Resources}
+    \begin{block}{Project Repository}
+        \begin{itemize}
+            \item \textbf{CitrineOS Core:} The central CSMS implementation used in this project.
+            \item \url{https://github.com/citrineos/citrineos-core}
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Official Standards}
+        \begin{itemize}
+            \item \textbf{Open Charge Alliance (OCPP):} Official documentation and protocol specifications for OCPP 1.6 and 2.0.1.
+            \item \url{https://openchargealliance.org}
+        \end{itemize}
+    \end{block}
+
+    \vfill
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \footnotesize
+            \textbf{Note:} For internal documentation, Gitea repositories, and MkDocs knowledge base, please refer to the project's internal wiki.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Ending ---
+\begin{frame}
+    \centering
+    \Huge Thank you for your attention!\\
+    \vspace{1cm}
+    \Large Any Questions?
+\end{frame}
+
+
+\end{document}

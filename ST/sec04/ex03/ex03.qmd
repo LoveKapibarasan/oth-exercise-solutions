@@ -1,0 +1,178 @@
+---
+title: "3 Bivariate Data"
+author: "LoveKapibarasan"
+output: html_document
+---
+
+# 3 Bivariate Data
+
+## Tutorial 3
+
+\[
+    \begin{enumerate}[label=\alph*)]
+        \item $0.9$
+        \item $0$
+        \item $-0.9$
+    \end{enumerate}
+\]
+
+## Tutorial 4
+
+
+```{r}
+# R code to create the scatterplot
+x <- c(4, 2, 10, 5, 8)
+y <- c(8, 12, 4, 10, 2)
+
+# Plot the scatterplot
+plot(x, y, main="Scatterplot of Data", xlab="x", ylab="y", pch=19, col="blue")
+
+# Compute the correlation coefficient using the cor() function in R
+r <- cor(x, y)
+
+# Print the correlation coefficient
+print(paste("The correlation coefficient r is:", round(r, 3)))
+
+# Compute the means of x and y
+mean_x <- mean(x)
+mean_y <- mean(y)
+
+# Compute the slope (b)
+n <- length(x)
+b <- (n * sum(x * y) - sum(x) * sum(y)) / (n * sum(x^2) - sum(x)^2)
+
+# Compute the intercept (a)
+a <- mean_y - b * mean_x
+
+# Print the least-squares line equation
+cat("The least-squares line is: y =", round(a, 2), "+", round(b, 2), "x\n")
+
+# Plot the scatterplot
+plot(x, y, main="Scatterplot with Least-Squares Line", xlab="x", ylab="y", pch=19, col="blue")
+
+# Add the least-squares line to the plot
+abline(a = a, b = b, col="red", lwd=2)
+```
+
+
+
+\[
+r = \frac{n \sum{xy} - \sum{x} \sum{y}}{\sqrt{\left( n \sum{x^2} - (\sum{x})^2 \right) \left( n \sum{y^2} - (\sum{y})^2 \right)}}
+\]
+
+
+#### 3. Means and Standard Deviations:
+
+1. **Mean of \( x \) values**:
+
+\[
+\bar{x} = \frac{\sum{x}}{n} = \frac{29}{5} = 5.8
+\]
+
+2. **Mean of \( y \) values**:
+
+\[
+\bar{y} = \frac{\sum{y}}{n} = \frac{36}{5} = 7.2
+\]
+
+1. **Standard deviation of \( x \):**
+
+\[
+s_x = \sqrt{\frac{209 - \frac{29^2}{5}}{4}} = \sqrt{\frac{209 - 168.2}{4}} = \sqrt{\frac{40.8}{4}} = \sqrt{10.2} \approx 3.19
+\]
+
+2. **Standard deviation of \( y \):**
+
+\[
+s_y = \sqrt{\frac{328 - \frac{36^2}{5}}{4}} = \sqrt{\frac{328 - 259.2}{4}} = \sqrt{\frac{68.8}{4}} = \sqrt{17.2} \approx 4.15
+\]
+
+
+
+
+### Tutorial 5
+
+
+```{r}
+# R code to create the scatterplot
+x <- c(1, 3, 4, 7)
+y <- c(3, 4, 8, 10)
+
+# Plot the scatterplot
+plot(x, y, main="Scatterplot of Data", xlab="x", ylab="y", pch=19, col="blue")
+
+# Compute the correlation coefficient using the cor() function in R
+r <- cor(x, y)
+
+# Print the correlation coefficient
+print(paste("The correlation coefficient r is:", round(r, 3)))
+
+# Compute the means of x and y
+mean_x <- mean(x)
+mean_y <- mean(y)
+
+sd_x <- sd(x)
+sd_y <- sd(y)
+
+cat("mean of x is", mean_x)
+cat("mean of y is", mean_y)
+cat("unbiased standard diviation for x is", sd_x)
+cat("unbiased standard diviation for y is", sd_y)
+
+# Compute the slope (b)
+n <- length(x)
+b <- (n * sum(x * y) - sum(x) * sum(y)) / (n * sum(x^2) - sum(x)^2)
+
+# Compute the intercept (a)
+a <- mean_y - b * mean_x
+
+# Print the least-squares line equation
+cat("The least-squares line is: y =", round(a, 2), "+", round(b, 2), "x\n")
+
+# Plot the scatterplot
+plot(x, y, main="Scatterplot with Least-Squares Line", xlab="x", ylab="y", pch=19, col="blue")
+
+# Add the least-squares line to the plot
+abline(a = a, b = b, col="red", lwd=2)
+```
+
+
+## Exercise 8
+```{r}
+# R code to create the scatterplot
+x <- c(1985, 1990, 1995, 2000)
+y <- c(28, 36, 40, 45)
+
+# Compute the correlation coefficient using the cor() function in R
+r <- cor(x, y)
+
+# Print the correlation coefficient
+print(paste("The correlation coefficient r is:", round(r, 3)))
+
+# Compute the means of x and y
+mean_x <- mean(x)
+mean_y <- mean(y)
+
+sd_x <- sd(x)
+sd_y <- sd(y)
+
+# Compute the slope (b)
+n <- length(x)
+b <- (n * sum(x * y) - sum(x) * sum(y)) / (n * sum(x^2) - sum(x)^2)
+
+# Compute the intercept (a)
+a <- mean_y - b * mean_x
+
+# Print the least-squares line equation
+cat("The least-squares line is: y =", round(a, 2), "+", round(b, 2), "x\n")
+
+# Plot the scatterplot
+plot(x, y, main="Scatterplot with Least-Squares Line", xlab="x", ylab="y", pch=19, col="blue")
+
+# Add the least-squares line to the plot
+abline(a = a, b = b, col="red", lwd=2)
+
+cat("Estimate W for year 2005: W = ", a + 2005 * b)
+cat("Estimate W for year 2008: W = ", a + 2008 * b)
+cat("Estimate W for year 2010: W = ", a + 2010 * b)
+```

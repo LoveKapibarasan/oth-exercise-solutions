@@ -1,0 +1,371 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 4
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+Reductions
+4.1Prove Property 53.
+Solution:
+4.2In Definition 44 and Definition 62 the problems SOS and PARTITION are defined.
+Prove PARTITION≤ p SOS.
+Solution:We show PARTITION≤ p SOS:
+g(⟨a 1, . . . ,an⟩) =
+(
+⟨a1, . . . ,an, 1
+2 ∑n
+i=1 ai⟩if ∑n
+i=1 ai is even,
+⟨0, 1⟩otherwise.
+Clearly,g∈FP, and the following equivalence holds:
+⟨a1, . . . ,an⟩ ∈PARTITION⇔ ∃I⊆ {1, . . . ,n}:∑
+i∈I
+ai = ∑
+i/∈I
+ai
+⇔ ∃I⊆ {1, . . . ,n}:∑
+i∈I
+ai = 1
+2
+n
+∑
+i=1
+ai
+⇔
+n
+∑
+i=1
+ai is even and∃I⊆ {1, . . . ,n}: ∑
+i∈I
+ai = 1
+2
+n
+∑
+i=1
+ai
+⇔g(⟨a 1, . . . ,an⟩)∈SOS
+This concludes the proof.
+4.3In Definition 44 and Definition 62 the problems SOS and PARTITION are defined.
+Prove SOS≤ p PARTITION.
+Hint:Consider a reduction mapping of the form⟨a 1, . . . ,an,b⟩ 7→ ⟨a1, . . . ,an,c⟩for a carefully chosen
+valuec. You may need to distinguish two cases when determiningc.
+Solution:
+Idea:
+• In the SOS problem, we seek a subset of indicesI⊆ {1, . . . ,n}such that ∑i∈I ai =b, which
+leaves the remaining elements summing to ∑i/∈Iai = (∑n
+i=1 ai)−b.
+• To map this to a PARTITION instance, both sets must have the same sum. What valuecmust
+be added to theb-summing subset to balance the partition?
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+• We requireb+c= ( ∑n
+i=1 ai)−b, which givesc= ( ∑n
+i=1 ai)−2b.
+We show SOS≤ p PARTITION:
+h(⟨a 1, . . . ,an,b⟩) =
+(
+⟨a1, . . . ,an, ∑n
+i=1 ai −2b⟩if 2b≤ ∑n
+i=1 ai,
+⟨a1, . . . ,an, 2b− ∑n
+i=1 ai⟩otherwise.
+Clearly,h∈FP. We distinguish two cases:
+Case 1:Let⟨a 1, . . . ,an,b⟩be such that 2b≤ ∑n
+i=1 ai, then we have:
+⟨a1, . . . ,an,b⟩ ∈SOS⇔ ∃I⊆ {1, . . . ,n}:∑
+i∈I
+ai =b
+⇔ ∃I⊆ {1, . . . ,n}:∑
+i∈I
+ai =b+
+=0
+z }| {
+∑
+i/∈I
+ai +b−
+n
+∑
+i=1
+ai
+⇔ ∃I⊆ {1, . . . ,n}:∑
+i∈I
+ai = ∑
+i/∈I
+ai −
+ 
+n
+∑
+i=1
+ai −2b
+!
+⇔ ∃I⊆ {1, . . . ,n}:∑
+i∈I
+ai +
+ 
+n
+∑
+i=1
+ai −2b
+!
+= ∑
+i/∈I
+ai
+⇔h(⟨a 1, . . . ,an,b⟩)∈PARTITION
+Case 2:Let⟨a 1, . . . ,an,b⟩be such that 2b> ∑n
+i=1 ai , then we have (compare to Case 1):
+⟨a1, . . . ,an,b⟩ ∈SOS⇔ ∃I⊆ {1, . . . ,n}:∑
+i∈I
+ai = ∑
+i/∈I
+ai −
+ 
+n
+∑
+i=1
+ai −2b
+!
+⇔ ∃I⊆ {1, . . . ,n}:∑
+i∈I
+ai = ∑
+i/∈I
+ai +
+ 
+2b−
+n
+∑
+i=1
+ai
+!
+⇔h(⟨a 1, . . . ,an,b⟩)∈PARTITION
+This concludes the proof.
+Alternative Proof: We prove that SOS≤ p PARTITION via a functionfwith
+f(⟨a 1, . . . ,am,b⟩) =
+
+
+
+⟨1⟩if ∑m
+i=1 ai <b
+⟨a1, . . . ,am, 2
+m
+∑
+i=1
+ai −b
+| {z }
+=:am+1
+,
+m
+∑
+i=1
+ai +b
+| {z }
+=:am+2
+⟩else
+Idea behind the reduction function: If ∑m
+i=1 ai <b then⟨a 1, . . . ,am,b⟩/∈SOSand thus, we can map to
+any number that is not inPARTITION. For the other case, we basically add one very big number twice
+and subtract b from one of these two numbers and ∑m
+i=1 ai −b from the other (this leads to the last number
+being2 ∑m
+i=1 ai −( ∑m
+i=1 ai −b) = ∑m
+i=1 ai +b). Thus, these numbers are so large that they can’t be in
+the same partition. The resultingPARTITION-instance is inPARTITIONif and only if we find a subset
+of the numbers{a 1, . . . ,am}that adds up to b. This subset can then be extended by a m+1 and then the
+corresponding numbers sum up to exactly half of the sum of all numbers inPARTITION-instance.
+Notef∈FP.
+It remains to showx∈SOS⇐ ⇒f(x)∈PARTITION.
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+“=⇒”: Let⟨a 1, . . . ,am,b⟩ ∈SOS.
+Then there existsI⊆ {1, . . . ,m}with ∑i∈I ai =b.
+Then defineI ′ =I∪ {m+1}.
+Then
+∑
+i∈I ′
+ai =b+a m+1 =b+2
+m
+∑
+i=1
+ai −b=2
+m
+∑
+i=1
+ai.
+Also, the sum of the remaining elements is:
+∑
+j∈{1,...,m+2}−I ′
+aj =
+m+2
+∑
+i=1
+ai − ∑
+j∈I ′
+aj =4
+m
+∑
+i=1
+ai −2
+m
+∑
+i=1
+ai =2
+m
+∑
+i=1
+ai.
+(Note that the total sum is ∑m+2
+i=1 ai = ∑m
+i=1 ai + (2∑m
+i=1 ai −b) + (∑m
+i=1 ai +b) =4 ∑m
+i=1 ai).
+Thusf(⟨a 1, . . . ,am,b⟩)∈PARTITION.
+“⇐=”: Assumef(⟨a 1, . . . ,am,b⟩)∈PARTITION.
+Then by the definition offwe have
+⟨a1, . . . ,am, 2
+m
+∑
+i=1
+ai −b
+| {z }
+am+1
+,
+m
+∑
+i=1
+ai +b
+| {z }
+am+2
+⟩ ∈PARTITION
+If ∑m
+i=1 ai =0, then alsoa m+1 =a m+2 =b=0 and⟨a 1, . . . ,am,b⟩ ∈SOS. So it remains to consider
+the case ∑m
+i=1 ai >0 (∗).
+So there existsI ′ ⊆ {1, . . . ,m+2}with
+∑
+i∈I ′
+ai = ∑
+i/∈I′
+ai = 1
+2
+m+2
+∑
+i=1
+ai.
+Then|I ′ ∩ {m+1,m+2}|=1 (i.e., the numbersa m+1 anda m+2 can’t be both inI ′ or both not in
+I′), as
+am+1 +a m+2 =3
+m
+∑
+i=1
+ai
+(∗)
+>2
+m
+∑
+i=1
+ai = 1
+2
+m+2
+∑
+i=1
+ai = ∑
+i∈I ′
+ai = ∑
+i/∈I′
+ai.
+WLOG letm+1∈I ′ (otherwise, take I′ as the newI ′).
+DefineI=I ′ − {m+1}.
+Then
+∑
+i∈I
+ai = ∑
+i∈I ′
+ai −a m+1
+= 1
+2
+m+2
+∑
+i=1
+ai −a m+1
+= 1
+2
+ 
+4
+m
+∑
+i=1
+ai
+!
+−
+ 
+2
+m
+∑
+i=1
+ai −b
+!
+=2
+m
+∑
+i=1
+ai −2
+m
+∑
+i=1
+ai +b
+=b.
+So⟨a 1, . . . ,am,b⟩ ∈SOS.□
+T. Dose 3 SS2026
+--- Page 4 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Bonus Exercise
+4.4For an undirected graphG= (V,E), a vertex cover is a set of nodesS⊆Vso that∀ e∈Ee∩S̸=∅,
+i.e., a vertex cover is a subset of the nodes so that each edge is incident with at least one node from the
+vertex cover.
+Roughly speaking, a vertex cover is a set of nodes that covers all edges.
+We define VC={⟨G,k⟩ |Gis an undirected graph that has a vertex cover ofkelements}.
+Prove CLIQUE≡ p VC.
+Hint 1:You can use the same reduction function for both directions.
+Hint 2:If you read this, the exercise becomes easier:
+Use the problem IS (Independent Set) as intermediate step, where an independent set is similar to a
+clique: It is a set of nodes so that no pair of these nodes forms an edge.
+Solution:
+Define
+IS={⟨G,k⟩ |Gis an undirected graph containingknodes no two of which form an edge}.
+Letfbe the function⟨V,E,k⟩ 7→ ⟨V,E ′,k⟩withE ′ ={{u,v} |u,v∈V,u̸=v,{u,v}/∈E}, i.e.,f
+maps an undirected graph(V,E)to its complement graph, which has an edge between two nodes
+if and only if(V,E)does not have an edge between them.
+Note thatf∈FP.
+Then it holds
+• CLIQUE≤ p IS viafand
+• IS≤ p CLIQUE viaf.
+Note thatfis self-inverse, i.e., iff(x) =y, thenf(y) =xfor allxandy. If for arbitraryA,Bit holds
+A≤ p Bvia a self-inverse functionf, then it holdsx∈A⇔f(x)∈B, which —asfis self-inverse—
+is equivalent withf(x)∈A⇔x∈B, which showsB≤ p A, i.e.,B≡ p A.
+Thus, it suffices to show⟨V,E,k⟩ ∈CLIQUE if and only iff(⟨V,E,k⟩) =⟨V,E ′,k⟩ ∈IS. This
+conditions holds directly by the definition of CLIQUE and IS.
+This shows that CLIQUE≡ p IS.
+Note:Formally, one has to definefvia e.g.
+f(x) =
+
+
+
+⟨V,{{u,v} |u,v∈V,u̸=v,{u,v}/∈E},k⟩ifx=⟨V,E,k⟩for somek∈ {0, . . . ,|V|}and
+an undirected graph(V,E)
+xelse,
+i.e.,fmust be also defined when the input is not an encoding of a valid CLIQUE instance. In that
+case we can map to itself as then the input is also not a valid IS instance. An analogous remark
+applies to the following reduction, where the restrictionk∈ {0, . . . ,|V|}is crucial to ensuref
+remains self-inverse even fork>|V|.
+Next we show IS≡ p VC. We define a functionf∈FP viaf(⟨V,E,k⟩) =⟨V,E,|V| −k⟩. Note that
+this function is also self-inverse.
+Moreover, if a graph has an independent set of sizek, then the remaining|V| −knodes form a
+vertex cover. Conversely, if a graph has a vertex cover of size|V| −k, then there can be no edges
+between the remaining nodes. So they form an independent set of sizek.
+This shows IS≤ p VC. Asfis self-inverse, it holds VC≤ p IS viaf. Thus CLIQUE≡ p IS≡ p VC.
+T. Dose 4 SS2026

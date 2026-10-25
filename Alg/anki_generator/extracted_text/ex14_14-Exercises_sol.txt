@@ -1,0 +1,302 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 14
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+14.1Square and Multiply by Hand
+Do not use any tools other than pen and paper for this task.
+Calculate 423 (mod 37)using the square and multiply algorithm.
+Solution:Compared to the lecture, we proceed slightly different: we convert the exponent 23 to
+binary: 23=16+4+2+1=10111 2.
+Now, we repeatedly square the base and reduce modulo 37:
+41 ≡4(mod 37)
+42 ≡16(mod 37)
+44 ≡16 2 =256≡34≡ −3(mod 37)
+48 ≡(−3) 2 =9(mod 37)
+416 ≡9 2 =81≡7(mod 37)
+Finally, multiply the terms corresponding to the 1-bits in the binary representation:
+423 =4 16 ·4 4 ·4 2 ·4 1
+≡7·(−3)·16·4(mod 37)
+≡ −21·64(mod 37)
+≡ −21·(−10) (mod 37)
+≡210(mod 37)
+≡25(mod 37)
+The result is 25.
+Alternative Strategy (Left-to-Right):Instead of calculating all powers of two first, you can process
+the binary representation 23=10111 2 bit by bit from left to right. Start with an accumulatorz=1:
+•Bit 1:Square and multiply:z≡1 2 ·4≡4(mod 37)
+•Bit 0:Square only:z≡4 2 ≡16(mod 37)
+•Bit 1:Square and multiply:z≡16 2 ·4≡256·4≡(−3)·4≡ −12≡25(mod 37)
+•Bit 1:Square and multiply:z≡25 2 ·4≡(−12) 2 ·4≡144·4≡(−4)·4≡ −16≡21
+(mod 37)
+•Bit 1:Square and multiply:z≡21 2 ·4≡(−16) 2 ·4≡256·4≡(−3)·4≡ −12≡25
+(mod 37)
+This strategy is often preferred because it avoids storing multiple intermediate results and inter-
+leaves the multiplication steps.
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+14.2Equivalence of Factorization and Computing Euler’s Totient
+Letnbe an integer as used in the RSA protocol (i.e.,n=pqfor two distinct primespandq).
+Ciphertexts encrypted with RSA can be easily decrypted by an attacker if they have an efficient algo-
+rithm for either of the following two problems:
+1. Factorization ofn.
+2. Computingφ(n).
+Show that: If there is an efficient algorithm for one of the two problems above, then there is also an
+efficient algorithm for the other.
+Hint: For one of the directions, consider the polynomialx 2 −(p+q)x+pq.
+Solution:We need to show both directions of the equivalence:
+1. Factorization=⇒Computingφ(n):
+If we have an efficient algorithm to factorn, we obtain the primespandqsuch thatn=pq. By
+definition of Euler’s totient function for a product of two distinct primes, we can then efficiently
+compute:
+φ(n) = (p−1)(q−1) =n−p−q+1
+2. Computingφ(n) =⇒Factorization:
+Assume we have an efficient algorithm to computeφ(n). We know that:
+φ(n) = (p−1)(q−1) =pq−p−q+1=n−(p+q) +1
+From this, we can isolate the term(p+q):
+p+q=n−φ(n) +1
+Now consider the quadratic polynomial given in the hint:
+f(x) =x 2 −(p+q)x+pq= (x−p)·(x−q)
+The zeros of this polynomial arepandq. By substituting our known values for(p+q)andpq, we
+can construct the polynomial entirely using values we can compute efficiently:
+f(x) =x 2 −(n−φ(n) +1)x+n
+We can find the roots of this quadratic equation using the quadratic formula:
+x1,2 = (n−φ(n) +1)±
+p
+(n−φ(n) +1) 2 −4n
+2
+Calculating the square root can be done efficiently. Thus, we can find bothpandqin polynomial
+time, yielding an efficient factorization algorithm forn.
+14.3Implementing RSA
+Implement the RSA cryptosystem. You are provided with a code skeletonrsa skeleton.pyin which
+the Miller-Rabin primality test and functions for converting between strings and numbers are already
+implemented.
+Complete the implementation of the following functions in the provided file:
+•ModExpfor efficiently calculating the modular exponentiation (x y modn).
+•ModInvfor calculating the modular inverse modulon.
+•RSAKeyGenfor generating RSA key pairs.
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+•RSAEncryptfor RSA encryption.
+•RSADecryptfor RSA decryption.
+Test your implementation using the providedRSATest()function.
+Solution:
+importrandom
+defIsPrime ( n , s = 5 0 ) :# M i l l e r −Rabin p r i m a l i t y t e s t
+i fn<2 :r e t u r nF a l s e
+f o rjin range( 1 , s + 1 ) :
+a = random . randint ( 1 , n − 1 )
+i = n − 1
+b = [ ]
+while( i>0 ) :
+b . append ( i % 2 )
+i = i // 2
+d = 1
+f o riin range(len( b ) − 1 , −1 , −1 ):
+x = d
+d = ( d * d ) % n
+i fd == 1andx != 1andx != n − 1 :
+r e t u r nF a l s e
+i fb [ i ] == 1 :
+d = ( d * a ) % n
+i fd != 1 :
+r e t u r nF a l s e
+r e t u r nTrue
+defegcd ( a , b ) :# works f o r n a t u r a l s a>= b not b o t h 0
+i fb == 0 :r e t u r na , 1 , 0
+gcd , x , y = egcd ( b , a % b )
+r e t u r ngcd , y , x − y * ( a // b )
+defgcd ( a , b ) :# g r e a t e s t common d i v i s o r
+r e t u r negcd ( a , b ) [ 0 ]
+defModExp( x , y , n ) :# Modular e x p o n e n t i a t i o n
+z= i =1
+p=x%n
+while( i<=y ) :# I n v a r i a n t : p = ( x ˆ i )%n
+i fi&y>0 :
+z = ( z *p)%n
+i = i + i
+p=(p *p)%n
+r e t u r nz
+defModInv ( e , n ) :# I n v e r s e mod n
+( d , x , y)= egcd ( e , n )
+r e t u r nx%n
+defRSAKeyGen( r = 1 0 2 4 ) :
+l =( r +2)//2
+p=q=0
+T. Dose 3 SS2026
+--- Page 4 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+while(notIsPrime ( p ) ) :
+p=random . randint ( 2 * * l , ( 2 * * ( l +1)) −1)
+while(not( p!= qandIsPrime ( q ) ) ) :
+q=random . randint ( 2 * * l , ( 2 * * ( l +1)) −1)
+n=p* q
+phi =(p − 1 )* ( q−1)
+e=random . randint ( 2 , phi −1)
+while( gcd ( e , phi ) ! = 1 ) :
+e=random . randint ( 2 , phi −1)
+d=ModInv ( e , phi )
+r e t u r n( ( n , e ) , ( n , d ) )
+defRSAEncrypt ( pk ,m) :
+( n , e )=pk
+r e t u r nModExp(m, e , n )
+defRSADecrypt ( sk , c ) :
+( n , d)= sk
+r e t u r nModExp( c , d , n )
+defs t r 2 i n t ( s ) :# e n c o d e s a s t r i n g a s an i n t e g e r
+x = 0
+f o riin range( 0 ,len( s ) ) :
+x = ( x<<8) +ord( s [ i ] )
+r e t u r nx
+defi n t 2 s t r ( x ) :# e n c o d e s an i n t e g e r a s a s t r i n g
+s = ’ ’
+while( x>0):
+s =chr( x&255) + s
+x = x> >8
+r e t u r ns
+defRSATest ( ) :
+ms = ’NSA aus USA h a s s t RSA . ’
+m = s t r 2 i n t (ms)
+p r i n t( ” P l a i n t e x tas s t r i n g : ”+ms)
+p r i n t( ” P l a i n t e x tas i n t e g e r : ”+s t r(m) )
+r =len(bin(m)) −2
+( pk , sk )=RSAKeyGen( r )
+( n , e )=pk
+( n , d)= sk
+p r i n t( ”n = ”+s t r( n ) )
+p r i n t( ”e = ”+s t r( e ) )
+p r i n t( ”d = ”+s t r( d ) )
+c=RSAEncrypt ( pk ,m)
+cs= i n t 2 s t r ( c )
+p r i n t( ” Ciphertext as i n t e g e r : ”+s t r( c ) )
+b=RSADecrypt ( sk , c )
+bs= i n t 2 s t r ( b )
+p r i n t( ” Decrypted t e x t as s t r i n g : ”+bs )
+p r i n t( ” Decrypted t e x t as i n t e g e r : ”+s t r( b ) )
+r e t u r n
+T. Dose 4 SS2026
+--- Page 5 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+14.4Attack on Plain RSA
+Professor H. writes a sensitive message to his doctoral students Anne, Grete, and Klara. He uses
+RSA for encryption. You have intercepted the ciphertextsc 1,c 2,c 3 and also know the public keys
+(n1,e 1),(n 2,e 2),(n 3,e 3)of Anne, Grete, and Klara. Uncover the secret!
+Anne, Grete, and Klara all use the same encryption exponente 1 =e 2 =e 3 =3. This choice is not
+uncommon in practice to speed up encryption. The remaining data is as follows.
+T. Dose 5 SS2026
+--- Page 6 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+n1 =1242668276780413466123524187595150299896316773574654459393501301742146924
+42960875568448573021256953032060487931819297526067165561274262375945667305595645
+42946529441406301443123742542691126070803198904737163376839725462211203180691313
+14986117067533645017582922676804656453751928631894597801519463340937806713792875
+97452849076082502760013537363786917664379214900974403451497754292465689051954881
+11041792622851624753850456631291025281353388406870999353856326272714704980563565
+73346470498091213409223697514579981909964619878278862444645244790606499517368027
+3478448614086368456239731734050529561775694485668604736845940767
+n2 =1953928732901100410114321557637237753589726404608575587006308247732889772
+85555017167380361597232303064360494266785737269062579867375039876281721258390953
+52829006153042306700623003614731248873776543695923093900386818721756609568372996
+18083275881921200345709087582894582941425834959327428989534360624503066007874679
+98145441300975323464085637578148066236202969251862907924872526478656103990894159
+73691536687601425700888637729768310176739789939423464789491818996950418785839109
+91789610741072708353258508254435301210478363911964670745798307313211944334874510
+2727786993471920177248284963174146363630952629660672997808811861
+n3 =2267215750487211276608935439953461451053700425932713015389714307757709909
+13589821990480965287143281706221406420230342957089023291830126971100830063042231
+15328154162721058775352148911286787796437491698224678759134577685022245494711042
+57605769217908228561680999178227204270362222474141364977397053611280770858301244
+60889569340048631316602290260334192401805654755940532598211295390943173281459984
+72011258439887018912089289138245409078657045606764870786624974050170952537271206
+85140357035643764120198756361387405862934212579373986648041645439499464327617194
+2011219797152962972245323485634093698839385812009345907005573581
+c1 =1008096450408413037995761281410024205010169112505873782949029905594559947
+92165624569529436386644388120474348451536160676687084324137018375253519820994388
+55867113680380368243024745508048870055727152783052574288269102955060810953595427
+12404875791535157678422185172559649693325670291100778351151766715895397078253682
+15268642023597184116360879930266068489319906377064008572641897450841080050141118
+56181069840335061150734734225125438386955460432525715004258342778353441121209096
+09639846267098798422075992088417590958017684728378639727915703141700304848741714
+7008917694496365809042381963071971307766432894801944333776147483
+c2 =3869421647066488075907290924774657206844257130765483904255776618246638719
+74567449781213319341222188617049106137698746909467973095877214691759282872781891
+34932310358698790542537550630779571266324513343958560488794234199550476041149027
+44517563773521426707482772921981412883136393509070104677604774056480729698277482
+82233270148371836442746294740881444515426538399741046626580152125541762781119787
+57508149611064320650676899193210004423398000787610846565630330899757731670750168
+71292491181123084307528877172135144857482565585965950797546994158915922943686546
+416601620539967377118962840612291008236969010668723956736523889
+c3 =1845602839413014166787028346017719112109722428542010122787240030210017641
+50730592895254014261610414438749871682568805577862103659720944890274623715380205
+62826903126304786348674611761189679684409023585140622409974621621939795415483514
+13983522055231842595993625181596134244835843078758769717854276379593689378749536
+87584597348633956586955696175612719557180675966451921033064069142868254401218691
+98861936414016389480310082617387411685047781283807122815633766441846809606301662
+73379709138492518718122756869798409911868132346171661818703305574490572667172638
+9026062139650707566440971966573881005957693403790903442754804590
+Solution:We proceed as described in the lecture regarding “Vulnerabilities of plain RSA” and de-
+terminem 3 via the Chinese Remainder Theorem, and from it, the original messagem.
+T. Dose 6 SS2026
+--- Page 7 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Sincee=3, the ciphertextc≡m 3 (modn). We have three equations:
+m3 ≡c 1 (modn 1)
+m3 ≡c 2 (modn 2)
+m3 ≡c 3 (modn 3)
+By applying the Chinese Remainder Theorem on the modulin1,n 2,n 3, we can uniquely reconstruct
+C=m 3 mod(n 1n2n3). Because the length of the messagemis relatively short compared to the
+moduli (118 characters≈944 bits),m 3 <(2 944)3 =2 2832. Meanwhile, the product of our three
+2048-bit moduli isn 1n2n3 ≈2 6144. Since 2832≪6144, no wrap-around occurs modulon 1n2n3.
+Thus, the CRT solutionCis exactly equal tom 3 over the integers! We can calculate the integer cube
+root ofCto recovermusing binary search.
+We obtain the original message:
+Mathematical literature is, if one pays attention, heavily flooded with absurdities and
+thoughtlessness.
+(David Hilbert)
+The chosen names refer to Anne Bosworth Focke, Klara L ¨obenstein, and Grete Kahn, who earned
+their doctorates in mathematics under David Hilbert (in the years 1899, 1909, and 1909).
+At the time, it was highly unusual for women to obtain doctorates. Emmy Noether was also sup-
+ported by Hilbert—for several years, she was not allowed to announce lectures under her own
+name but had to appear under Hilbert’s name in the course catalog.
+In total, Hilbert supervised 69 doctoral theses, including 6 women. (However, Noether obtained
+her doctorate under Paul Gordan, not Hilbert.)
+• Anne Bosworth Focke died of pneumonia 8 years after her doctorate.
+• Margarethe Kahn was not allowed to habilitate and thus became a teacher. As a Jew, she
+became a victim of the Holocaust when she was deported to Piaski in 1942. There are two
+Stolpersteine (stumbling stones) commemorating her in Germany, and a street in Leverkusen
+is named after her.
+• Klara L ¨obenstein also could not habilitate and became a teacher. As she was also Jewish, she
+fled to Argentina in 1939, where she lived to the age of 85.
+These female mathematicians were unjustly hindered in their further academic self-realization and
+later persecuted for their faith. In Germany, women were only allowed to habilitate starting in 1920.
+The Python program to solve the exercise (assumingegcdandModInvare correctly defined from
+the previous task):
+# Compute u s i n g t h e C h i n e s e Remainder Theorem t h e u n i q u e l y d e t e r m i n e d C
+# from{0 , . . . , n1 * n2 * n3 −1}with c1 = C mod n1 , c2 = C mod n2 and c3 = C mod n3 .
+# T h i s C i s u s e f u l b e c a u s e C = mˆ 3 .
+q1 = n2 * n3
+q2 = n1 * n3
+q3 = n1 * n2
+C = ( ( c1 * q1 * ModInv ( q1 , n1 ) ) +\
+( c2 * q2 * ModInv ( q2 , n2 ) ) +\
+( c3 * q3 * ModInv ( q3 , n3 ) ) ) % ( n1 * n2 * n3 )
+# Determine t h e o r i g i n a l message m = cube r o o t o f C u s i n g b i n a r y s e a r c h .
+l = 0
+T. Dose 7 SS2026
+--- Page 8 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+r = C
+whiler − l>0 :
+x = l + ( ( r − l ) // 2 )
+i fx * x * x<C :
+l = x + 1
+e l s e:
+r = x
+m = l
+p r i n t( i n t 2 s t r (m) )
+T. Dose 8 SS2026

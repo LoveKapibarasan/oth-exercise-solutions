@@ -1,0 +1,75 @@
+\documentclass[12pt, a4paper]{article}
+
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\title{Exercise 04}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+\fancyhead[C]{Answer}   % Custom number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+
+\section*{4. Law of total probability and Bayes’ theorem}
+\subsection* {E12}
+\begin{enumerate}
+  \item $P(V) = P(C) \cdot P(V|C) + P(L) \cdot P(V|L) + P(I) \cdot P(V|I) =  \underline{\underline{ 0.47 }} $
+  \item 
+  	\begin{itemize}
+  	\item $P(C|V) = \frac{ P(C) \cdot P(V|C) }{ P(V)} =  \underline{\underline{ \frac{18}{47} }} $
+  	\item $P(V|V) =   \underline{\underline{ \frac{14}{47} }} $
+  	\item $P(I|V) =   \underline{\underline{ \frac{15}{47} }} $
+	\end{itemize}
+\end{enumerate}
+
+\subsection* {E13}
+\begin{align*}
+P(Tall) &= P(M) \cdot P(T | M) + P(W) \cdot P(T | W) = 0.022  \\
+P(W)\cdot P(T|W) &= 0.006 \\
+P(W|T)&= \underline{\underline{ \frac{3}{11} }} \\
+\end{align*}
+
+\subsection* {E14}
+\begin{align*}
+P(Ny) &= P(F) \cdot P(Ny | F) + P(So) \cdot P(Ny | So) + P(J) \cdot P(Ny | J) + P(Se) \cdot P(Ny | Se)= \underline{\underline{ 0.24 }} \\
+P(F)\cdot P(Ny|F) &= 0.06 \\
+P(F|NY)&= \underline{\underline{ \frac{1}{4} }} \\ 
+P(J|NY)&= \underline{\underline{ \frac{5}{24} }} \\ 
+\end{align*}
+
+
+\subsection* {E14}
+\begin{align*}
+P(H) &= P(tH) \cdot P(H | tH) + P(tT) \cdot P(H | tT) + P(F) \cdot P(H | F)= \underline{\underline{ \frac{3}{5} }} \\
+P(H)\cdot P(H|F) &= \frac{1}{10} \\
+P(H|F)&= \underline{\underline{ \frac{1}{6} }} \\
+\end{align*}
+
+%=====
+\end{document}

@@ -1,0 +1,17 @@
+[
+  {
+    "sheet": "Exercise 8.1 a) (Bitboard)",
+    "question": "Explain the 64-bit padded Bitboard representation for a $6 \\times 7$ Connect Four board as discussed in the lectures.",
+    "answer": "In this representation, a column has 6 rows and is padded with 1 sentinel bit (value 0) at the top. The board fits into a single 64-bit unsigned integer (`uint64_t`):\n\n```\n--------------+----+----+----+----+----+----+----+\nSentinel (S)  | [6]|[13]|[20]|[27]|[34]|[41]|[48]|\nRow 5 (Top)   |  5 | 12 | 19 | 26 | 33 | 40 | 47 |\nRow 4         |  4 | 11 | 18 | 25 | 32 | 39 | 46 |\nRow 3         |  3 | 10 | 17 | 24 | 31 | 38 | 45 |\nRow 2         |  2 |  9 | 16 | 23 | 30 | 37 | 44 |\nRow 1         |  1 |  8 | 15 | 22 | 29 | 36 | 43 |\nRow 0 (Bottom)|  0 |  7 | 14 | 21 | 28 | 35 | 42 |\n--------------+----+----+----+----+----+----+----+\n                C0   C1   C2   C3   C4   C5   C6  (Column)\n```\n* Each column takes 7 bits. The 7 columns take $7 \\times 7 = 49$ bits. The remaining 15 bits of the 64-bit integer are unused.\n* We track two bitboards: one for the current player's pieces, and one for the opponent's pieces.\n\n**Bitboard Grid Mapping Diagram:**\n![Connect Four Bitboard](connect_four_bitboard.jpg)"
+  },
+  {
+    "sheet": "Exercise 8.1 b) (Negamax AB)",
+    "question": "What is the standard function signature for the optimized Negamax algorithm with Alpha-Beta pruning for Connect Four using bitboards?",
+    "answer": "```c\nint negamax(uint64_t board_player, \n            uint64_t board_opponent, \n            int depth, \n            int alpha, \n            int beta);\n```\n* `board_player` is the bitboard for the player whose turn it is to move.\n* `board_opponent` is the bitboard for the other player.\n* `alpha` is the lower bound (minimum score the player is assured of).\n* `beta` is the upper bound (maximum score the opponent is willing to allow)."
+  },
+  {
+    "sheet": "Exercise 8.1 a) (Win Check)",
+    "question": "How can you efficiently check for a 4-in-a-row win in Connect Four using a single 64-bit padded Bitboard?",
+    "answer": "We can check all directions (horizontal, vertical, diagonal, anti-diagonal) using bitwise shifts. Let `board` represent the current player's pieces:\n\n* **Horizontal (shift 7):**\n  `uint64_t h = board & (board >> 7); if (h & (h >> 14)) return true;`\n* **Diagonal (shift 8, bottom-left to top-right):**\n  `uint64_t d1 = board & (board >> 8); if (d1 & (d1 >> 16)) return true;`\n* **Anti-diagonal (shift 6, top-left to bottom-right):**\n  `uint64_t d2 = board & (board >> 6); if (d2 & (d2 >> 12)) return true;`\n* **Vertical (shift 1):**\n  `uint64_t v = board & (board >> 1); if (v & (v >> 2)) return true;`\n\n*Explanation:* For any direction with shift $S$, `board & (board >> S)` finds pairs of adjacent pieces, and `h & (h >> 2S)` checks if two pairs are aligned, forming a run of 4. The sentinel padding bit (0) between columns prevents wrap-around wins across columns."
+  }
+]

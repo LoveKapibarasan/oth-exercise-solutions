@@ -1,0 +1,200 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forest}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.5}
+\title{Exercise 06}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+\section* { Other Distributions }
+
+\subsection* {T16}
+\[
+P(k)=f(k;\lambda)=\frac{\lambda^{k} e^{-\lambda}}{k!}
+\]
+\textbf{1. } \[
+f(2;1)
+= \frac{1^{2} \cdot e^{-1}}{2!}
+= \frac{e^{-1}}{2}
+= \frac{0.368}{2}
+= 0.184.
+\]
+
+\textbf{2.  } \[
+f\!\left(3;\frac{1}{2}\right)
+= \frac{(1/2)^3 e^{-1/2}}{3!}
+= \frac{0.125 \cdot 0.607}{6}
+\approx 0.0126.
+\]
+
+\textbf{3.} \[
+f(2;0.7)
+= \frac{0.7^{2} e^{-0.7}}{2!}
+= \frac{0.49 \cdot 0.497}{2}
+\approx 0.122.
+\]
+
+\subsection* {T17}
+
+\textbf{Average: }
+\[
+\lambda = \frac{300}{500} = 0.6
+\]
+\[
+X \sim \text{Poisson}(0.6)
+\]
+
+\textbf{1. }
+\[
+P(X=2)=\frac{0.6^2 e^{-0.6}}{2!}
+= \frac{0.36 \cdot 0.549}{2}
+\approx 0.0988.
+\]
+\textbf{2. }
+\[
+P(X \ge 2) = 1 - P(X=0) - P(X=1) \approx 0.1296
+\]
+
+
+\subsection* {T18}
+\[
+X \sim \mathrm{Binomial}(n=100,\, p=0.02)
+\]
+
+\textbf{Since p is very low, }
+
+\[
+P(X=3) \approx \frac{2^3 e^{-2}}{3!} \approx 0.180
+\]
+
+
+\subsection* {T19}
+\textbf{Multinomial Distribution}
+\begin{align*}
+p_R &= 0.5 \\
+p_G &= 0.3 \\
+p_B &= 0.2
+\end{align*}
+
+\[
+P(X_R = 2, \; X_G = 1 \;, X_B = 2 ) = \frac{5!}{2!\,1!\,2!} (0.5)^2 (0.3)^1 (0.2)^2 = \boxed{0.09}
+\]
+
+\subsection* {T20}
+$N = 4, \;qquad M = 4$, $X$: \text{The number of man}
+
+\textbf{1. }
+\[
+P(X = 2)= \frac{\binom{7}{2}\binom{5}{2}}{\binom{12}{4}} \approx \boxed{0.424}
+\]
+
+\textbf{2. }
+\[
+P(X = 2) + P(X = 3) + P(X = 4) = 1 - P(X = 0) - P(X = 1) \approx \boxed{0.848}
+\]
+\subsection* {T20}
+Let $X$ be the number of games played until the first loss.
+\[
+X \sim \text{Geometric}(q), \quad q = 1-p = 0.4.
+\]
+
+\textbf{1. }
+\[
+E[X] = \frac{1}{q} = \frac{1}{0.4} = \boxed{2.5 \text{ games.}}
+\]
+
+\textbf{2. }
+\[
+P(X \ge 4) = p^3 = 0.6^3 = \boxed{0.216}
+\]
+
+\textbf{3. }
+
+\[
+P(\text{win tournament}) = p^{\log_2 64} = 0.6^6 \approx 0.0467
+\]
+
+
+\subsection* {Ex16}
+PDF:
+
+\[
+f_X(x) =
+\begin{cases}
+\dfrac{1}{b-a}, & a \le x \le b, \\[2mm]
+0, & \text{otherwise}.
+\end{cases}
+\]
+
+\textbf{1. }
+\[
+E[X] = \int_{-\infty}^{\infty} x f_X(x) \, dx
+= \int_a^b x \cdot \frac{1}{b-a} \, dx
+= \frac{1}{b-a} \int_a^b x \, dx = \boxed{E[X] = \frac{a+b}{2}}
+\]
+
+\textbf{2. }
+\[
+E[X^2] = \int_a^b x^2 \cdot \frac{1}{b-a} \, dx
+= \frac{1}{b-a} \int_a^b x^2 \, dx
+= \frac{1}{b-a} \cdot \frac{b^3 - a^3}{3}
+= \frac{b^2 + ab + a^2}{3}.
+\]
+
+\[
+\boxed{\mathrm{Var}(X) = \frac{(b-a)^2}{12}}
+\]
+
+\textbf{3. }
+\[
+F_X(x) = P(X \le x) = \int_{-\infty}^x f_X(t) \, dt
+=
+\begin{cases}
+0, & x < a, \\
+\dfrac{x-a}{b-a}, & a \le x \le b, \\
+1, & x > b.
+\end{cases}
+\]
+\[
+\boxed{
+F_X(x) =
+\begin{cases}
+0, & x < a, \\
+\dfrac{x-a}{b-a}, & a \le x \le b, \\
+1, & x > b
+\end{cases}
+}
+\]
+
+
+%=====
+\end{document}

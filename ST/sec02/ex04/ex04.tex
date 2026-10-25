@@ -1,0 +1,82 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forest}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.5}
+\title{Exercise 04}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+\section* {4. Binomial distribution}
+
+\subsection* {T10}
+\begin{align*}
+    P(HHH) &= \binom{3}{3} \cdot \left(\frac{1}{2} \right)^3 = \frac{1}{8} \\
+    P(\{ \text{H 2times} \}) &= \binom{3}{2} \cdot \left(\frac{1}{2} \right)^3 = \frac{3}{8} \\
+    P(\{ \text{H 1times} \}) &= \binom{3}{1} \cdot \left(\frac{1}{2} \right)^3 = \frac{3}{8} \\
+    P(TTT) &= \binom{3}{0} \cdot \left(\frac{1}{2} \right)^3 = \frac{1}{8} \\
+\end{align*}
+
+\subsection* {T11}
+\begin{align*}
+    P(\{ \text{2times hit} \}) &= \binom{6}{2} \cdot \left(\frac{1}{4}\right)^2 \left(\frac{3}{4}\right)^4 = \frac{15}{4096} \\
+    P(\{ \text{more than 4times hit} \}) &= P(\{ \text{6 times hit} \}) + P(\{ \text{5 times hit} \}) = \frac{1}{4096} \\
+    P(\{ \text{at least once} \}) &= 1 - P(\{ \text{no hit} \}) = \frac{729}{4096} \\
+\end{align*}
+
+\subsection* {T12}
+\begin{align*}
+    P(\{ \text{2 defective} \}) &= \binom{4}{2} \cdot \left(\frac{1}{5}\right)^2 \left(\frac{4}{5}\right)^2 = \frac{6 \cdot 1 \cdot 16}{625} = \frac{96}{625} \\
+    P(\{ \text{3 defective} \}) &= \binom{4}{3} \cdot \left(\frac{1}{5}\right)^3 \left(\frac{4}{5}\right)^1 = \frac{4 \cdot 1 \cdot 4}{625} = \frac{16}{625} \\
+    P(\{ \text{no defective} \}) &= \binom{4}{0} \cdot \left(\frac{4}{5}\right)^4 = \frac{256}{625} \\
+\end{align*}
+
+\subsection* {T13}
+\begin{align*}
+    E[\text{number of girls}] &= np = 8 \cdot \frac{1}{2} = 4 \\
+    P(\{ \text{exactly 4 girls} \}) &= \binom{8}{4} \cdot \left(\frac{1}{2}\right)^8 = \frac{70}{256} = \frac{35}{128} \\
+\end{align*}
+
+
+\subsection* {T14}
+\begin{align*}
+    E[\text{number of hits}] &= np = 100 \cdot \frac{1}{10} = 10 \\
+    \sigma &= \sqrt{np(1-p)} = \sqrt{100 \cdot \frac{1}{10} \cdot \frac{9}{10}} = \sqrt{9} = 3 \\
+\end{align*}
+
+\subsection* {T15}
+\begin{align*}
+    E[\text{number of defective}] &= np = 10000 \cdot 0.02 = 200 \\
+    \sigma &= \sqrt{np(1-p)} = \sqrt{10000 \cdot 0.02 \cdot 0.98} = \sqrt{196} = 14 \\
+\end{align*}
+
+%=====
+\end{document}

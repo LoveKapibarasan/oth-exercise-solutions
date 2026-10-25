@@ -1,0 +1,137 @@
+---
+title: "4 - Statistical Inference"
+author: "LoveKapibarasan"
+output: html_document
+---
+
+# Confidence Intervals
+
+If you did many experiments, x % of the confidence interval should catch the true value in their range.
+
+
+## Tutorial 1
+
+```{r}
+n <- 200
+mean <- 0.824
+sd <- 0.042
+# Standard Error
+se <- sd /sqrt(n)
+conf_levels <- c(0.90, 0.95, 0.98, 0.99)
+
+# (100% area - x% you want to ensure) / 2(left and right)
+
+for (cl in conf_levels){
+    alpha <- 1 - cl
+    z <- qnorm(1- alpha/2)
+    range_error <- z * se
+    lower <- mean - range_error
+    upper <- mean + range_error
+    cat(sprintf("Critical Value: %.3f, Confidence Interval: [%.4f, %.4f]\n\n", z, lower, upper))
+}
+```
+
+## Exercise 6
+
+```{r}
+sigma <- 0.05
+E <- 0.01
+conf_levels <- c(0.95, 0.99)
+for (cl in conf_levels){
+    alpha <- 1 - cl
+    z <- qnorm(1- alpha/2)
+    range_error <- z * se
+    lower <- mean - range_error
+    upper <- mean + range_error
+    cat(sprintf("Critical Value: %.3f, Confidence Interval: [%.4f, %.4f]\n\n", z, lower, upper))
+    
+    n <- 1
+    current_error <- Inf
+    while (current_error > E) {
+        n <- n + 1
+        # CLT: the average of variance should decrease with sqrt(n)^{-1}
+        current_error <- z * (sigma / sqrt(n))
+    }
+    cat(sprintf("Necessary Sample Size n = %d\n\n", n))
+
+}
+```
+
+## Exercise 7
+
+```{r}
+#  The size is population is known
+N <- 200
+n<- 50
+mean <- 75
+sd <- 10
+se <- (sd / sqrt(n)) * sqrt((N - n) / (N - 1))
+conf_levels <- c(0.95)
+
+for (cl in conf_levels){
+    alpha <- 1 - cl
+    z <- qnorm(1- alpha/2)
+    range_error <- z * se
+    lower <- mean - range_error
+    upper <- mean + range_error
+    cat(sprintf("Critical Value: %.3f, Confidence Interval: [%.4f, %.4f]\n\n", z, lower, upper))
+    prob <- pnorm(75, mean = mean, sd = se) - pnorm(73, mean = mean, sd = se)
+    cat(sprintf("The degree of confidence %% that the mean of all 200 grades is 74 ± 1 : %.1f%%\n", prob * 100))
+}
+```
+
+## Tutorial 2
+
+```{r}
+n <- 10
+mean_x <- 4.38
+sd_x <- 0.06
+se <- sd_x / sqrt(n)
+conf_levels <- c(0.95, 0.99)
+for (cl in conf_levels) {
+  alpha <- 1 - cl
+  
+  # --- Z ---
+  z_val <- qnorm(1 - alpha/2)
+  error_z <- z_val * se
+  ci_z <- c(mean_x - error_z, mean + error_z)
+  
+  # --- t-distribution ---
+  # df(Degree of freedom) = n - 1 
+  # qt: quantile
+  t_val <- qt(1 - alpha/2, df = n - 1)
+  error_t <- t_val * se
+  ci_t <- c(mean_x - error_t, mean + error_t)
+  
+  cat(sprintf("【Confidence Interval %.0f%%】\n", cl * 100))
+  cat(sprintf("  Large Sample (Z: %.3f): [%.4f, %.4f]\n", z_val, ci_z[1], ci_z[2]))
+  cat(sprintf("  Small Sample (t: %.3f): [%.4f, %.4f]\n", t_val, ci_t[1], ci_t[2]))
+}
+
+```
+
+### Student
+* William Gossett, an employee of the Irish beer company Guinness, published the book under the pseudonym "Student" to conceal his identity.
+
+
+## Exercise 8
+
+```{r}
+n <- 40
+x <- 24
+p_hat <- x / n
+sd_x <- sqrt( p_hat * (1 - p_hat))
+
+conf_levels <- c(0.95)
+for (cl in conf_levels) {
+    alpha <- 1 - cl
+    z <- qnorm(1 - alpha/2)
+    se <-  sd_x / sqrt(n)
+
+    # Confidence Interval
+    lower <- p_hat - z * se
+    upper <- p_hat + z * se
+    cat(sprintf("Critical Value: %.3f, Confidence Interval: [%.4f, %.4f]\n\n", z, lower, upper))
+}  
+
+```

@@ -1,0 +1,84 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 11
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+11.1Transposition Tables
+In this exercise, you will enhance your Alpha-Beta Pruning implementation with a Transposition Table
+(TT) using Zobrist Hashing to avoid evaluating the same board positions “too often”.
+a)Zobrist Hashing and SeedingImplement Zobrist Hashing. You will need to generate a table of
+random 64-bit integers for each possible piece placement. Use the following provided function
+init zobrist()to seed your random number generator and fill this table.
+staticuint64_t zobrist_table[2][NUM_COLS][NUM_ROWS];
+voidinit_zobrist(void)
+{
+// xorshift * pseudo random number generator
+uint64_t seed = 0x123456789ABCDEFULL;
+for(intp = 0; p < 2; p++) {
+for(intc = 0; c < NUM_COLS; c++) {
+for(intr = 0; r < NUM_ROWS; r++) {
+seed ˆ= seed >> 12;
+seed ˆ= seed << 25;
+seed ˆ= seed >> 27;
+zobrist_table[p][c][r] = seed * 0x2545F4914F6CDD1DULL;
+}
+}
+}
+}
+Note that because index collisions are resolved by verifying the complete board position, your
+algorithm will never yield incorrect results regardless of the exact seeding function used. You
+are free to implement your own seeding function instead of the one provided above.
+Modify yourmake moveandundo movefunctions to incrementally update the Zobrist hash of
+the current board and the Zobrist hash of the mirrored board position using XOR operations.
+b)T ransposition T able IntegrationImplement the Transposition Table. The table should be an
+array of structs. To resolve index collisions reliably, each entry must store the complete board
+position, the score, the best move found, and a flag indicating whether the score is an EXACT,
+LOWER, or UPPER bound. Use C bitfields to pack thistt entrystruct into exactly 128 bits (16
+bytes).Hint: T o achieve exactly 16 bytes and ensure cache-friendly memory alignment, you can use the
+following layout packed into two 64-bit words:
+structtt_entry {
+// 1st 64 bit word
+uint64_t board_current : 48;// for verification
+int64_t value : 7;// score, -42 to 42 is possible
+uint64_t flag : 2;// EXACT, LOWER, UPPER
+uint64_t best_move : 3;// best move (0-6 or 7 if none)
+uint64_t initialized : 1;
+uint64_t pad1 : 3;
+// 2nd 64 bit word
+uint64_t board_opponent: 48;// for verification
+uint64_t pad2 : 16;
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+};
+Integrate the TT into your Negamax search:
+• Before returning a score from Negamax, store it in the TT along with the complete board
+position and the appropriate flag (EXACT, LOWER, or UPPER) based on whether a cutoff
+occurred and ifαwas increased.
+• Check if the current position is in the TT by computing the index via the Zobrist hash and ex-
+plicitly verifying the complete board position. If the boards match, update yourα-β-window,
+and, if possible, prune or return an exact score.
+• If the TT entry matches but does not cause a cutoff, explore the storedbest movefirst.
+• Also implement the improvement mentioned at the end of section 7F.
+c)BenchmarkingWe want to analyze how the size of the Transposition Table affects the perfor-
+mance. Configure your TT size (TT SIZE) as a power of two. Use the following initial board
+state (where the first 12 moves have been played perfectly, sequence: 444444355535, 1-indexed
+moves):
+. . . O . . .
+. . . X . . .
+. . . O O . .
+. . . X O . .
+. . X O X . .
+. . X X O . .
+Measure the total execution time of your solver for the following TT sizes (assuming 16 bytes per
+entry): 16 MB, 256 MB, 1 GB, 4 GB, and 16 GB.Note: Only run the 16 GB benchmark if your machine
+has at least 32 GB of physical RAM to avoid OS swapping.
+d)AnalysisCompare the execution times. You will likely observe that increasing the TT size im-
+proves performance up to a certain point (e.g., 1 GB), but making it very large (e.g., 16 GB) causes
+the execution time to increase again, even if the table completely fits into your physical RAM and
+no swapping occurs. Get informed about hardware architectural reasons for this phenomenon
+(Hint: consider the Memory Wall, CPU Caches, and TLB misses).
+T. Dose 2 SS2026

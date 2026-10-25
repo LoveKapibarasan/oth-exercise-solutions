@@ -1,0 +1,91 @@
+\documentclass[12pt, a4paper]{article}
+
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\title{Exercise 03}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+\fancyhead[C]{Answer}   % Custom number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+
+\section* {3. Conditional probability, multiplication rule, and finite stochastic
+processes}
+
+
+\subsection* {T10}
+\begin{enumerate}
+  \item $ \underline{\underline{ \frac{1}{2} }} $
+\item 
+\begin{align*}
+P(H) &= P(H | P_e ) + P(H | N) + P(H | D) \\
+     &= \underline{\underline{ \frac{1}{2}  }}
+\end{align*}
+\item $ P(T|D) = \underline{\underline{ \frac{1}{3} }}$
+\end{enumerate}
+
+\subsection* {T11}
+\begin{enumerate}
+  \item  $ \underline{\underline{ \frac{4}{15} }} $
+  \item  $ P(E_x|E) = \underline{\underline{ \frac{2}{7} }} $
+\end{enumerate}
+
+\subsection* {T12}
+\begin{enumerate}
+  \item $P(M_f|C_f) = 10\% / 15 \% =  \underline{\underline{ \frac{2}{3} }} $
+  \item  $P(C_f|M_f) = \underline{\underline{ \frac{2}{5}  }} $
+  \item  $P(C_f \cup M_f) = P(C_f) + P(M_F) - P(C_f \cap M_f)=  \underline{\underline{ \frac{3}{10}  }}$
+  \item  $ 1 - P(C_f \cup M_f) =  \underline{\underline{ \frac{7}{10}  }}$
+\end{enumerate}
+
+\subsection* {T13}
+$ \frac{C(12,3) }{C(16,4)} =  \underline{\underline{ \frac{11}{28} }}$
+
+\subsection* {T14}
+$ \frac{C(13,4) }{C(52,4)} =  \underline{\underline{ \frac{xx}{xx} }}$
+
+\subsection* {T15}
+$ \frac{7}{10} \cdot \frac{6}{9} \cdot \frac{3}{8} =  \underline{\underline{ \frac{7}{40} }}$
+
+\subsection* {E10}
+\begin{enumerate}
+  \item $P(H) = P(X)\cdot P(H | X) + P(Y)\cdot P(H | Y) + P(Z)\cdot P(H | Z) = \underline{\underline{ \frac{11}{18} }} $
+  \item  $P(X | H) = P(X)\cdot P(H|X) / P(H) =  \underline{\underline{ \frac{3}{11}  }}$
+  \item  $P(Z | T) =  \underline{\underline{ \frac{4}{7}  }}$
+\end{enumerate}
+
+\subsection* {E11}
+\begin{align*}
+	P(R) &= P(R|A)\cdot P(A) + P(R|B)\cdot P(B) + P(R|C)\cdot P(C) = \frac{173}{360} \\
+	P(R|A)·P(A) &= \frac{1}{8} \\
+	P(A|R) &=\underline{\underline{  \frac{45}{173} }} \\
+\end{align*}
+%=====
+\end{document}

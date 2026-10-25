@@ -1,0 +1,107 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 2
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+Decision vs Optimization
+2.1In the lecture we studied the CLIQUE problem. Now consider the corresponding optimization task
+optCLIQUE:
+• Input: An undirected graph
+• Task: Compute a maximum clique (i.e., a clique with maximum cardinality)
+Show the following: If there is an algorithm that solves CLIQUE in timetfor somet:N→N, then
+there is an algorithm that solves optCLIQUE in timet ′ for somet ′ ∈O(n·t(n)).
+Solution:
+(1) If an algorithmAsolves CLIQUE in timet, then the following algorithm solves evalCLIQUE
+(finding the maximum clique size) in timeO(n·t(n)).
+• Input: undirected graphG= (V,E)
+• Goal: Find the largestkwith 1≤k≤ |V|so thatA(G,k)says “yes”.
+• Applying linear search, we can find thiskwithO(n)calls ofA.
+The value|V|is the number of vertices. Since the input length of the graph isnbits, the
+number of vertices is trivially bounded by the input length. Therefore,|V| ≤n. Thus, the
+linear search requiresO(n)calls toA.
+(2) If an algorithmAsolves CLIQUE in timet, then the following algorithm solves optCLIQUE
+in timeO(n·t(n)):
+• Input: undirected graphG= (V,E)given as an adjacency matrix
+• As in (1), determine the sizekof a maximum clique.
+• For each vertexv∈V:
+–Remove all incident edges ofvfromG(i.e., set all entries in the row and column of
+vto 0 in the adjacency matrix). This takesO(|V|)⊆O(n)time.
+–ifA(G,k)answers “no”
+* Restore the row and column ofvin the adjacency matrix.
+• return all remaining vertices inGthat still have incident edges (or simply returnvif
+k=1).
+Running time:
+•|V|vertices, for each we have at least one bit in the input⇒ |V| ≤n
+• calling the algorithm from (1) leads to|V| ∈O(n)calls ofA
+• modifying the adjacency matrix takesO(|V|)⊆O(n)steps per vertex, which is strictly
+dominated by the time to runA.
+•⇒in total:O(n)calls ofA
+•⇒total running time:O(n·t(n))
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Correctness:
+• At the end of each execution of the for-loop, there still is a clique of sizekin the graph.
+• So the returned vertices contain a clique of sizek.
+• LetSbe a set of these vertices that form a clique of sizek.
+• If there was a vertex among the returned vertices that is not inS, then this vertex would
+have been removed in the according iteration of the for loop: after all, even now the vertex is
+not needed for a maximum clique, so certainly not back at the time it was handled.
+Definition of NP
+2.2Show that the problem SOS satisfies the properties of Definition 34 and thus is in NP .
+Solution:LetB:={(⟨a 1, . . . ,am,b⟩,⟨c 1, . . . ,cm⟩)|m,a 1, . . . ,am,b∈N,c 1, . . . ,cm ∈ {0, 1}and∑m
+i=1 ci ·
+ai =b}andp(n):=n. It holds thatB∈P, since one only needs to sum and compare. For
+x=⟨a 1, . . . ,am,b⟩withn=|x|, the following holds:
+• Ifx∈SOS, then there exists anI⊆ {1, . . . ,m}with ∑i∈I ai =b. Thus, there existc 1, . . . ,cm ∈
+{0, 1}with ∑m
+i=1 ci ·a i =b. If we ignore the separator marks 10, in the list encoding eachc i is
+encoded byexactly2 bits and eacha i byat least2 bits. Fory:=⟨c 1, . . . ,cm⟩, it therefore holds
+that|y| ≤ |⟨a1, . . . ,am⟩|<nand(x,y)∈B.
+• If there is aywith|y| ≤p(n)and(x,y)∈B, theny=⟨c 1, . . . ,cm⟩withc 1, . . . ,cm ∈ {0, 1}
+and ∑m
+i=1 ci ·a i =b. Thus,x∈SOS.
+Thus, we have shown:x∈SOS⇐ ⇒ ∃y(|y| ≤p(|x|)∧(x,y)∈B). It follows that SOS∈NP.
+P again
+2.3Show that the following set is in P:
+SOS2 ={⟨a 1, . . . ,am, 2b⟩ |m,a1, . . . ,am,b∈Nand there isI⊆ {1, . . . ,m}with ∑
+i∈I
+ai =b}
+Hint:Use an algorithm design paradigm studied in Algorithms and Data Structures.
+Solution:
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Solution:We can solve this problem using dynamic programming. LetM[i][j]∈ {0, 1}in-
+dicate whether there is a subset of the firstielements{a 1, . . . ,ai}that sums to exactlyj, for
+0≤i≤mand 0≤j≤b.
+Recurrence:
+•Base cases:M[0][0] =1 (the empty set sums to 0), andM[0][j] =0 for allj>0.
+•Recursive stepfori≥1:
+M[i][j] =
+(
+M[i−1][j]∨M[i−1][j−a i]ifj≥a i
+M[i−1][j]ifj<a i
+Algorithm:
+def sos2(a, b):
+m = len(a)
+# Initialize an (m+1) x (b+1) matrix with 0
+M = [[0 for j in range(b + 1)] for i in range(m + 1)]
+M[0][0] = 1
+for i in range(1, m + 1):
+for j in range(b + 1):
+M[i][j] = M[i-1][j]
+if j >= a[i-1]: # a is 0-indexed in Python
+M[i][j] = M[i][j] or M[i-1][j - a[i-1]]
+return M[m][b] == 1
+Running Time:The algorithm fills an(m+1)×(b+1)matrix, performingO(1)operations
+per cell. Thus, the number of steps isO(m·b).
+Letn=|⟨a 1, . . . ,am, 2b⟩|be the input length. The binary representation of the number 2 b
+consists of a 1 followed bybzeros, requiring exactlyb+1 bits. Therefore,b<n. Additionally,
+the number of itemsmis strictly bounded by the input length (m<n).
+Consequently, the running time is bounded byO(n2), which is strictly polynomial in the length
+of the input. Thus, SOS2 ∈P.
+T. Dose 3 SS2026

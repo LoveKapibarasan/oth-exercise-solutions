@@ -1,0 +1,111 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 10
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+10.1 Connect Four: Alpha-Beta Pruning and T ransposition T ables
+Before we can effectively combine transposition tables with alpha-beta search, we must first formally
+define which value we are actually computing for a given board position.
+We represent a board position as a tupleN= (P,O), wherePis the set of pieces of thecurrently moving
+playerandOis the set of pieces of theopponent. Letcbe the number of currently empty cells on the
+board.
+We define the exact minimax scoreS(N) =S(P,O)for the inductively:
+1.Base Case:Ifc=0 (the board is full):S(P,O) =0.
+2.Induction Step:The induction step is divided into two parts:
+•Immediate Win:If there is a valid movemsuch that playerPwins immediately (i.e., the pieces
+P∪ {m}form a winning line):S(P,O) =c.
+•Recursive Step:Otherwise, the score is the maximum over the negated scores of all possible
+successor states after making a valid movem:
+S(P,O) =max
+m∈valid moves(P,O)
+(−S(O,P∪ {m}))
+(Disclaimer: This score is only meaningfully defined if the input board position N does not already contain a
+winning line for either player. If it did, the game would have already ended.)
+The following pseudocode shows the Negamax algorithm with alpha-beta pruning known from the
+lecture:
+defnegamax ( board , depth , alpha , beta ) :
+i fdepth == 0 :r e t u r n0
+b e s t s c o r e = −43
+f o revery column c o l :
+i fis valid move ( board , c o l ) :
+make move ( board , c o l )
+i fhas won ( board , c o l ) :
+undo move ( board , c o l )
+r e t u r ndepth
+s co r e = −negamax ( board , depth − 1 , −beta , −alpha )
+undo move ( board , c o l )
+b e s t s c o r e =max( b e s t s c o r e , sc o re )
+alpha =max( alpha , s c or e )
+i falpha>= beta :
+r e t u r nb e s t s c o r e# prune
+r e t u r nb e s t s c o r e
+(a)Consider a small abstract game tree. The rootNhas three valid moves, leading to children
+C1,C 2,C 3. Each of these children has two valid moves leading to final successor states whose
+exact scores are already known.
+Assume that when evaluating the leaves, the linescore = -negamax(...)inside the children
+computes the following sequence ofscorevalues:
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+• InsideC 1:−3, then 1
+• InsideC 2:−1, then 0
+• InsideC 3:−5, then−4
+(Note: the exact minimax score of the rootNisS(N) =4).
+Trace the execution of the algorithmnegamax(from the perspective of the rootN) for each of the
+following initial windows(α,β):
+(i)α=−5,β=5
+(ii)α=−5,β=0
+(iii)α=5,β=10
+For each case, state the final returned valuev, identify any cutoffs performed (both inNand in the
+children), and classify the returned valuevasv=S(N)(EXACT),v≤S(N)(LOWERbound /
+fail-high), orv≥S(N)(UPPERbound / fail-low). Notice that the return value of the algorithm
+on inputNcan be strictly smaller or greater thanS(N).
+(b)To rigorously understand the algorithm, we must prove the followingfundamental properties of
+alpha-beta search. Letvbe the value returned by the callnegamax(N, c,α,β)for a position
+Nwithcempty cells, whereα<β.
+1.Ifv≤α(Fail-Low), thenS(N)≤v.
+2.Ifα<v<β(Exact), thenS(N) =v.
+3.Ifv≥β(Fail-High), thenS(N)≥v.
+These three statements must be proven simultaneously by structural induction over the depth of
+the tree (number of empty cellsc). We sketch the proof and your task will be to fill the gaps.
+We use structural induction on the game tree.
+•Base Case: No further recursive calls are made.The structural induction is rooted in two base
+cases where the score is evaluated directly without recursion:
+1. Draw (c=0):The checkdepth == 0triggers, returningv=0. By definition,S(N) =0.
+2. Immediate Win:The loop finds a move triggeringhas won, which immediately returns
+depth(i.e.,c). By definition,S(N) =c.
+In both cases, the algorithm returns exactlyv=S(N). Sincev=S(N), the corresponding
+conclusions for Case 1 (S(N)≤v), Case 2 (S(N) =v), and Case 3 (S(N)≥v) all hold trivially.
+•Induction Hypothesis (I.H.):Assume that all three properties (Case 1, 2, and 3) hold for all
+valid child nodesC i (1≤i≤k, wherek≥1) ofN.
+•Induction Step:We assume that at least one recursive call is made (i.e.,Nis not a leaf in the
+game tree), meaning there arek≥1 valid moves leading to childrenC 1, . . . ,Ck.
+Case 1Assumenegamaxreturnsv≤αforN. Becausevis the maximum of all evaluated
+children, andv≤α, the conditionα≥βwas never met (sinceαnever increased). Thus, all
+kchildrenC 1, . . . ,Ck ofNwere evaluated. Each childC i was called with window[−β,−α]
+and returned a scorer i =−v i, wherev i ≤α. By theI.H. for Case 3(Fail-High forC i, since
+ri ≥ −α, which is theβparameter for theC i-call), the exact score of the child satisfiesS(C i)≥
+ri =⇒ −S(Ci)≤ −ri =v i. Because this holds for allkchildren, the exact scoreS(N) =
+max1≤i≤k (−S(Ci))≤max 1≤i≤k (vi) =v. Q.E.D.
+Your task: Complete the proof by arguing for the cases 2 and 3.
+(c)Based on these properties, we can analyze the outcome of any call tonegamax. Suppose we make
+a callv = negamax(N, depth,α in,β in)and letαbe the local variable inside the function
+(initialized toα in). Prove the following:
+(i)If the loop over all valid moves finishes without ever updatingα(soαremainsα in), the re-
+turned valuevsatisfiesv≥S(N).
+(ii)If the loop updatesαat least once but never prunes (α≥β in is never met), the returned value
+vsatisfiesv=S(N).
+(iii)If the loop prunes (α≥β in is met), the returned valuevsatisfiesv≤S(N).
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+(d)Re-search properties:Suppose a callnegamax(N, depth,α in,β in)returns anUPPERboundv
+(wherev≤α in and thereforeS(N)≤v). Prove that a subsequent callnegamax(N, depth,
+αnew, v)from the same position, with someα new <v, will return a new valuev new ≤v.
+(e)Re-search properties:Suppose a callnegamax(N, depth,α in,β in)returns aLOWERboundv
+(wherev≥β in and thereforeS(N)≥v). Prove that a subsequent callnegamax(N, depth, v,
+βnew)from the same position, with someβ new >v, will return a new valuev new ≥v.
+T. Dose 3 SS2026

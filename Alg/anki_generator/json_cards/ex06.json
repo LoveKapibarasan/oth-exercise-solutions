@@ -1,0 +1,12 @@
+[
+  {
+    "sheet": "Exercise 6.1 (Algorithm)",
+    "question": "Describe the 2-approximation algorithm for the Metric Traveling Salesperson Problem (metric TSP).",
+    "answer": "1. **Compute MST:** Compute a minimum spanning tree $T$ of the graph $G$ (e.g., using Kruskal's or Prim's algorithm) in polynomial time.\n2. **Double Edges:** Double every edge of $T$ to create a multigraph $H$. Since every vertex in $H$ now has an even degree, $H$ is Eulerian.\n3. **Eulerian Cycle:** Find an Eulerian cycle $C_{\\text{Euler}}$ in $H$ (which visits every edge exactly once).\n4. **Bypass Shortcuts:** Convert $C_{\\text{Euler}}$ into a Hamiltonian cycle $C_{\\text{TSP}}$ (a valid TSP tour) by traversing it and skipping already visited vertices using direct shortcuts to the next unvisited vertex.\n\n**Algorithm Workflow Diagram:**\n![Metric TSP Workflow](metric_tsp_workflow.jpg)"
+  },
+  {
+    "sheet": "Exercise 6.1 (Proof)",
+    "question": "Prove that the Metric TSP algorithm (MST doubling + shortcuts) is a 2-approximation (i.e., its tour cost is at most $2 \\times \\text{OPT}$).",
+    "answer": "* Let $\\text{OPT}$ be the cost of the optimal TSP tour.\n* **Lower Bound:** Removing one edge from the optimal TSP tour yields a spanning path (which is a valid spanning tree). Since $T$ is a minimum spanning tree:\n  $$\\text{cost}(T) \\le \\text{OPT}$$\n* **Eulerian Cost:** The multigraph $H$ has exactly twice the edges of $T$, so:\n  $$\\text{cost}(H) = \\text{cost}(C_{\\text{Euler}}) = 2 \\cdot \\text{cost}(T) \\le 2 \\cdot \\text{OPT}$$\n* **Triangle Inequality (Metric property):** Bypassing already visited nodes to create the Hamiltonian cycle $C_{\\text{TSP}}$ replaces paths with direct edges. Since the graph is metric, the triangle inequality guarantees:\n  $$\\text{cost}(C_{\\text{TSP}}) \\le \\text{cost}(C_{\\text{Euler}})$$\n* **Conclusion:** Combining these inequalities yields:\n  $$\\text{cost}(C_{\\text{TSP}}) \\le 2 \\cdot \\text{OPT}$$\nwhich proves it is a 2-approximation."
+  }
+]

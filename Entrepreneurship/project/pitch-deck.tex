@@ -1,0 +1,294 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{Lidl Obits}
+\subtitle{The Future of Shopping}
+\author{Takanori Nagashima}
+\date{\today}
+
+\begin{document}
+
+\section{Overview}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Lean Canvas Model}
+\begin{frame}{1. Problem: Current Pain Points}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{User Frustrations}
+                \begin{itemize}
+                    \item \textbf{Queue Fatigue:} Long lines for checkout are a waste of time.
+                    \item \textbf{Tech Friction:} Existing self-scanners are confusing or intimidating.
+                    \item \textbf{Heavy Load:} Transporting heavy items manually is a burden.
+                    \item \textbf{Exit Gateway Friction:} The frustration of hunting for a receipt just to scan out of the gate after paying.
+                    \item \textbf{Fodd Loss:} Supermarkets lose approx. \textbf{2--5\%} of total stock due to spoilage.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio]{assets/problem.png}
+            \vspace{5pt}
+            \tiny{Ref: reddit.com/r/germany/comments/175jf97/}
+        \end{column}
+    \end{columns}
+    
+    \vfill
+    \begin{center}
+        \line(1,0){250} \\
+        \scriptsize{Note: The fourth and fifth argument was identified using prompt engineering techniques during the lecture.}
+    \end{center}
+\end{frame}
+
+% --- Section: Storytelling (Persona Validation) ---
+\section{Persona Story: Elen's Struggle}
+
+% Slide: Scenario 1 & 2 (The Burden and The Wait)
+\begin{frame}{The Reality of Weekly Shopping (1/2)}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth, keepaspectratio]{assets/elen-1.png}
+            \vspace{5pt}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth, keepaspectratio]{assets/elen-2.png}
+            \vspace{5pt}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide: Scenario 3 & 4 (Tech Friction and Gateway Crisis)
+\begin{frame}{The Tech Friction & The "Beep" (2/2)}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth, keepaspectratio]{assets/elen-3.png}
+            \vspace{5pt}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth, keepaspectratio]{assets/elen-4.png}
+            \vspace{5pt}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide: The Logical Conclusion (Food Loss Connection)
+\begin{frame}{The Final Result: Waste of Goods and Human Dignity}
+    \begin{columns}[c]
+        \begin{column}{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/elen-5.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}{2. Customer Segments}
+    \begin{block}{Target Audience}
+        \begin{itemize}
+            \item Shoppers who value time over queuing.
+            \item Tech-averse / Non-digital natives seeking simplicity.
+            \item People without cars who buy heavy / bulk items.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{3. Unique Value Proposition}
+    \begin{block}{3. Unique Value Proposition}
+        \centering \Large \textbf{``Everything as Information''}
+    \end{block}
+
+    \vspace{20pt}
+
+    \begin{itemize}
+        \item \textbf{Information-First Shopping:} All products in the supermarket are treated as pure information rather than physical entities during the selection process.
+        \item \textbf{Delivery-Centric:} The actual product entity only manifests at the final stage of delivery or pickup, optimizing the entire retail flow.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{4. Solution: QR-Based Future Shopping (1/4)}
+    \begin{block}{Flexible Shopping Experience}
+        \begin{itemize}
+            \item \textbf{Lidl App Integration:} Pre-select items on mobile; OR scan a large QR code in-store for instant processing.
+            \item \textbf{Flexible Logistics:} Choose between in-store pickup or direct home shipping (no in-store physical shopping needed).
+            \item \textbf{Essential Stock:} On-site availability for daily necessities for immediate purchase.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% Slide 4-1: Click & Collect Experience
+\begin{frame}{4. Solution: Plan 1 - Click \& Collect}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Digital-to-Physical Flow}
+                \begin{itemize}
+                    \item \textbf{App Selection:} Choose products anywhere, anytime.
+                    \item \textbf{Lidl Station:} Pick up your order from a temperature-controlled locker.
+                    \item \textbf{Efficiency:} Zero waiting time, zero searching in aisles.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio]{assets/click-and-collect.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 4-2: Scan & Deliver Experience
+\begin{frame}{4. Solution: Plan 2 - Scan \& Deliver}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Showroom Shopping}
+                \begin{itemize}
+                    \item \textbf{Physical Confirm:} Touch and see the real products in the "Lidl Box" crates.
+                    \item \textbf{Large QR Scan:} Scan the crate's QR code, not the individual product.
+                    \item \textbf{Heavy-Free:} Items are delivered to your home; walk home empty-handed.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio]{assets/scan-and-deliver.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide: Solution 3/4 - AI Driven Pricing
+\section{Innovation}
+\begin{frame}{4. Solution: AI-Driven Dynamic Pricing (3/4)}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{The "Zero-Waste" Algorithm}
+                \begin{itemize}
+                    \item \textbf{Fluid Pricing:} No fixed prices. AI adjusts costs in real-time based on \textbf{inventory age} and \textbf{expiry proximity}.
+                    \item \textbf{Minimal Display:} Only a few samples are shown in-store. Most stock stays in climate-controlled back-end storage.
+                \end{itemize}
+            \end{block}
+        \end{column}
+
+        \begin{column}{0.5\textwidth}
+            \centering
+            \includegraphics[width=0.7\textwidth]{assets/ai-pricing.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{4. Solution: Why Lidl Box? (4/4)}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{vs. Online Shopping}
+                \begin{itemize}
+                    \item \textbf{Issue:} Cannot touch real products; lack of offline human support.
+                    \item \textbf{Lidl Box:} Physical store experience with digital efficiency.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{vs. Self-Scan Checkout}
+                \begin{itemize}
+                    \item \textbf{Issue:} Hard for non-tech users; hunting for small barcodes is tedious.
+                    \item \textbf{Lidl Box:} No product-level scanning. Just scan one QR code.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 5: Market Uniqueness
+\section{9. Unfair Advantage}
+\begin{frame}{Market Research \& Uniqueness}
+    \begin{block}{Verification via Perplexity AI}
+        According to extensive natural language market research (Perplexity), \textbf{no existing product or service currently combines}:
+        \begin{enumerate}
+            \item The tactile "Showrooming" of physical fresh goods.
+            \item Single-QR-per-crate scanning logic.
+            \item Integrated refrigerated automated pickup (Lidl Station).
+        \end{enumerate}
+    \end{block}
+
+    \vspace{10pt}
+
+    \centering
+\end{frame}
+
+
+\section{Business Model}
+\begin{frame}{5. Channels \& 6. Revenue Streams}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{5. Channels}
+                \begin{itemize}
+                    \item \textbf{Lidl Plus App Interface:} The central hub for pre-selection and loyalty integration \textbf{(Main Channel)}.
+                    \item \textbf{In-store QR Interaction Zones:} Strategic points within the physical store for "Scan \& Deliver".
+                    \item \textbf{Physical Touchpoint:} Interaction at the point of receiving the "Lidl Box" package.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{6. Revenue Streams}
+                \begin{itemize}
+                    \item \textbf{Premium Subscriptions:} Monthly recurring revenue for unlimited home delivery.
+                    \item \textbf{Service Fees:} Direct revenue from shipping and handling for one-off orders.
+                    \item \textbf{Data-Driven Profit:} Enhanced AI revenue forecasting and inventory optimization via full digital integration.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 6: User Experience - App Interface
+\section{User Experience}
+\begin{frame}{Lidl Plus: The Central Interface}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \begin{block}{Seamless Digital Hub}
+                \begin{itemize}
+                    \item \textbf{Dual Mode Selection:} Instant toggle between "Click \& Collect" and "Scan \& Deliver".
+                    \item \textbf{One-Tap Scan:} Large, intuitive button for scanning in-store QR codes on crates.
+                    \item \textbf{Frictionless UX:} Designed for all tech levels to ensure rapid adoption.
+                \end{itemize}
+            \end{block}
+            
+            \vspace{10pt}
+            
+            \begin{quote}
+                ``The App is no longer just for coupons; it is the physical key to the store.''
+            \end{quote}
+        \end{column}
+        
+        \begin{column}{0.55\textwidth}
+            \centering
+            \includegraphics[width=0.7\textwidth, height=0.8\textheight, keepaspectratio]{assets/interface.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 7: Costs, Metrics & Advantage
+\section{Strategic Value}
+\begin{frame}{7. Cost, 8. Metrics}
+    \begin{columns}[t]
+            \begin{block}{7. Cost Structure: Low Investment}
+                \begin{itemize}
+                    \item \textbf{Minimal Infrastructure:} Utilizing existing Lidl App interface.
+                    \item \textbf{Low Tech Barriers:} Basic QR code printing for crates.
+                    \item \textbf{Proven Tech:} Applying existing DHL Packstation-style locker technology to stores.
+                \end{itemize}
+            \end{block}
+            
+            \begin{block}{8. Key Metrics}
+                \begin{itemize}
+                    \item Number of active Lidl App users.
+                    \item \textbf{Reduction of costs:} Reduction in labor costs and significant decrease in food loss.
+                \end{itemize}
+            \end{block}
+    \end{columns}
+\end{frame}
+
+\end{document}

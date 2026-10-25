@@ -1,0 +1,22 @@
+[
+  {
+    "sheet": "Exercise 15.1",
+    "question": "Describe the three main vulnerabilities of basic RSA signatures signed *without* a hash function:\n1. Forgery\n2. Multiplicative Property\n3. Chosen-Message (Blinded) Attack",
+    "answer": "1. **Forgery:** Anyone can pick a random signature value $\\sigma \\in \\mathbb{Z}_n^*$ and compute $x \\equiv \\sigma^e \\pmod n$. The pair $(x, \\sigma)$ will pass verification since $x \\equiv \\sigma^e \\pmod n$, even though the message $x$ is likely meaningless gibberish.\n2. **Multiplicative Property:** An attacker intercepting $(m_1, \\sigma_1)$ and $(m_2, \\sigma_2)$ can forge a signature for $m_3 = (m_1 \\cdot m_2) \\pmod n$ by computing $\\sigma_3 = (\\sigma_1 \\cdot \\sigma_2) \\pmod n$, since:\n   $$\\sigma_3^e \\equiv (\\sigma_1 \\sigma_2)^e \\equiv m_1 m_2 \\equiv m_3 \\pmod n$$\n3. **Chosen-Message (Blinded) Attack:** To get a signature for $m$, the attacker blinds it with random $r$ as $m' = m \\cdot r^e \\pmod n$. They ask Alice to sign $m'$, obtaining $\\sigma' = (m')^d \\equiv m^d \\cdot r \\pmod n$. The attacker recovers the valid signature by multiplying by the inverse: $\\sigma = \\sigma' \\cdot r^{-1} \\equiv m^d \\pmod n$."
+  },
+  {
+    "sheet": "Exercise 15.2",
+    "question": "How does hashing a message with a cryptographic hash function $h(x)$ (e.g. SHA-256) before signing it prevent the vulnerabilities of plain RSA signatures?",
+    "answer": "When signing, we compute $\\sigma = h(x)^d \\pmod n$ and verify $h(x) \\equiv \\sigma^e \\pmod n$.\n\n* **Prevents Forgery:** An attacker picking $\\sigma$ and computing $Y \\equiv \\sigma^e \\pmod n$ must find a message $x$ such that $h(x) = Y$. Collision resistance and preimage resistance of $h$ make this practically impossible.\n* **Prevents Multiplicative Exploits:** Hashing destroys the homomorphic multiplicative relationship: $h(m_1 \\cdot m_2) \\neq h(m_1) \\cdot h(m_2)$ in general, so multiplying signatures no longer yields a valid signature for the product message.\n* **Prevents Blinding Attacks:** Since the signer signs $h(m')$ instead of $m'$, the relation $h(m') = h(m \\cdot r^e)$ cannot be easily blinded/unblinded to yield the signature of $h(m)$."
+  },
+  {
+    "sheet": "Exercise 15.3 a)",
+    "question": "Explain the phone coin-flip commitment protocol vulnerability proposed by Mallory, and how she can manipulate the result.",
+    "answer": "* **The Protocol:** Alice and Mallory choose random bits $b_a, b_m \\in \\{0,1\\}$ and commit by sending $n_a = x_a y_a$ and $n_m = x_m y_m$ where the middle bit of $x$ represents the chosen bit. Later they reveal $x, y$ to compute the result $b = (b_a + b_m) \\pmod 2$.\n* **Vulnerability:** Mallory chooses four prime numbers $a, b, c, d$ such that she can factorize $n_m = a \\cdot b \\cdot c \\cdot d$ in two different ways:\n  - $x_1 = a \\cdot b$, $y_1 = c \\cdot d$ (where the middle bit of $x_1$ represents $b_m = 0$)\n  - $x_2 = a \\cdot c$, $y_2 = b \\cdot d$ (where the middle bit of $x_2$ represents $b_m = 1$)\n* **How Mallory Cheats:** Mallory sends $n_m = a \\cdot b \\cdot c \\cdot d$. She waits for Alice to reveal $x_a$ (giving $b_a$). To force her desired outcome $b$, Mallory calculates the needed $b_m$ and reveals the factorization ($x_1, y_1$ or $x_2, y_2$) that matches $b_m$. Since Alice cannot factorize $n_m$, Alice accepts the revealed factors."
+  },
+  {
+    "sheet": "Exercise 15.3 b)",
+    "question": "How can the telephone coin-flip commitment protocol be repaired to be secure against Mallory's double-factorization fraud?",
+    "answer": "* **Repair:** Require that the chosen factors $x_a, y_a, x_m, y_m$ must be **prime numbers**.\n* **Verification:** At the end of the protocol, when the factors are revealed, both players use the Miller-Rabin primality test to verify that the other player's factors are indeed prime.\n* **Security:** Since $n_m = x_m y_m$ is a product of exactly two prime numbers, it has a unique prime factorization. This prevents Mallory from choosing between two different factorizations to change her committed bit, making the scheme binding."
+  }
+]

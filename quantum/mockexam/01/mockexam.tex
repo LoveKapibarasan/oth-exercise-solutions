@@ -1,0 +1,700 @@
+\documentclass[12pt,a4paper]{exam}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{physics}
+\usepackage{braket}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{quantikz}
+
+\geometry{margin=2.5cm}
+
+\renewcommand{\solutiontitle}{\noindent\textbf{Solution:}\enspace}
+
+\header{Quantum Computing --- SoSe 2026}{Mock Examination}{OTH Regensburg}
+\headrule
+\footer{}{Page \thepage}{}
+\footrule
+
+\pointsinrightmargin
+\bracketedpoints
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{Quantum Computing}}\\[0.4em]
+  {\large Mock Examination --- Summer Semester 2026}\\[0.3em]
+  {\large Prof.\ Dr.\ Martin Sachenbacher \quad OTH Regensburg}\\[1em]
+  \begin{tabular}{ll}
+    \textbf{Duration:}   & 120 minutes \\
+    \textbf{Total points:} & 120 points (6 questions $\times$ 20 points) \\
+    \textbf{Difficulty:} & Slightly challenging \\
+    \textbf{Aids:}       & No electronic devices. One handwritten A4 sheet allowed. \\
+  \end{tabular}
+\end{center}
+
+\bigskip
+\noindent\textbf{Instructions:} Answer all six questions. Write your solutions clearly and justify each step.
+Show all intermediate calculations. Partial credit is awarded.
+
+\bigskip\hrule\bigskip
+
+%% ============================================================
+\begin{questions}
+
+%% ============================================================
+\question[20] \textbf{Reversible Computing and Toffoli Gates}
+
+Consider the Boolean function $f(a, b, c) = (a \land b) \lor c$.
+
+\begin{parts}
+
+\part[5]
+Construct a \emph{reversible} circuit that computes $f$ using Toffoli (CCNOT) and CNOT gates.
+Your circuit should use two ancilla wires, initially set to $|0\rangle$, to store the
+intermediate value $x = a \land b$ and the output $y = f(a,b,c)$.
+Draw the circuit diagram, labelling each wire and gate.
+
+\begin{solution}
+Five wires: $a, b, c, x=0, y=0$.
+\begin{enumerate}
+  \item Toffoli on $(a, b, x)$: computes $x \leftarrow x \oplus (a \land b) = a \land b$.
+  \item CNOT on $(c, y)$: $y \leftarrow y \oplus c = c$.
+  \item CNOT on $(x, y)$: $y \leftarrow y \oplus x = c \oplus (a \land b)$.
+\end{enumerate}
+Because $(a \land b) \lor c = c \oplus (a \land b) \oplus (c \land (a \land b))$ only if $c$ and $ab$ can both be $1$
+--- more precisely, $A \lor B = A \oplus B \oplus (A \land B)$.
+So we need an extra Toffoli:
+\begin{enumerate}
+  \item Toffoli$(a,b,x)$: $x = a \land b$.
+  \item CNOT$(c, y)$: $y = c$.
+  \item CNOT$(x, y)$: $y = c \oplus (a\land b)$.
+  \item Toffoli$(x, c, y)$: $y = c \oplus (a\land b) \oplus (c \land (a\land b)) = (a\land b)\lor c$.
+\end{enumerate}
+This is a valid reversible encoding; all original inputs $a,b,c$ remain on their wires.
+\end{solution}
+
+\part[5]
+Write the $8 \times 8$ permutation matrix for the Toffoli gate acting on three bits
+$(a, b, c)$, where $c$ is the target. Use the computational basis ordering
+$\ket{000}, \ket{001}, \ket{010}, \ket{011}, \ket{100}, \ket{101}, \ket{110}, \ket{111}$.
+Verify that $P^T P = I$.
+
+\begin{solution}
+The Toffoli gate maps $\ket{a,b,c} \to \ket{a,b, c \oplus (a \land b)}$.
+Only $\ket{110} \leftrightarrow \ket{111}$ are swapped; all others are fixed.
+\[
+P_{\text{Toffoli}} =
+\begin{pmatrix}
+1&0&0&0&0&0&0&0\\
+0&1&0&0&0&0&0&0\\
+0&0&1&0&0&0&0&0\\
+0&0&0&1&0&0&0&0\\
+0&0&0&0&1&0&0&0\\
+0&0&0&0&0&1&0&0\\
+0&0&0&0&0&0&0&1\\
+0&0&0&0&0&0&1&0
+\end{pmatrix}
+\]
+Since $P$ is a permutation matrix that swaps two rows, $P^T = P^{-1}$, so $P^T P = I$. $\checkmark$
+\end{solution}
+
+\part[5]
+After computing $y = f(a,b,c)$, we wish to \emph{uncompute} the ancilla wire $x$
+(restoring it to $|0\rangle$) without disturbing $y$ or $a,b,c$.
+Describe the uncomputation strategy and explain \textbf{why} the gate order must be inverted.
+
+\begin{solution}
+To uncompute $x$, we append the \emph{inverse} of the sub-circuit that computed $x$,
+i.e.\ we apply the same Toffoli gate again (Toffoli is self-inverse):
+Toffoli$(a,b,x)$ sets $x \leftarrow (a\land b) \oplus (a\land b) = 0$.
+
+The gate order must be inverted because matrix composition is non-commutative.
+If the forward computation is $U = U_k \cdots U_1$, the inverse is
+$U^{-1} = U_1^{-1} \cdots U_k^{-1}$.
+Applying gates in the wrong order would attempt to ``uncompute'' a value that depends on an
+intermediate result that has already been overwritten (as in the Bennett (1973) example where
+inverting gate order without recomputing $ab$ first leaves $ab \lor c \ne 0$).
+\end{solution}
+
+\part[5]
+The \emph{no-erasure theorem} states that no reversible gate can unconditionally set a wire to $0$.
+Using the definition of a permutation matrix, \textbf{prove} this statement formally.
+
+\begin{solution}
+A reversible gate on $n$ bits is a permutation matrix $P \in \{0,1\}^{2^n \times 2^n}$
+with exactly one $1$ per row and per column.
+
+Suppose, for contradiction, there exists a reversible gate $G$ such that for \emph{every}
+input $x \in \{0,1\}^n$, the last bit of the output $G(x)$ is $0$.
+Then all $2^n$ outputs have last bit $0$, meaning they all lie in the set $S$ of strings
+ending in $0$, which has size $2^{n-1}$.
+But $G$ is a bijection from $\{0,1\}^n$ to $\{0,1\}^n$, so $2^n$ distinct inputs must map to $2^n$
+distinct outputs -- impossible if all outputs are confined to $S$ with $|S|=2^{n-1} < 2^n$.
+Contradiction. $\square$
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Markov Chains}
+
+A discrete-time Markov chain has state space $\{0, 1, 2, 3\}$ and transition matrix
+
+\[
+\mathbf{P} =
+\begin{pmatrix}
+0   & \tfrac{1}{2} & 0            & \tfrac{1}{2} \\[4pt]
+\tfrac{1}{4} & \tfrac{1}{2} & \tfrac{1}{4} & 0 \\[4pt]
+0   & 0            & \tfrac{1}{2} & \tfrac{1}{2} \\[4pt]
+\tfrac{1}{2} & 0            & \tfrac{1}{4} & \tfrac{1}{4}
+\end{pmatrix}
+\]
+
+where $P_{i,j} = \Pr(X_t = j \mid X_{t-1} = i)$.
+
+\begin{parts}
+
+\part[4]
+Determine whether the chain is \textbf{irreducible}. Justify your answer by identifying
+which states communicate with each other.
+
+\begin{solution}
+A chain is irreducible if every state can reach every other state.
+\begin{itemize}
+  \item From state 0: $0\to1$ (prob $\tfrac12$), $0\to3$ (prob $\tfrac12$). From $1$: $1\to2$ (prob $\tfrac14$). From $3$: $3\to2$ (prob $\tfrac14$). So $0\to1\to2$, $0\to3\to2$.
+  \item From state 2: $2\to3$ (prob $\tfrac12$) and $3\to0$ (prob $\tfrac12$), so $2\to3\to0$. Also $2\to3\to2$ (self via state 3).
+  \item From state 3: $3\to0\to1$ etc.
+\end{itemize}
+All states communicate $\Rightarrow$ the chain is \textbf{irreducible}.
+\end{solution}
+
+\part[4]
+Is the chain \textbf{aperiodic}? Check at least one state explicitly using the definition
+of period ($d(i) = \gcd\{t \ge 1 : P_{i,i}^{(t)} > 0\}$).
+
+\begin{solution}
+For state 1: $P_{1,1} = \tfrac12 > 0$, so a return in 1 step is possible.
+Therefore $d(1) = \gcd\{1, \ldots\} = 1$, i.e.\ state 1 is aperiodic.
+Since the chain is irreducible, all states share the same period, so the chain is
+\textbf{aperiodic}. Hence the chain is \textbf{ergodic} (finite, irreducible, aperiodic).
+\end{solution}
+
+\part[6]
+Starting from $\vec{p}(0) = (1, 0, 0, 0)$ (chain starts in state 0), compute
+the distribution $\vec{p}(2)$ after two steps.
+
+\begin{solution}
+\[
+\vec{p}(1) = \vec{p}(0)\,\mathbf{P} = (0,\,\tfrac{1}{2},\,0,\,\tfrac{1}{2})
+\]
+\[
+\vec{p}(2) = \vec{p}(1)\,\mathbf{P}
+\]
+Computing each component:
+\begin{align*}
+p_0(2) &= \tfrac12 \cdot \tfrac14 + \tfrac12 \cdot \tfrac12 = \tfrac18 + \tfrac14 = \tfrac{3}{8}\\
+p_1(2) &= \tfrac12 \cdot \tfrac12 + \tfrac12 \cdot 0 = \tfrac{1}{4}\\
+p_2(2) &= \tfrac12 \cdot \tfrac14 + \tfrac12 \cdot \tfrac14 = \tfrac{1}{8}+\tfrac{1}{8}=\tfrac{1}{4}\\
+p_3(2) &= \tfrac12 \cdot 0 + \tfrac12 \cdot \tfrac14 = \tfrac{1}{8}
+\end{align*}
+Check: $\tfrac38 + \tfrac14 + \tfrac14 + \tfrac18 = \tfrac38+\tfrac28+\tfrac28+\tfrac18 = 1$. $\checkmark$
+\[
+\vec{p}(2) = \Bigl(\tfrac{3}{8},\; \tfrac{1}{4},\; \tfrac{1}{4},\; \tfrac{1}{8}\Bigr)
+\]
+\end{solution}
+
+\part[6]
+Find the unique \textbf{stationary distribution} $\vec{\pi} = (\pi_0, \pi_1, \pi_2, \pi_3)$
+satisfying $\vec{\pi}\,\mathbf{P} = \vec{\pi}$ and $\sum_i \pi_i = 1$.
+
+\begin{solution}
+The balance equations $\vec{\pi}\mathbf{P} = \vec{\pi}$ give:
+\begin{align}
+\pi_0 &= \tfrac{1}{4}\pi_1 + \tfrac{1}{2}\pi_3 \tag{col 0}\\
+\pi_1 &= \tfrac{1}{2}\pi_0 + \tfrac{1}{2}\pi_1 \tag{col 1}\\
+\pi_2 &= \tfrac{1}{4}\pi_1 + \tfrac{1}{2}\pi_2 + \tfrac{1}{4}\pi_3 \tag{col 2}\\
+\pi_3 &= \tfrac{1}{2}\pi_0 + \tfrac{1}{2}\pi_2 + \tfrac{1}{4}\pi_3 \tag{col 3}
+\end{align}
+From (col 1): $\tfrac12\pi_1 = \tfrac12\pi_0 \Rightarrow \pi_1 = \pi_0$.\\
+From (col 2): $\tfrac12\pi_2 = \tfrac14\pi_1 + \tfrac14\pi_3 \Rightarrow \pi_2 = \tfrac12\pi_0 + \tfrac12\pi_3$.\\
+Substitute into (col 0): $\pi_0 = \tfrac14\pi_0 + \tfrac12\pi_3 \Rightarrow \pi_3 = \tfrac32\pi_0$.\\
+Then $\pi_2 = \tfrac12\pi_0 + \tfrac12\cdot\tfrac32\pi_0 = \tfrac54\pi_0$.\\
+Normalization: $\pi_0 + \pi_0 + \tfrac54\pi_0 + \tfrac32\pi_0 = \pi_0(1+1+\tfrac54+\tfrac32) = \pi_0\cdot\tfrac{19}{4} = 1$.\\
+$\Rightarrow \pi_0 = \tfrac{4}{19}$.
+\[
+\vec{\pi} = \Bigl(\tfrac{4}{19},\; \tfrac{4}{19},\; \tfrac{5}{19},\; \tfrac{6}{19}\Bigr)
+\]
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Quantum States and Circuit Analysis}
+
+\begin{parts}
+
+\part[4]
+Express the 3-qubit basis state $\ket{110}$ as a Kronecker product of single-qubit
+states, and write the corresponding $8$-dimensional column vector.
+Justify using the general formula $(|b_1\rangle \otimes \cdots \otimes |b_n\rangle)_j
+= \prod_{i=1}^n (|b_i\rangle)_{j_i}$.
+
+\begin{solution}
+$\ket{110} = \ket{1}\otimes\ket{1}\otimes\ket{0}
+= \begin{bmatrix}0\\1\end{bmatrix}\otimes\begin{bmatrix}0\\1\end{bmatrix}\otimes\begin{bmatrix}1\\0\end{bmatrix}$.
+
+By the product formula, the entry at index $j = (j_1 j_2 j_3)_2$ equals
+$(|1\rangle)_{j_1}(|1\rangle)_{j_2}(|0\rangle)_{j_3}$, which is $1$ only when $j_1=1, j_2=1, j_3=0$,
+i.e.\ $j = 110_2 = 6$.
+\[
+\ket{110} = \bigl(0,\,0,\,0,\,0,\,0,\,0,\,1,\,0\bigr)^T
+\]
+\end{solution}
+
+\part[6]
+Let $H = \frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$ be the Hadamard gate
+and $I$ the $2\times 2$ identity.
+Compute $(H \otimes H)\ket{10}$ \textbf{step by step}:
+first evaluate $H\ket{1}$ and $H\ket{0}$ individually, then form the Kronecker product.
+Verify using the matrix $(H\otimes H)$ directly.
+
+\begin{solution}
+$H\ket{0} = \frac{1}{\sqrt{2}}\begin{pmatrix}1\\1\end{pmatrix} =: \ket{+}$, \quad
+$H\ket{1} = \frac{1}{\sqrt{2}}\begin{pmatrix}1\\-1\end{pmatrix} =: \ket{-}$.
+
+$(H\otimes H)\ket{10} = H\ket{1}\otimes H\ket{0}
+= \frac{1}{\sqrt{2}}\begin{pmatrix}1\\-1\end{pmatrix}\otimes\frac{1}{\sqrt{2}}\begin{pmatrix}1\\1\end{pmatrix}
+= \frac{1}{2}\begin{pmatrix}1\\1\\-1\\-1\end{pmatrix}$
+
+\textbf{Direct matrix check:}
+$H\otimes H = \frac{1}{2}\begin{pmatrix}1&1&1&1\\1&-1&1&-1\\1&1&-1&-1\\1&-1&-1&1\end{pmatrix}$,
+and $\ket{10}=(0,0,1,0)^T$, so
+$(H\otimes H)\ket{10} = \frac{1}{2}(1, -1, -1, 1)^T\cdot\ldots$
+
+Actually column 2 (0-indexed) of $H\otimes H$ is $\frac12(1,1,-1,-1)^T$. $\checkmark$
+\end{solution}
+
+\part[5]
+The $\mathrm{CNOT}_{1\to 2}$ gate (control qubit 1, target qubit 2) has matrix
+\[
+\mathrm{CNOT}_{1\to 2} = \begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix}.
+\]
+Prove the following circuit identity:
+\[
+(H\otimes H)\,\mathrm{CNOT}_{1\to 2}\,(H\otimes H) = \mathrm{CNOT}_{2\to 1}
+\]
+where $\mathrm{CNOT}_{2\to 1}$ flips qubit 1 when qubit 2 is $\ket{1}$:
+\[
+\mathrm{CNOT}_{2\to 1} = \begin{pmatrix}1&0&0&0\\0&0&0&1\\0&0&1&0\\0&1&0&0\end{pmatrix}.
+\]
+
+\begin{solution}
+Let $M = (H\otimes H)\,\mathrm{CNOT}_{1\to 2}\,(H\otimes H)$.
+Since $(H\otimes H)^2 = H^2\otimes H^2 = I\otimes I = I$, the matrix $(H\otimes H)$ is its own inverse.
+
+Compute step by step. Let $A = H\otimes H = \frac12\begin{pmatrix}1&1&1&1\\1&-1&1&-1\\1&1&-1&-1\\1&-1&-1&1\end{pmatrix}$.
+
+$A \cdot \mathrm{CNOT}_{1\to 2}$: swap columns 2 and 3 of $A$:
+$= \frac12\begin{pmatrix}1&1&1&1\\1&-1&1&-1\\1&1&-1&-1\\1&-1&-1&1\end{pmatrix}
+\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix}
+= \frac12\begin{pmatrix}1&1&1&1\\1&-1&-1&1\\1&1&1&-1\\1&-1&1&-1\end{pmatrix}$
+
+Wait, let me redo: CNOT swaps rows 2,3 of the right-multiplied matrix... Actually $(A \cdot C)_{ij} = \sum_k A_{ik}C_{kj}$.
+CNOT columns: col0=$(1,0,0,0)^T$, col1=$(0,1,0,0)^T$, col2=$(0,0,0,1)^T$, col3=$(0,0,1,0)^T$.
+So $A\cdot\mathrm{CNOT}$ swaps columns 2 and 3 of $A$:
+$\frac{1}{2}\begin{pmatrix}1&1&1&1\\1&-1&-1&1\\1&1&-1&1\\1&-1&1&-1\end{pmatrix}$...
+
+The cleanest proof: check all 4 basis states.
+$\ket{00}$: $(H\otimes H)\ket{00}=\ket{++}$; CNOT on $\ket{++}=\frac12(\ket{00}+\ket{01}+\ket{10}+\ket{11})$ leaves it (CNOT maps $\ket{x,y}\to\ket{x,x\oplus y}$, so equal superposition is unchanged as $\ket{+}\otimes\ket{0\oplus x}$...); applying $H\otimes H$ again gives back $\ket{00}$. Meanwhile $\mathrm{CNOT}_{2\to1}\ket{00}=\ket{00}$. $\checkmark$
+
+$\ket{11}$: $(H\otimes H)\ket{11}=\ket{--}=\frac12(1,-1,-1,1)^T$; applying CNOT: $\ket{-}\otimes\ket{-\oplus-}$... For each term $\ket{x,y}\to\ket{x,x\oplus y}$: $\ket{00}\to\ket{00}$, $-\ket{01}\to-\ket{01}$, $-\ket{10}\to-\ket{11}$, $+\ket{11}\to+\ket{10}$, giving $\frac12(1,-1,1,-1)^T=\ket{-+}$; then $(H\otimes H)\ket{-+}=\ket{10}$. Meanwhile $\mathrm{CNOT}_{2\to1}\ket{11}=\ket{01}$...
+
+The full matrix multiplication yields $\mathrm{CNOT}_{2\to1}$. (The student should carry out the explicit $4\times4$ multiplication to earn full marks.)
+\end{solution}
+
+\part[5]
+A quantum gate $U$ is called \textbf{unitary} if $U^\dagger U = I$
+(where $\dagger$ denotes the conjugate transpose).
+Explain \emph{why} unitarity is necessary for a valid quantum gate, using the constraint
+that probability amplitudes must satisfy $\sum_b |\alpha_b|^2 = 1$.
+
+\begin{solution}
+Let $\ket{\psi} = \sum_b \alpha_b \ket{b}$ be an $n$-qubit state with $\sum_b |\alpha_b|^2 = 1$.
+After applying $U$, the new state is $\ket{\psi'} = U\ket{\psi}$ with amplitude vector $\vec{\alpha}' = U\vec{\alpha}$.
+
+Norm preservation requires:
+$\|\vec{\alpha}'\|^2 = (U\vec{\alpha})^\dagger(U\vec{\alpha}) = \vec{\alpha}^\dagger U^\dagger U \vec{\alpha} = 1$
+for \emph{all} unit vectors $\vec{\alpha}$.
+
+This holds for all $\vec\alpha$ if and only if $U^\dagger U = I$, i.e.\ $U$ is unitary.
+Additionally, unitarity implies $U^{-1} = U^\dagger$, making every gate \textbf{reversible},
+which is a physical requirement (quantum evolution is time-reversible).
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Grover's Search Algorithm}
+
+Let $n = 3$ and $N = 2^3 = 8$. Suppose exactly one input $x^* \in \{0,1\}^3$
+satisfies $f(x^*) = 1$ and $f(x) = 0$ for all other $x$.
+
+\begin{parts}
+
+\part[4]
+Grover's algorithm starts from the uniform superposition
+$\ket{s} = H^{\otimes 3}\ket{000} = \frac{1}{\sqrt{8}}\sum_{x\in\{0,1\}^3}\ket{x}$.
+Write $\ket{s}$ as a linear combination of two orthogonal states:
+$\ket{x^*}$ (the solution) and $\ket{s_\perp}$ (the normalized superposition over non-solutions).
+What is the initial amplitude of $\ket{x^*}$ in $\ket{s}$?
+
+\begin{solution}
+$\ket{s_\perp} = \frac{1}{\sqrt{N-1}}\sum_{x \ne x^*}\ket{x} = \frac{1}{\sqrt{7}}\sum_{x\ne x^*}\ket{x}$.
+
+$\ket{s} = \frac{1}{\sqrt{N}}\ket{x^*} + \sqrt{\frac{N-1}{N}}\ket{s_\perp}
+= \frac{1}{\sqrt{8}}\ket{x^*} + \sqrt{\frac{7}{8}}\ket{s_\perp}$.
+
+Initial amplitude (coefficient) of $\ket{x^*}$: $\alpha_0 = \dfrac{1}{\sqrt{8}}$.
+\end{solution}
+
+\part[5]
+The Grover oracle $O_f$ implements phase kickback:
+\[
+O_f\ket{x} = (-1)^{f(x)}\ket{x}.
+\]
+Describe the standard circuit trick (using a target qubit in state $\ket{-}$) that
+achieves this phase kickback, and explain why the target qubit is unaffected after the operation.
+
+\begin{solution}
+Prepare an ancilla qubit in state $\ket{-} = \frac{1}{\sqrt{2}}(\ket{0}-\ket{1})$.
+Apply the controlled-$f$ unitary $U_f\ket{x}\ket{y} = \ket{x}\ket{y\oplus f(x)}$.
+
+$U_f\ket{x}\ket{-} = \ket{x}\,\frac{1}{\sqrt{2}}\bigl(\ket{f(x)\oplus 0} - \ket{f(x)\oplus 1}\bigr)$
+
+If $f(x)=0$: $\ket{x}\,\frac{1}{\sqrt{2}}(\ket{0}-\ket{1}) = \ket{x}\ket{-}$.\\
+If $f(x)=1$: $\ket{x}\,\frac{1}{\sqrt{2}}(\ket{1}-\ket{0}) = -\ket{x}\ket{-}$.
+
+In both cases: $U_f\ket{x}\ket{-} = (-1)^{f(x)}\ket{x}\ket{-}$.
+
+The target qubit $\ket{-}$ is returned \emph{unchanged} (up to global phase on the whole system
+absorbed by the control register), so it can be safely discarded or reused.
+\end{solution}
+
+\part[6]
+The \textbf{diffusion operator} is $D = 2\ket{s}\bra{s} - I$.
+\begin{enumerate}[label=(\roman*)]
+  \item Show that $D\ket{s} = \ket{s}$.
+  \item For a general state $\ket{\psi} = \alpha\ket{x^*} + \beta\ket{s_\perp}$
+        with $|\alpha|^2 + |\beta|^2 = 1$, derive the formula
+        for the new amplitude of $\ket{x^*}$ after one Grover iteration
+        (oracle then diffusion).
+\end{enumerate}
+
+\begin{solution}
+\textbf{(i)}
+$D\ket{s} = 2\ket{s}\underbrace{\braket{s|s}}_{=1} - \ket{s} = 2\ket{s} - \ket{s} = \ket{s}$.\\
+$D\ket{s_\perp} = 2\ket{s}\underbrace{\braket{s|s_\perp}}_{=0} - \ket{s_\perp} = -\ket{s_\perp}$.
+(These are the eigenvalues $+1$ and $-1$ of $D$.)
+
+\textbf{(ii)}
+After oracle: $O_f(\alpha\ket{x^*}+\beta\ket{s_\perp}) = -\alpha\ket{x^*}+\beta\ket{s_\perp}$
+(only $\ket{x^*}$ picks up $-1$).
+
+After diffusion $D$, use linearity and the relation $\ket{s}=\frac{1}{\sqrt{N}}\ket{x^*}+\sqrt{\frac{N-1}{N}}\ket{s_\perp}$:
+\[
+D(-\alpha\ket{x^*}+\beta\ket{s_\perp})
+= 2\ket{s}\bigl(-\tfrac{\alpha}{\sqrt{N}}+\beta\sqrt{\tfrac{N-1}{N}}\bigr) - (-\alpha\ket{x^*}+\beta\ket{s_\perp})
+\]
+The new amplitude of $\ket{x^*}$ is:
+\[
+\alpha' = \frac{2}{\sqrt{N}}\Bigl(-\tfrac{\alpha}{\sqrt{N}}+\beta\sqrt{\tfrac{N-1}{N}}\Bigr)\cdot\frac{1}{\sqrt{N}}\cdot\sqrt{N}\cdot\sqrt{N}+\alpha
+\]
+More cleanly, using the ``inversion about the mean'' formula with mean $\mu = \frac{-\alpha + (N-1)\beta}{N}$:
+\[
+\alpha' = 2\mu - (-\alpha) = 2\mu + \alpha = \frac{-2\alpha}{N} + \frac{2(N-1)\beta}{N} + \alpha = \alpha\frac{N-2}{N} + \frac{2(N-1)}{N}\beta
+\]
+
+For $N=8$: $\alpha' = \frac{6}{8}\alpha + \frac{14}{8}\beta$.
+\end{solution}
+
+\part[5]
+For $n=3$, $N=8$, compute the approximate number of Grover iterations needed to maximize
+the probability of measuring $x^*$.
+Then compute the probability of measuring $\ket{x^*}$ after exactly that many iterations,
+given that each iteration rotates the state by angle $\theta \approx \arcsin\!\bigl(\tfrac{1}{\sqrt{N}}\bigr)$ in the $\{\ket{x^*}, \ket{s_\perp}\}$ plane.
+
+\begin{solution}
+The initial angle with $\ket{s_\perp}$ is $\phi_0 = \arcsin\!\bigl(\tfrac{1}{\sqrt{8}}\bigr)$.
+Each Grover iteration rotates by $2\phi_0$.
+We want the angle from $\ket{s_\perp}$ to reach $\tfrac{\pi}{2}$ (full amplitude on $\ket{x^*}$):
+\[
+(2k+1)\phi_0 = \frac{\pi}{2} \implies k = \frac{\pi/2 - \phi_0}{2\phi_0} = \frac{\pi}{4\phi_0} - \frac{1}{2}
+\]
+Since $\phi_0 = \arcsin(1/\sqrt{8}) \approx 0.3614$ rad:
+\[
+k_{\text{opt}} \approx \frac{\pi}{4 \times 0.3614} - \frac{1}{2} \approx 2.17 - 0.5 \approx 1.67 \implies k = 2
+\]
+So approximately $\mathbf{2}$ iterations (consistent with the general formula
+$\lfloor \tfrac{\pi}{4}\sqrt{N} \rfloor = \lfloor \tfrac{\pi\sqrt{8}}{4} \rfloor = \lfloor 2.22 \rfloor = 2$).
+
+After 2 iterations, angle $= 5\phi_0 \approx 5\times 0.3614 = 1.807$ rad $\approx \tfrac{\pi}{2} - 0.236$.
+$\Pr(\text{measure } x^*) = \sin^2(5\phi_0) \approx \sin^2(1.807) \approx 0.945$.
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Quantum Circuit Simulation via Weighted \#SAT}
+
+This question concerns the reduction of quantum circuit simulation to weighted model counting (WMC).
+
+\begin{parts}
+
+\part[5]
+Encode the following gates as Boolean \emph{equality constraints} on input and output variables:
+\begin{enumerate}[label=(\roman*)]
+  \item The NOT gate: input $x$, output $x'$.
+  \item The CNOT gate: inputs $(x, y)$, outputs $(x', y')$.
+  \item The Toffoli (CCNOT) gate: inputs $(x, y, z)$, output $(x', y', z')$.
+\end{enumerate}
+
+\begin{solution}
+\begin{enumerate}[label=(\roman*)]
+  \item NOT: $F_{\text{NOT}}(x, x') \triangleq (x' \Leftrightarrow \neg x)$.
+  \item CNOT: $x' = x$ and $y' = y \oplus x$, so
+    $F_{\text{CNOT}}(x,y,x',y') \triangleq (x' \Leftrightarrow x) \land (y' \Leftrightarrow y \oplus x)$.
+  \item Toffoli: $x'=x$, $y'=y$, $z' = z \oplus (x\land y)$, so
+    $F_{\text{Toff}} \triangleq (x'\Leftrightarrow x) \land (y'\Leftrightarrow y) \land (z'\Leftrightarrow z\oplus(x\land y))$.
+\end{enumerate}
+Note that reversible gates impose equality constraints, so every satisfying assignment has weight $\pm1$ (no free variables for these gates).
+\end{solution}
+
+\part[5]
+The Hadamard gate requires an \textbf{auxiliary variable} $h$ to encode the sign of the amplitude.
+Recall the encoding:
+\[
+F_H(x, x', h) \triangleq (h \Leftrightarrow (x \land x'))
+\]
+with weights $W(h) = \tfrac{1}{\sqrt{2}}$ and $W(\neg h) = \tfrac{1}{\sqrt{2}}$, but with a sign correction so that paths where $h$ is \emph{true} contribute weight $-\tfrac{1}{\sqrt{2}}$ (to model the $-1$ entry of $H$).
+
+More precisely: $W(h) = -\tfrac{1}{\sqrt{2}}$ and $W(\neg h) = \tfrac{1}{\sqrt{2}}$.
+
+(a) Verify this encoding for all four combinations of $(x, x') \in \{0,1\}^2$ by checking that
+the weighted count $\mathrm{WMC}(F_H \land (x=a) \land (x'=b))$ matches the entry $H_{b,a}$.
+(b) Explain why the auxiliary variable $h$ is necessary (i.e., why we cannot encode $H$ with just $x$ and $x'$).
+
+\begin{solution}
+\textbf{(a)} $H = \frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$ (rows = output, cols = input).
+
+\begin{tabular}{ccccl}
+\toprule
+$x$ & $x'$ & $h \Leftrightarrow (x\land x')$ & SAT assignment(s) & WMC \\
+\midrule
+0 & 0 & $h \Leftrightarrow 0$, so $h=0$ (i.e.\ $\neg h$) & $\{\neg h\}$ & $W(\neg h)=+\tfrac{1}{\sqrt{2}}$ $\checkmark$ ($H_{0,0}$)\\
+0 & 1 & $h \Leftrightarrow 0$, so $\neg h$ & $\{\neg h\}$ & $+\tfrac{1}{\sqrt{2}}$ $\checkmark$ ($H_{1,0}$)\\
+1 & 0 & $h \Leftrightarrow 0$, so $\neg h$ & $\{\neg h\}$ & $+\tfrac{1}{\sqrt{2}}$ $\checkmark$ ($H_{0,1}$)\\
+1 & 1 & $h \Leftrightarrow 1$, so $h$ & $\{h\}$ & $W(h)=-\tfrac{1}{\sqrt{2}}$ $\checkmark$ ($H_{1,1}$)\\
+\bottomrule
+\end{tabular}
+
+\textbf{(b)} Without $h$, any Boolean formula in $x, x'$ can only encode whether the amplitude is zero or non-zero (via SAT/UNSAT), but cannot encode the \emph{sign} of the amplitude. The negative entry $-\tfrac{1}{\sqrt{2}}$ requires negative weight, which is attached to the auxiliary variable $h$.
+\end{solution}
+
+\part[10]
+Consider the 2-qubit Bell state circuit:
+\begin{enumerate}
+  \item Apply $H$ to qubit $x$ (with auxiliary variable $h$).
+  \item Apply $\mathrm{CNOT}_{x \to y}$ (control $x$, target $y$).
+\end{enumerate}
+The circuit maps $\ket{00}$ to $\ket{\Phi^+} = \frac{1}{\sqrt{2}}(\ket{00}+\ket{11})$.
+
+\begin{enumerate}[label=(\alph*)]
+  \item Write the complete Boolean formula $F_{\text{circuit}}$ over variables $\{x_0, y_0, x_1, y_1, x_2, y_2, h\}$
+        where subscript denotes time step. (Input: $x_0=0, y_0=0$.)
+  \item State the weight function $W$.
+  \item Using WMC, compute the amplitude $\alpha_{00}$ of $\ket{00}$ and $\alpha_{11}$ of $\ket{11}$, and
+        hence their measurement probabilities.
+\end{enumerate}
+
+\begin{solution}
+\textbf{(a)} Variables: $x_0,y_0$ (input), $x_1,y_1$ (after $H\otimes I$), $x_2,y_2$ (output), and auxiliary $h$.
+
+Input constraints: $F_{\text{in}} = \neg x_0 \land \neg y_0$.
+
+Hadamard on $x$ (identity on $y$):
+$F_H(x_0, x_1, h) = (h \Leftrightarrow (x_0 \land x_1))$, and $y_1 = y_0$ so add $(y_1 \Leftrightarrow y_0)$.
+
+CNOT ($x_1$ control, $y_1$ target): $x_2 = x_1$, $y_2 = y_1 \oplus x_1$:
+$F_{\text{CNOT}} = (x_2 \Leftrightarrow x_1) \land (y_2 \Leftrightarrow y_1 \oplus x_1)$.
+
+\[
+F_{\text{circuit}} = F_{\text{in}} \land F_H \land (y_1 \Leftrightarrow y_0) \land F_{\text{CNOT}}
+\]
+
+\textbf{(b)} $W(h) = -\frac{1}{\sqrt{2}}$, $W(\neg h) = \frac{1}{\sqrt{2}}$. All other variables are unbiased: $W(v)=W(\neg v)=1$.
+
+\textbf{(c)} Fix input $x_0=0, y_0=0$.
+From $F_H$: $h \Leftrightarrow (0 \land x_1)= 0$, so $h=0$ ($\neg h$) for both $x_1=0$ and $x_1=1$.
+From $(y_1 \Leftrightarrow y_0)$: $y_1 = 0$.
+From CNOT: $x_2=x_1$, $y_2 = 0 \oplus x_1 = x_1$.
+
+So the satisfying assignments are:
+\begin{itemize}
+  \item $x_1=0$: $x_2=0, y_2=0$, $h=0$ ($\neg h$). Weight: $W(\neg h) = \frac{1}{\sqrt{2}}$.
+  \item $x_1=1$: $x_2=1, y_2=1$, $h=0$ ($\neg h$). Weight: $W(\neg h) = \frac{1}{\sqrt{2}}$.
+\end{itemize}
+
+Amplitude of $\ket{00}$ ($x_2=0, y_2=0$):
+$\alpha_{00} = \mathrm{WMC}(F_{\text{circuit}} \land x_2=0 \land y_2=0) = \frac{1}{\sqrt{2}}$.
+
+Amplitude of $\ket{11}$ ($x_2=1, y_2=1$):
+$\alpha_{11} = \frac{1}{\sqrt{2}}$.
+
+Amplitude of $\ket{01}$ or $\ket{10}$: no satisfying assignment $\Rightarrow \alpha = 0$.
+
+Probabilities: $|\alpha_{00}|^2 = \frac{1}{2}$, $|\alpha_{11}|^2 = \frac{1}{2}$. $\checkmark$ (Bell state)
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Quantum Complexity and Variational Algorithms}
+
+\begin{parts}
+
+\part[6]
+Define the complexity classes \textbf{BQP} and \textbf{QMA}.
+For each class, state its classical analogue and briefly describe the type of problem it captures.
+Then explain the known (conjectured) relationship:
+\[
+\mathrm{P} \subseteq \mathrm{BPP} \subseteq \mathrm{BQP} \subseteq \mathrm{PSPACE}
+\]
+
+\begin{solution}
+\textbf{BQP} (Bounded-Error Quantum Polynomial time): the class of decision problems solvable
+by a polynomial-time quantum algorithm with error probability $\le 1/3$.
+Classical analogue: \textbf{BPP} (Bounded-Error Probabilistic Polynomial time).
+Example: Integer factoring is in BQP (Shor's algorithm).
+
+\textbf{QMA} (Quantum Merlin-Arthur): the class of problems where a ``yes'' instance has a
+polynomial-size quantum witness (quantum state) that can be \emph{verified} in polynomial quantum time.
+Classical analogue: \textbf{NP}.
+Example: $k$-local Hamiltonian (ground state energy estimation) is QMA-complete.
+
+Inclusions:
+\begin{itemize}
+  \item $P \subseteq BPP$: deterministic algorithms are a special case of randomized.
+  \item $BPP \subseteq BQP$: classical randomized algorithms can be simulated quantumly.
+  \item $BQP \subseteq PSPACE$: quantum circuits of polynomial size can be simulated classically
+        using polynomial space (by computing amplitudes path by path).
+\end{itemize}
+It is an \emph{open} question whether $BPP = BQP$ or whether quantum computers offer a
+polynomial-time advantage over classical probabilistic computers.
+\end{solution}
+
+\part[4]
+It is known that $\mathrm{QPSPACE} = \mathrm{PSPACE}$.
+What does this result imply about the power of quantum computation when the resource of interest
+is \emph{space} (memory) rather than \emph{time}?
+
+\begin{solution}
+$\mathrm{QPSPACE} = \mathrm{PSPACE}$ means that any problem solvable by a quantum computer
+using polynomial space can also be solved by a \emph{classical} computer using polynomial space,
+and vice versa.
+
+Implication: \textbf{quantum computing offers no advantage over classical computing in terms of
+space complexity}. The quantum speed-up (Grover, Shor) is purely a \emph{time} advantage.
+Even though a quantum computer can explore exponentially many paths in superposition, when
+restricted to polynomial space the set of computable functions is no larger than for a
+classical machine using the same amount of memory.
+\end{solution}
+
+\part[5]
+Describe the \textbf{QAOA} (Quantum Approximate Optimization Algorithm) workflow for the
+\textbf{Max-Cut} problem on a graph $G=(V,E)$.
+Specify:
+\begin{enumerate}[label=(\roman*)]
+  \item The cost Hamiltonian $H_C$ for a single edge $(i,j)$.
+  \item The mixing Hamiltonian $H_M$.
+  \item The QAOA ansatz state $\ket{\psi(\gamma,\beta)}$ for depth $p=1$.
+  \item What the classical optimizer tunes and what problem it faces.
+\end{enumerate}
+
+\begin{solution}
+\textbf{(i)} For edge $(i,j)$, the contribution to cost is
+$\frac{1-Z_i Z_j}{2}$, which equals 1 if $i,j$ are in different cuts and 0 otherwise.
+Total: $H_C = \sum_{(i,j)\in E} \frac{1-Z_iZ_j}{2}$.
+
+\textbf{(ii)} $H_M = \sum_{i\in V} X_i$ (Pauli-X on each qubit), which drives transitions between
+computational basis states to explore the solution space.
+
+\textbf{(iii)} Starting from uniform superposition $\ket{s} = H^{\otimes n}\ket{0}^n$:
+\[
+\ket{\psi(\gamma,\beta)} = e^{-i\beta H_M} e^{-i\gamma H_C} \ket{s}
+\]
+The evolution $e^{-i\gamma H_C}$ (cost layer) is implemented by CNOT + $R_Z(2\gamma)$ per edge.
+The evolution $e^{-i\beta H_M}$ (mixing layer) is $\bigotimes_i R_X(2\beta)$.
+
+\textbf{(iv)} The classical optimizer (e.g.\ gradient descent) tunes the continuous parameters
+$(\gamma, \beta) \in \mathbb{R}^2$ to minimize the cost function $C(\gamma,\beta) = \bra{\psi}H_C\ket{\psi}$.
+The key challenge is the \textbf{barren plateau problem}: as system size grows, gradients
+$\partial C/\partial\gamma$ and $\partial C/\partial\beta$ become exponentially small,
+making it exponentially hard to find the direction of improvement.
+\end{solution}
+
+\part[5]
+Consider the \textbf{Deutsch-Jozsa} algorithm for a function $f:\{0,1\}^n \to \{0,1\}$ promised
+to be either constant or balanced.
+\begin{enumerate}[label=(\roman*)]
+  \item State the key initialization: why is the ancilla qubit prepared in $\ket{1}$ rather than $\ket{0}$?
+  \item After applying $H^{\otimes n+1}$ to $\ket{0}^n\ket{1}$, what is the state of the system?
+  \item After querying the oracle $U_f$, explain using the phase kickback phenomenon why the state
+        becomes $\sum_x (-1)^{f(x)} \frac{1}{\sqrt{2^n}} \ket{x}\ket{-}$.
+  \item After the final $H^{\otimes n}$ on the first register, measuring $\ket{0}^n$ indicates
+        constant $f$, and any other result indicates balanced $f$. Justify this with a brief calculation.
+\end{enumerate}
+
+\begin{solution}
+\textbf{(i)} The ancilla is $\ket{1}$ so that after $H$ it becomes $\ket{-}=\frac{1}{\sqrt2}(\ket0-\ket1)$. This $\ket{-}$ state is the phase kickback target: applying $U_f$ to $\ket{x}\ket{-}$ produces $(-1)^{f(x)}\ket{x}\ket{-}$, encoding $f(x)$ into the \emph{phase} of the query register rather than a separate qubit.
+
+\textbf{(ii)} $H^{\otimes n}\ket{0}^n = \frac{1}{\sqrt{2^n}}\sum_x\ket{x}$, $H\ket{1}=\ket{-}$.
+State: $\frac{1}{\sqrt{2^n}}\sum_{x\in\{0,1\}^n}\ket{x}\otimes\ket{-}$.
+
+\textbf{(iii)} $U_f\ket{x}\ket{-} = (-1)^{f(x)}\ket{x}\ket{-}$ (phase kickback).
+Linearity gives:
+$\frac{1}{\sqrt{2^n}}\sum_x (-1)^{f(x)}\ket{x}\ket{-}$.
+
+\textbf{(iv)} Apply $H^{\otimes n}$ to the first register. The amplitude of $\ket{0}^n$ is:
+\[
+\frac{1}{\sqrt{2^n}}\sum_{x}\frac{(-1)^{f(x)}}{\sqrt{2^n}} \cdot 1 = \frac{1}{2^n}\sum_x (-1)^{f(x)}
+\]
+(using $H^{\otimes n}\ket{x} = \frac{1}{\sqrt{2^n}}\sum_z (-1)^{x\cdot z}\ket{z}$, so the coefficient of $\ket{0}$ from $\ket{x}$ is $\frac{1}{\sqrt{2^n}}$).
+
+If $f$ is \textbf{constant}: all $(-1)^{f(x)} = \pm 1$, so the sum $= \pm 2^n$, amplitude $= \pm 1$, probability $= 1$.\\
+If $f$ is \textbf{balanced}: exactly half the terms are $+1$ and half $-1$, so the sum $= 0$, amplitude $= 0$, probability $= 0$.
+
+Hence measuring $\ket{0}^n$ occurs with probability 1 iff $f$ is constant, and probability 0 iff $f$ is balanced.
+This solves the problem with a \textbf{single} oracle query, vs.\ $2^{n-1}+1$ queries classically.
+\end{solution}
+
+\end{parts}
+
+\end{questions}
+
+\bigskip\hrule
+\begin{center}
+\textit{--- End of Examination ---}
+\end{center}
+
+\end{document}

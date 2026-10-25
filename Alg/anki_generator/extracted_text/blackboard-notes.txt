@@ -1,0 +1,1107 @@
+--- Page 1 ---
+Blackboard Notes
+Regarding encodings:
+Our encoding of lists of natural numbers can be applied to encode graphs. Take e.g. the directed
+graph ({0,1,2},{(0,1),(1,2),(0,2),(2,0)}). Its adjacency matrix is
+
+
+0 1 1
+0 0 1
+1 0 0
+
+
+So we would encode the graph as
+⟨⟨0,1,1⟩,⟨0,0,1⟩,⟨1,0,0⟩⟩
+=⟨bin −1(10001011101110),bin −1(10001000101110),bin −1(10111000100010)⟩
+=⟨8942,8750,11810⟩
+= bin−1(
+10110000001100111111001111110010110000001100000011001111110010110011111100000011000000110010
+)
+= 3408260559900863191726436402
+Property 1.3
+Proof sketch:
+(1) If an algorithmAsolves decTSP in timet, then the following algorithm solves evalTSP in
+timeO(n·t(n)).
+•Input: cost matrixC
+•LetKbe the sum of all entries in the cost matrix.
+(Awill answer “yes” on input (C, K) and “no” on input (C,0)).
+•Goal: Find smallestkwith 0≤k≤Kso thatA(C, k) says “yes”.
+•Applying binary search, we can find thiskwithO(logK) calls ofA.
+The valueKis the sum of all entries. Since the total input length of the cost matrix isn
+bits, the binary representation of this sum can have at mostnbits. Therefore,K≤2 n,
+which implies log 2 K≤n. Thus, the binary search requiresO(n) calls toA.
+(2) If an algorithmAsolves decTSP in timet, then the following algorithm solves optTSP in
+timeO(n·t(n)):
+•Input: cost matrixC
+•As in (1), determine the costcof some shortest route.
+•For each edge (i, j):
+–y=C[i][j]
+–C[i][j] =c+ 1
+–ifA(C, c) answers “no”
+∗C[i][j] =y
+•return all edges with cost≤c
+1
+--- Page 2 ---
+Running time:
+•calling the algorithm from (1) leads toO(n) calls ofA
+•N 2 edges, for each we have at least one bit in the cost matrix⇒≤nedges⇒ncalls ofA
+•⇒in total:O(n) calls ofA
+•⇒total running time:O(n·t(n))
+Correctness:
+•At the end of each execution of the for-loop, there still is a round trip of costc.
+•So the returned edges contain a round trip of costc.
+•LetSbe a set of these edges that form a round trip of costc.
+•If there was an edge among the returned edges that is not inS, then this edge would have
+been removed in the according iteration of the for loop: after all, even now the edge is not
+needed for an optimal round trip, so certainly not back at the time it was handled.
+Proof of Thm 1.12
+We only do the consecutive execution.
+f, g∈FP =⇒there exist polynomialsp 1, p2 with
+•fis computed in timep 1 and|f(x)| ≤p1(|x|)
+•gis computed in timep 2 and|g(x)| ≤p2(|x|)
+The following program computesf◦g:
+def fg(x):
+return f(g(x))
+Running time:
+p2(|x|)| {z }
+computation ofg(x)
++p 1(p2(|x|))| {z }
+computation offon inputg(x)
++ 1|{z}
+return
+=⇒polynomial running time□
+2
+--- Page 3 ---
+Property 1.35:BP∈NP
+Proof:We prove BP∈NP in detail.
+BP =
+
+
+
+⟨k, b, a1, . . . , am⟩
+
+∃totalf:{1, . . . , m} → {1, . . . , k},∀j∈ {1, . . . , k}
+X
+iwith
+f(i)=j
+ai ≤b
+
+
+
+According to Definition 1.34 we need a polynomialpandB∈ Pso that for allx:
+x∈BP⇐ ⇒ ∃y[|y| ≤p(|x|)∧(x, y)∈B] (∗)
+A potential solutionyfor a BP-instancex=⟨k, b, a 1, . . . , am⟩is a totalf:{1, . . . , m} →
+{1, . . . , k}(= distribution of items to containers).
+fcan be represented as a natural numbery=⟨f(1), . . . , f(m)⟩.
+So we can defineBas follows:
+B=
+
+
+
+(x, y)
+
+x=⟨k, b, a1, . . . , am⟩andy=⟨c 1, . . . , cm⟩withc i ∈ {1, . . . , k}s.t.∀j∈ {1, . . . , k}
+X
+iwith
+ci=j
+ai ≤b
+| {z }
+meaning:yis a valid solution tox
+
+
+
+B∈P (as for given (x, y) the sums can be computed and the inequalities can be tested in
+polynomial time).
+W e estimate the length of a solution:
+|y|=|⟨c 1, . . . , cm⟩|=|bin(⟨c 1, . . . , cm⟩)|
+due to=
+list encoding
+2 + 2|bin(c1)|+ 2 + 2|bin(c2)|+· · ·+ 2 + 2|bin(cm)|+ 2
+≤2 (|bin(k)|| {z }
+≤|x|
++1)
+| {z }
+≤|x|
+·m|{z}
+≤|x|
++2
+≤2|x| 2 + 2|x|+ 2 (∗∗)
+So the following polynomial bounds the lengths of the solutions:
+p(n) = 2n2 + 2n+ 2
+W e show(∗):
+⟨k, b, a1, . . . , am⟩ ∈BP
+⇐ ⇒ ∃totalf:{1, . . . , m} → {1, . . . , k} ∀j∈ {1, . . . , k}
+X
+iwith
+f(i)=j
+ai ≤b
+⇐ ⇒ ∃c1, . . . , cm ∈ {1, . . . , k} ∀j∈ {1, . . . , k}
+X
+iwith
+ci=j
+ai ≤b
+⇐ ⇒ ∃ywithy=⟨c1, . . . , cm⟩andc i ∈ {1, . . . , k}so that for allj∈ {1, . . . , k}we have
+X
+iwith
+ci=j
+ai ≤b
+⇐ ⇒ ∃y(x, y)∈B
+(∗∗)
+⇐ ⇒ ∃y(|y| ≤p(|x|)∧(x, y)∈B)
+3
+--- Page 4 ---
+So (∗) holds. =⇒BP∈NP□
+Theorem 1.40
+Proof:Construct someL∈EXP−P.
+LetM 0, M1, M2, . . .be “our” G¨ odelization of RAMs (or a G¨ odelization of TMs, or just imagine
+it as an encoding of e.g. python programs).
+Describe a machineMon inputj:
+1.n=|j|
+2. simulaten n +nsteps of the computationM j(j) (i.e., the computation of the machineM j
+on inputj)!
+(in caseM j(j) stops earlier, the simulation stops then as well)
+3.r= content ofR0 at the end of the simulation (this is where the result of the RAM would
+be in at the end; in case of a TM just use the content of tape 1)
+4. ifr= 0 return 1, else return 0
+DefineL= def L(M) ={x|M(x) returns 1}.
+W e showL∈EXP:
+Running time ofMon inputj(withn=|j|):
+•Line 1:O(n) steps
+•Line 2: a single computation step ofM j can be simulated in timep(n) for a polynomial
+p=⇒p(n)·(n n +n) steps
+•Lines 3+4: 3 steps
+=⇒running time is≤2 q(n) for a polynomialq(Notep(n)·(n n +n)≤p(n)·(2 n⌈logn⌉ +n)≤
+p(n)·2 n2+n ≤2 p(n)+n2+n )
+This impliesL(M)∈EXP.
+W e showL /∈P:
+Assume for a contradictionL∈P.
+Lemma 1.39 =⇒there existsj∈Nwith:
+(i)L=L(M j)
+(ii)M j(x) stops after at most|x| |j| +|j|steps
+j∈L⇐ ⇒M(j) returns 1
+⇐ ⇒after|j||j| +|j|steps of the computationM j(j) we have 0 inR0
+⇐ ⇒Mj(j) returns 0
+⇐ ⇒j /∈L(Mj)
+(i)
+⇐ ⇒j /∈L,
+4
+--- Page 5 ---
+which is a contradiction. This impliesL /∈P.□
+Example 1.49
+BP =
+
+
+
+⟨k, b, a1, . . . , am⟩
+
+∃totalf:{1, . . . , m} → {1, . . . , k},∀j∈ {1, . . . , k}
+X
+iwith
+f(i)=j
+ai ≤b
+
+
+
+•representfas list [f(1), . . . , f(m)]
+•BP is accepted by the following non-det. algorithm:
+d e f BP( k , b , a ) : # a = [a 1, ..., am ]
+m = l e n ( a )
+i f k>m: k = m # we need not more c o n t a i n e r s than goods
+A: c r e a t e a l l f = [f 1, ..., fm ] withf 1, ..., fm ∈ {1, . . . , k}
+non−d e t e r m i n i s t i c a l l y
+B : i f∀j∈ {1, . . . , k}P
+iwith
+f(i)=j
+ai ≤b, then r e t u r n 1 e l s e r e t u r n 0
+The parts A and B can be realized as follows:
+Part A:
+f = m∗[ 1 ] # g e n e r a t e s [ 1, ...,1 | {z }
+mtimes
+]
+f o r i i n r a n g e ( 0 , m) :
+f o r j i n r a n g e ( 1 , k +1):
+f [ i ] = f [ i ]|f [ i ] = j
+# n o t e : some l i s t s f a r e g e n e r a t e d on m u l t i p l e p a t h s
+Part B :
+f o r j i n r a n g e ( 1 , k +1):
+s = 0
+f o r i i n r a n g e ( 0 , m) :
+i f f [ i ] = = j : s = s + a [ i ]
+i f s>b : r e t u r n 0
+r e t u r n 1
+Running time:O(1)| {z }
+Lines 1+2
++O(m 2)| {z }
+Part A
++O(m 2)| {z }
+Part B
+⊆O(n 2)
+Note:Estimation for parts A and B only work due to line 2 (“if k>m: k=m”).
+=⇒BP is accepted by a non-det. pol. time algorithm.
+=⇒BP∈NP
+5
+--- Page 6 ---
+Theorem 1.52:SOS≤ p KNAPSACK
+⟨a1, . . . , am, b⟩ ∈SOS⇐ ⇒ ∃I⊆ {1, . . . , m}
+X
+i∈I
+ai =b
+⇐ ⇒ ∃I⊆ {1, . . . , m}
+ X
+i∈I
+ai ≤b∧
+X
+i∈I
+ai ≥b
+!
+⇐ ⇒ ⟨
+g1...gm
+z }| {a1, . . . , am,
+v1...vm
+z }| {a1, . . . , am,
+G
+z}|{
+b ,
+V
+z}|{
+b⟩ ∈KNAPSACK
+⇐ ⇒f(⟨a1, . . . , am, b⟩)∈KNAPSACK
+forf(⟨a 1, . . . , am, b⟩) =⟨a1, . . . , am, a1, . . . , am, b, b⟩.
+=⇒f∈FP.
+So SOS≤ p KNAPSACK.
+Theorem 54: Proof
+1.B∈P, soc B ∈FP.
+A≤ p B, so∃f∈FP with∀x(x∈A⇐ ⇒f(x)∈B).
+=⇒c A(x) =c B(f(x))∈FP
+=⇒A∈P
+2.A≤ p B, so∃f∈FP with (x∈A⇐ ⇒f(x)∈B).
+Asf∈FP, we get from Property 1.11:
+∃a polynomialpand a det. TMM 1 that computesfin timepand|f(x)| ≤p(|x|).
+FromB∈NP we get:
+There exists TMM 2 that acceptsBin timeq(for a polynomialq).
+Construct a non-det. machineM:
+x
+M1
+f(x)
+timep(|x|)
+(translation)
+M2 on
+f(x)
+0
+0
+0
+1
+0
+0
+...
+timeq(p(|x|))
+(actual work)
+6
+--- Page 7 ---
+Macceptsx⇐ ⇒M 2 acceptsf(x)
+⇐ ⇒f(x)∈B
+⇐ ⇒x∈A
+MacceptsAand works in timep(|x|) +q(p(|x|)).
+=⇒A∈NP by Theorem 1.47.
+Theorem 1.55: Proof
+1.Choosea∈Bandb /∈B.
+f(x) = def
+(
+aifx∈A
+belse
+f∈FP (asA∈P)
+x∈A=⇒f(x) =a∈B
+x /∈A=⇒f(x) =b /∈B
+Sox∈A⇐ ⇒f(x)∈Band thusA≤ p B.
+2.follows from 1.
+Theorem 1.57: Proof
+1.
+ANP-hard, B∈NP =⇒B≤ p A
+BNP-hard, A∈NP =⇒A≤ p B
+=⇒A≡ p B
+2.LetAbe NP-complete.
+•A∈P Thm 1.54=⇒D∈P for allD∈NP
+=⇒NP⊆P
+Thm 1.36=⇒NP = P
+•P = NP =⇒A∈NP⊆P
+3.LetBbe NP-complete andC∈NP withB≤ p C.
+LetD∈NP.
+D≤ p B(asBis NP-complete)
+B≤ p C(by our prerequisites)
+7
+--- Page 8 ---
+Property 1.53 =⇒D≤ p C=⇒CNP-complete.□
+Theorem 1.65: Proof
+3-SAT∈NP is easy.
+We show SAT≤ p 3-SAT. Then by Thm 1.60 and Thm 1.57, 3-SAT is NP-complete.
+LetF=F(x 1, . . . , xn) be an arbitrary Boolean formula with variablesx 1, . . . , xn.
+•representFas a circuit, where the input gates correspond to the variablesx 1, . . . , xn and
+the remaining gates correspond to new variablesx n+1, . . . , xm (corresponding to subfor-
+mulas ofF).
+Example: F ormula
+(x1 ∧ ¬x2|{z}
+x4
+| {z }
+x6
+)∨(x 1 ∧x 3| {z }
+x7
+)
+| {z }
+x9
+∧ ¬(¬x2|{z}
+x5
+∨x3
+| {z }
+x8
+)
+| {z }
+x10
+| {z }
+x11
+Circuit representation:
+x1 x2 x3
+¬x4 ¬ x5
+∧x6 ∧ x7 ∨ x8
+∨x9 ¬ x10
+∧ x11
+For everyi∈ {n+ 1, . . . , m}we define a 3-CNF formulaFi (Fi enforces that the value ofx i is
+obtained correctly from the predecessor gates):
+•ifx i =¬with predecessorx a, then
+Fi = (xi ∨x a)∧(¬x i ∨ ¬xa)
+(Idea:x i ↔ ¬xa)
+•ifx i =∧with predecessorsx a, xb, then
+Fi = (¬xa ∨ ¬xb ∨x i)∧(¬x i ∨x a)∧(¬x i ∨x b)
+(Idea:x i ↔(x a ∧x b). The clauses correspond to (x a ∧x b)→x i,x i →x a,x i →x b)
+8
+--- Page 9 ---
+•ifx i =∨with predecessorsx a, xb, then
+Fi = (¬xa ∨x i)∧(¬x b ∨x i)∧(¬x i ∨x a ∨x b)
+(Idea:x i ↔(x a ∨x b). The clauses correspond tox a →x i,x b →x i,x i →(x a ∨x b))
+LetG F (x1, . . . , xm) =def
+Vm
+i=n+1 Fi, andH F (x1, . . . , xm) =G F ∧xm. These are 3-CNF formulas.
+It holds:
+GF (b1, . . . , bn, bn+1, . . . , bm) = 1⇐ ⇒bn+1, . . . , bm are the values generated by the circuit
+when we assign the inputs the valuesb 1, . . . , bn
+Hence
+⟨F⟩ ∈SAT⇐ ⇒ ∃b1, . . . , bn ∈ {0,1}withF(b 1, . . . , bn) = 1
+⇐ ⇒ ∃b1, . . . , bn such that the circuit computes 1 at the output when the
+inputs are assignedb 1, . . . , bn
+⇐ ⇒ ∃b1, . . . , bm ∈ {0,1}so thatb n+1, . . . , bm are the values generated in the
+circuit when the inputs are assignedb 1, . . . , bn ANDb m = 1
+⇐ ⇒ ∃b1, . . . , bm (GF (b1, . . . , bm) = 1∧b m = 1)
+⇐ ⇒ ∃b1, . . . , bm HF (b1, . . . , bm) = 1
+⇐ ⇒ ⟨HF ⟩ ∈3-SAT
+Definef(⟨F⟩) =⟨H F ⟩. Thenf∈FP and⟨F⟩ ∈SAT⇐ ⇒f(⟨F⟩)∈3-SAT. Consequently,
+SAT≤ p 3-SAT. □
+Theorem 1.66: Proof
+CLIQUE∈NP according to Prop 1.35.
+We show 3-SAT≤ p CLIQUE. Then by Thm 1.65 and 1.57, CLIQUE is NP-complete.
+LetF=C 1 ∧C 2 ∧ · · · ∧Ck be a 3-CNF formula with variablesx 1, . . . , xn for clausesC 1, . . . , Ck
+(we imagine a clause as a set of 3 literalsl 1 ∨l 2 ∨l 3 ≜{l 1, l2, l3}).
+•For a literall∈ {x 1, . . . , xn,¬x 1, . . . ,¬xn}we let
+¯l= def
+(
+¬xi ifl=x i
+xi ifl=¬x i
+Construct undirected graphG F = (V, E) as follows:
+V={(i, l)|i∈ {1, . . . , k}, l∈Ci}
+E={{(i 1, l1),(i 2, l2)} |i1 ̸=i 2, l1 ̸= ¯l2}
+(i.e., (i, l)∈V⇐ ⇒lis a literal inC i and we have edges between literals of different clauses if
+the literals are not complementary).
+Example:C 1 ∧C 2 ∧C 3 ∧C 4 = (x1 ∨x 2)∧(¬x 1 ∨ ¬x2)∧(¬x 1)∧(x 2)
+9
+--- Page 10 ---
+C1 C2 C3 C4
+(1, x1)
+(1, x2)
+(2,¬x 1)
+(2,¬x 2)
+(3,¬x 1) (4, x2)
+4-Clique: (1, x2),(2,¬x 1),(3,¬x 1),(4, x2)
+•A clique inG F has at mostknodes as the nodes belonging to one clause are not connected.
+•If⟨F⟩ ∈SAT, then there is an assignment ofx 1, . . . , xn so that in each clauseC i there is
+at leastone true literall i. DefineC={(i, l i)|1≤i≤k}. ThenCis a clique of sizek
+inG F because fori̸=jwe havel i ̸= ¯lj (otherwise,l i andl j could not both be true).
+•IfG F has a cliqueCof sizek, thenC={(1, l 1), . . . ,(k, lk)}andl i ̸= ¯lj fori̸=j, i.e., for
+any variablex m,x m and¬x m do not both occur in{l 1, . . . , lk}. SoF(b 1, . . . , bn) = 1 for
+the assignment
+bj =def
+
+
+
+1 ifx j ∈ {l1, . . . , lk}
+0 if¬x j ∈ {l1, . . . , lk}
+0 ifx j,¬x j /∈ {l1, . . . , lk}
+Thus,⟨F⟩ ∈SAT⇐ ⇒GF has a clique of sizek.
+=⇒forf(⟨F⟩) =⟨G F , k⟩we havef∈FP and⟨F⟩ ∈SAT⇐ ⇒f(⟨F⟩)∈CLIQUE.
+=⇒3-SAT≤ p CLIQUE
+□
+10
+--- Page 11 ---
+Engineering Game AIs: Connect Four
+1 The Basic Algorithm
+Is there a winning strategy in connect four?
+Consider the problem for an arbitrary board position.
+To be tested:
+there exists an x-move
+so that there is no winning o-move, and for every o-move
+there exists an x-move
+so that there is no winning o-move, and for every o-move
+. . .
+so that there exists an x-move, which is winning.
+We formulate an inductive definition of the following statements to derive an algorithm:
+W(x, d) = x can win in at mostdmoves
+W(o, d) = o can win in at mostdmoves
+Inductive Definition:
+W(o,1): there is a winning o-move
+W(x,1): there is a winning x-move
+W(x, d) ford∈ {2, . . . ,21}:
+W(x,1) or there exists an x-move so that¬W(o,1) and for all o-movesW(x, d−1) holds.
+W(o, d) ford∈ {2, . . . ,21}:
+W(o,1) or there exists an o-move so that¬W(x,1) and for all x-movesW(o, d−1) holds.
+This directly leads to a recursive algorithm that checks whether there is a winning strategy:
+d e f c a n w i n ( board , p l a y e r = x , d = 2 1 ) :
+o t h e r = o i f p l a y e r = = x e l s e x
+i f d = = 1 :
+i f t h e r e i s a w in ni ng p l a y e r -move :
+r e t u r n t r u e
+e l s e : r e t u r n f a l s e
+i f c a n w i n ( board , p l a y e r , 1 ) :
+r e t u r n t r u e
+f o r each v a l i d p l a y e r -move :
+make move ( board , p l a y e r -move )
+wi nn in g = t r u e
+i f c a n w i n ( board , o t h e r , 1 ) :
+wi nn in g = f a l s e
+i f w in ni ng :
+f o r each v a l i d o t h e r -move :
+make move ( board , o t h e r -move )
+i f not c a n w i n ( board , p l a y e r , d−1):
+wi nn in g = f a l s e
+undo move ( board , o t h e r -move )
+11
+--- Page 12 ---
+undo move ( board , p l a y e r -move )
+i f w in ni ng : r e t u r n t r u e
+r e t u r n f a l s e
+The Optimization Problem:To determine not only whether a winning strategy exists, but
+also the fastest way to win (or the slowest way to lose), wedefine a scores(pos)for a board
+position pos:
+s(pos) =
+
+
+
+43−dif x can force win indmoves but not ind−1
+−43 +dif o can force win indmoves but not ind−1
+0 else
+Player x maximizes the score
+Player o minimizes the score
+Note: we assume in the following thatmake moveandundo moveobtainboardby reference and
+that there is only one representation ofboardin memory.
+d e f minimax ( board , depth = 4 2 ) :
+i f depth = = 0 : r e t u r n 0
+i s m a x i m i z i n gp l a y e r = m o v e sp l a y e d ( board ) % 2 = = 0
+b e s t s c o r e =−43 i f i s m a x i m i z i n gp l a y e r e l s e 43
+f o r e v e r y column c o l :
+i f i s v a l i dm o v e ( board , c o l ) :
+make move ( board , c o l )
+i f has won ( board , c o l ) :
+undo move ( board , c o l )
+r e t u r n depth i f i s m a x i m i z i n gp l a y e r e l s e−depth
+s c o r e = minimax ( board , depth−1 )
+undo move ( board , c o l )
+i f i s m a x i m i z i n gp l a y e r :
+b e s t s c o r e = max( b e s t s c o r e , s c o r e )
+e l s e :
+b e s t s c o r e = min ( b e s t s c o r e , s c o r e )
+r e t u r n b e s t s c o r e
+Simplifying the code by eliminating theis maximizing playerchecks:
+d e f negamax ( board , depth = 4 2 ) :
+i f depth = = 0 : r e t u r n 0
+b e s t s c o r e =−43
+f o r e v e r y column c o l :
+i f i s v a l i dm o v e ( board , c o l ) :
+make move ( board , c o l )
+i f has won ( board , c o l ) :
+undo move ( board , c o l )
+r e t u r n depth
+s c o r e =−negamax ( board , depth−1 )
+undo move ( board , c o l )
+b e s t s c o r e = max( b e s t s c o r e , s c o r e )
+r e t u r n b e s t s c o r e
+12
+--- Page 13 ---
+2 The Board Representation
+1. Naive Board Representation (Row-Major)
+Usually:char board[6][7];// 0=Empty, 1=X, 2=O
+b o o l h a s w o n h o r i z (charboard [ 6 ] [ 7 ] ,charp l a y e r ){
+f o r(i n tr = 0 ; r<6 ; r++){
+f o r(i n tc = 0 ; c<4 ; c++){
+i f( board [ r ] [ c ] = = p l a y e r & & board [ r ] [ c +1] = = p l a y e r & &
+board [ r ] [ c +2] = = p l a y e r & & board [ r ] [ c +3] = = p l a y e r )
+returnt r u e ;
+}
+}
+returnf a l s e ;
+}
+Problem:Too many memory accesses, too many branches, no parallel handling of cells!
+2. The 64-Bit Question
+Question to audience:Can we pack the whole board into a single 64-bit integer (uint64 t)?
+•We have 6×7 = 42 cells.
+•3 states per cell (Empty, X, O) =⇒3 42 ≈(2 1.58)42 ≥2 66 possible states.
+•>64 bits. =⇒Fails!
+Task:How can we represent the board efficiently using 64-bit integers anyway?
+•Idea:Usetwouint64 t! One for Player X, one for Player O.
+•Bit is1if the player has a piece there,0otherwise.
+3. The W rap-Around Problem & The Buffer Bit
+Let’s map indices:index = row * 7 + col.
+If we want to check a horizontal win, we shift the bits: e.g.,b & (b << 1)allows checking two
+pieces in a row.
+Question:What happens at the right edge?
+•A piece at cell (0,6) shifted by 1 becomes (1,0).
+•W rap-around error!A piece at the right edge connects with a piece at the left edge of
+the next row.
+Solution:Padding / The Buffer Bit
+•Add a fake 8th column that is always0!
+•index = row * 8 + col.
+•Total bits needed: 6×8 = 48 bits. (Fits perfectly in 64 bits!)
+4. Bitwise Win Detection (Horizontal)
+With padding, the C-code collapses into just a few bitwise operations:
+13
+--- Page 14 ---
+1. Naive 6x7 Board (W rap-Around Error)
+0 1 2 3 4 5 6
+7 8 9 10 11 12 13
+Shift<< 1
+(Illegal horizontal connect!)
+2. Padded 6x8 Bitboard (Safe Shift)
+0 1 2 3 4 5 6 7
+8 9 10 11 12 13 14 15
+Shift<< 1 Buffer Bit
+(always 0)
+Buffer Bit
+(always 0)
+Figure 1: Visualizing the wrap-around problem and the buffer-bit solution for bitboards.
+b o o l h a s w o n h o r i z ( u i n t 6 4t b ){
+// b c o n t a i n s o n l y t h e p i e c e s o f O N E p l a y e r .
+// S h i f t by 1 c h e c k s p a i r s (2 i n a row )
+u i n t 6 4t temp = b & ( b< <1 ) ;
+// S h i f t p a i r s by 2 t o c h e c k f o r 4 i n a row
+temp = temp & ( temp< <2 ) ;
+returntemp != 0 ;
+}
+Exercise:Derive the shifts for vertical and diagonal wins!
+Summary: Why Bitboards are fast
+•F ast Win Detection:
+–replaces slow nested loops and array iterations with a few bitwise shifts
+–executing in just a few CPU clock cycles
+•No Branching:
+–eliminatesif-statements and loop conditions
+–prevents branch mispredictions
+–keeps the CPU pipeline flowing without costly flushes
+•Zero Memory Access:
+–a 64-bit integer fits perfectly into a single CPU register
+–arrays force RAM/L1 Cache access because CPU registers cannot be dynamically
+addressed via runtime indices
+Implementation W arning (Loop-free Board Operations):To achieve the full perfor-
+mance advantage of bitboards, the bitboard logic must be applied consistently and loop-free
+across all board operations (includingmake moveandundo move). Otherwise, the slow loops (in
+particular, when compiled with flag-O0) dominate the running time and there is no significant
+advantage of the bitboard approach anymore.
+14
+--- Page 15 ---
+3 Alpha-Beta Pruning
+Goal:Prune the game tree to save time without changing the result.
+≥x
+Maximizer
+xMinimizer ≤y Minimizer
+Move 1 Move 2
+y
+Pruned!
+y≤x
+Alpha Pruning
+≤x
+Minimizer
+xMaximizer ≥y Maximizer
+Move 1 Move 2
+y
+Pruned!
+y≥x
+Beta Pruning
+Figure 2: Alpha and Beta Pruning. The red triangles indicate subtrees that can be ignored.
+The Idea (Minimax Perspective)
+•Alpha Pruning:The Maximizer evaluates moves. First move guarantees≥x. Second
+move: The Minimizer has a reply forcingy≤x.
+•The Minimizer won’t allow the Maximizer to reach> xhere =⇒Stop evaluating this
+branch!
+•Beta Pruning:Analogous for reversed roles (the Minimizer evaluates moves, the Maxi-
+mizer forcesy≥x).
+Maintaining Bounds (αandβ)
+•α: The highest score the Maximizer can already guarantee by choosing a different move
+at an ancestor node.
+•β: The lowest score the Minimizer can already guarantee by choosing a different move at
+an ancestor node.
+•The Maximizer updatesα, the Minimizer updatesβwhen it sees a better move.
+•Pruning Condition:α≥β=⇒Stop exploring! (The current branch is worse for one
+of the players than a previously explored alternative).
+T ransfer to Negamax
+•Single perspective:Current player always maximizes own score.
+•Scores:Recursive calls return negated scores.
+•Bounds Swap:Caller’sα=⇒Callee’s−β. Caller’sβ=⇒Callee’s−α.
+15
+--- Page 16 ---
+•Call:negamax(..., -β, -α).
+•Update:Only updateα. Prune ifα≥β.
+d e f negamax ( board , depth = 4 2 , a l p h a =−43 , b e t a = 4 3 ) :
+i f depth = = 0 : r e t u r n 0
+b e s t s c o r e =−43
+f o r e v e r y column c o l :
+i f i s v a l i dm o v e ( board , c o l ) :
+make move ( board , c o l )
+i f has won ( board , c o l ) :
+undo move ( board , c o l )
+r e t u r n depth
+s c o r e =−negamax ( board , depth−1 ,−beta ,−a l p h a )
+undo move ( board , c o l )
+b e s t s c o r e = max( b e s t s c o r e , s c o r e )
+a l p h a = max( alpha , s c o r e )
+i f a l p h a>= b e t a :
+r e t u r n b e s t s c o r e # prune
+r e t u r n b e s t s c o r e
+16
+--- Page 17 ---
+4 Static Move Ordering
+Idea:Start with the most promising moves!
+•Center columns are stronger =⇒more potential winning lines.
+•Alpha-Beta needs good moves early to establish strong bounds (α, β).
+•Result:High probability of early pruning.
+Static move order (center outwards):
+3,2,4,1,5,0,6
+5 Symmetry
+Idea:Avoid evaluating horizontally mirrored positions.
+•Connect Four is symmetric along the vertical axis.
+•Pruning:In a symmetric position: exploring left half≡exploring right half.
+•Thus, it suffices to explore only columns 0, 1, 2, and 3.
+Bitwise Symmetry Checking:Instead of computing the mirror at every node, wemaintain
+the mirrored boards throughout the recursion.
+s t a t i cb o o l i s s y m m e t r i c ( ){
+returnb o a r d c u r r e n t = = b o a r dc u r r e n tm i r r o r e d & &
+b o a r do p p o n e n t = = b o a r do p p o n e n tm i r r o r e d ;
+}
+•Maintaining the mirrored board is very efficient (just apply the mirrored move).
+•A symmetry check then only requires two fast 64-bit integer comparisons.
+•The mirrored boards will be needed later anyway (Transposition Table, Opening Book).
+For the initial call we need a function that mirrors given bitboards efficiently (exercise).
+6 Threat Detection
+Goal:Prune the search tree before move generation by checking for immediate wins or threats.
+•Win Possibility:Can we win immediately? =⇒Play it!
+•Threat Detection:Can the opponent win next turn? =⇒Block it! (Prune all others).
+Bitwise Implementation Idea:Detect 3 pieces of the same color and find the missing 4th
+piece.
+•Example (Horizontal):By combining left and right shifts by 1, we can find the exact cell
+that would complete a horizontal 4-in-a-row in any of the four possible relative positions.
+17
+--- Page 18 ---
+u i n t 6 4t m1 = ( board< <1 ) & ( board< <2 ) & ( board< <3 ) ;
+u i n t 6 4t m2 = ( board> >1 ) & ( board< <1 ) & ( board< <2 ) ;
+u i n t 6 4t m3 = ( board> >1 ) & ( board> >2 ) & ( board< <1 ) ;
+u i n t 6 4t m4 = ( board> >1 ) & ( board> >2 ) & ( board> >3 ) ;
+u i n t 6 4t h o r w i n s = m1|m2|m3|m4 ;
+// t h e n remove b u f f e r b i t s by u s i n g ’ and ’ and ’ n o t ’
+•The bitboardhor winsnow has a1at every position where a piece would complete a
+horizontal win.
+V alidating the Winning Move:
+•We only care about winning moves that arecurrently playable(i.e., an empty space that
+is supported by pieces below it).
+•Maintain aposs movesbitboard (e.g., using an array of column heights to generate tem-
+plates for the next free cell per column).
+•winning moves = (hor wins | vert wins | diag1 wins | diag2 wins)
+•Valid winning moves:winning moves & poss moves
+•T rick:Once we have a valid winning move, we can extract its column index efficiently
+usingstdc trailing zeros(winning moves) % 8.
+18
+--- Page 19 ---
+7 Transposition Tables, Zobrist Hashing and Dynamic Move
+Ordering
+A. Motivation: Sequences vs. Positions
+1. Does storing position evaluations help?
+2. How does the number of move sequences compare to distinct board positions?
+Let us count both.
+Question to the audience:How?
+DP Algorithm Idea:
+•State:A tuple of 7 strings representing the columns (pieces stacked bottom-to-top).
+•DP Map:A mappingstate→path count(number of move sequences leading to state).
+•Initialization:Start with the empty board state mapped to 1.
+•T ransitions (for moven):LetTbe the old map that contains all possible positions
+aftern−1 moves with their path counts. Build a new mapT ′ that will contain all possible
+positions afternmoves with their path counts. For eachstateinT, take each non-full
+column (height<6) and place piece into the column leading to a new state state. If
+stateis inT ′, letT ′( state) =T ′( state) +T(state), otherwise letT ′( state) =
+T(state).
+•Metrics:number of sequences = sum of all map values
+number of reachable board positions = number of map entries
+def has_won ( pos ):
+for c in pos :
+if " 1111 " in c or " 2222 " in c : return True
+b = [ col . ljust (6 , " " ) for col in pos ]
+for r in range (6):
+row = " " . join ( b [ c ][ r ] for c in range (7))
+if " 1111 " in row or " 2222 " in row : return True
+for c in range (4):
+for r in range (3):
+v = b [ c ][ r ]
+if v != " " and ( v == b [ c +1][ r +1] == b [ c +2][ r +2] == b [ c +3][ r +3]):
+return True
+for r in range (3 , 6):
+v = b [ c ][ r ]
+if v != " " and ( v == b [ c +1][ r -1] == b [ c +2][ r -2] == b [ c +3][ r -3]):
+return True
+return False
+def c o u n t _ c o n n e c t _ f o u r ( ma x_ mo ve s ):
+# state : tuple of 7 strings ( columns ). Value : number of paths
+p os it io ns = {( " " , " " , " " , " " , " " , " " , " " ): 1}
+for n in range (1 , ma x_ mo ve s + 1):
+player = " 1 " if n % 2 != 0 else " 2 "
+n e x t _ p o s i t i o n s = {}
+for pos , count in po si ti on s . items ():
+for col in range (7):
+if len ( pos [ col ]) < 6:
+new_pos = list ( pos )
+19
+--- Page 20 ---
+new_pos [ col ] += player
+new_pos = tuple ( new_pos )
+n e x t _ p o s i t i o n s [ new_pos ] = (
+n e x t _ p o s i t i o n s . get ( new_pos , 0) + count
+)
+p os it io ns = n e x t _ p o s i t i o n s
+t ot al _s eq = sum ( p os it io ns . values ())
+print ( f " Moves { n }: Se qu en c es ={ t ot al _s eq } , "
+f " Possible ={ len ( po si ti on s )} " )
+# Remove po si t io ns with a winning line to not expand them further
+p os it io ns = {
+pos : count for pos , count in po si ti on s . items ()
+if not has_won ( pos )
+}
+Results:
+n= 6: Sequences: 117,649, Possible Positions: 16,422
+n= 10: Sequences: 268,031,646, Possible Positions: 1,662,623
+n= 14: Sequences: 561,418,982,986, Possible Positions: 75,437,595
+Insight:Different move sequences lead to the exact same board position (Transpositions). On
+average, a position with 14 pieces is reached by more than 7,400 different move sequences.
+Problem:We compute the same position and the entire subtree beneath it thousands of times!
+Solution:Store already evaluated positions to skip redundant work. But: Not all≈4.5 trillion
+possible Connect Four positions can be kept in RAM at the same time.
+Question to the audience:Which data structure should we use?
+•Requirements:fast access, limited memory (cannot store everything).
+B. Data Structure: Transposition Table (TT)
+Answer:An array-based hash table.
+Contents per Entry:
+•key: Complete board (for collision detection, we’ll have multiple board positions with
+same hash)
+•score: Evaluated score
+•best move: The move that led to this score
+•flag: Type of the score bound (see below)
+Strategy:We cannot keep all≈4.5 trillion possible Connect Four position in RAM at the
+same time. Thus, collisions will occur.
+•On collisions, we simply overwrite the old entry (Replacement Strategy).
+•After a lookup, we first check, whether the entry’s key matches our board.
+On exercise sheet 10, we will determine the optimal hash map size.
+Optimization:Every position also exists mirrored. We always store only the bitwise smaller
+position. On lookups, we compute the hash for the bitwise smaller position (minimum of the
+actual and the mirrored position) and then check whether the entry’s key matches this bitwise
+smaller position.
+Question to the audience:How do we hash the board quickly?
+Requirements:
+20
+--- Page 21 ---
+•Since the hash is calculated in every node, it must be as fast as possible.
+•The hash of a subsequent position should be easily derivable from the current one.
+•The hashing must be deterministic.
+C. Zobrist Hashing
+Answer:Zobrist Hashing.
+•Generate a random 64-bit number (Zobrist keys) for every cell and every color in advance.
+•Hash of the empty board = 0.
+•When placing a piece (colorcat indexi):hash ^= zobrist[c][i](and then use only
+the lastkbits as the map index, wherekdepends on the intended map size)
+•When undoing a move (Undo): Execute the exact same XOR operation!
+Question to the audience:What is the problem if we naively take the storedscoreand
+best movefrom the TT and return it?
+D. Interaction with Alpha-Beta Pruning
+Answer:Alpha-Beta scores arenot certain! The validity of a computed score depends on the
+values ofαandβwith which the node was called.
+In this section we only sketch ideas; in E and F, we argue precisely.
+•LOWER Bound:Did the maximizer skip evaluating many moves because it caused a
+cutoff (α≥β)? =⇒It might have missed even better moves. We only know the score is
+at leastwhat we found.
+•UPPER Bound:Did the maximizer fail to increaseαwith any move? =⇒The
+minimizer may have pruned all branches early because it found counter-moves that keep
+the score≤α. We only know the score isat mostwhat we found.
+•EXACT Bound:Did the maximizer increaseαwithout ever reaching a cutoff (β)? =⇒
+All relevant paths were fully evaluated. The returned score is the exact minimax value.
+[α, β]
+Max
+v≥β
+≤α v
+pruned
+LOWER Bound
+(Cutoff byβ)
+[α, β]
+Max
+maxi(vi)≤α
+Min Min
+v1 v2
+≤α
+pruned
+≤α
+pruned
+UPPER Bound
+(Minimizer prunes,
+Max finds no move> α)
+[α, β]
+Max
+α < v < β
+≤α v
+EXACT Bound
+(αincreased, no cutoff )
+21
+--- Page 22 ---
+Figure:The three possible results of a node evaluation, stored as a flag in the TT. The
+drawings refer to the minimax-setting (not the negamax-setting). Note: If the root is reached
+via a different path, theαandβvalues can differ, causing the minimizer to prune differently,
+which leads to a different returned score.
+If we reach the exact same board position later via a different sequence of moves, the new path
+might provide differentαandβbounds and thus negamax must possibly return a different
+result. Thus, we cannot blindly accept an old score.
+Therefore, we store in the TT in every entry whether it is an upper, lower, or exact bound.
+E. Reading from the TT & Dynamic Move Ordering
+If we find an entry in the TT, the boards match, and the best score isv, we proceed depending
+on the flag:
+•EXACT:The scorevis certain (by Exercise 10.1(c)(ii)). Break the recursion and return
+v.
+•LOWER:We know the true score is≥v(by Exercise 10.1(c)(iii)). We update ourα:
+α= max(α, v).
+–Doesα≥βhold now? =⇒Immediate pruning (returnv).
+–Otherwise: We evaluate the storedbest movefirst (Dynamic Move Ordering).
+•UPPER:We know the true score is≤v(by Exercise 10.1(c)(i)). We update ourβ:
+β= min(β, v).
+–Doesα≥βhold now? =⇒Immediate pruning (returnv).
+–Otherwise: As above, evaluate thebest movefirst.
+F. Correctness of Bound Tightening
+Question:Why is it correct to tighten the search window [α, β] using TT bounds?
+Scenario:In the followingNrefers to a board position andS(N) denotes the true score of the
+position according to the definition on sheet 10.
+•Original search window for nodeN: [α, β].
+•TT yields an upper boundU=⇒S(N)≤U.
+•We tighten the window:β new = min(β, U).
+•We execute the search with [α, β new] yieldingv new.
+According to Exercise Sheet 10, Task 10.1(b), three cases exist:
+1.v new ≤α:
+•By Task 10.1(b)1:S(N)≤v new ≤α.
+•Re-search property (T ask 10.1(d)):Searching with the original, wider window
+[α, β] would yield a valuevwithv new ≤v.
+•=⇒We obtain a valid upper boundv new that is at least as tight as the boundv
+from the original window.
+2.α < vnew < βnew:
+22
+--- Page 23 ---
+•By Task 10.1(b)2:S(N) =v new.
+3.v new ≥β new:
+•By Task 10.1(b)3:S(N)≥v new ≥β new.
+•Sub-caseβ≤U(Window not strictly tightened,β=β new): Ifβis not updated, we
+search with the original window.
+•Sub-caseU < β(Window strictly tightened,U=β new):
+Search guarantees:S(N)≥β new =U
+TT guarantees:S(N)≤U
+=⇒S(N) =U
+=⇒The true scoreS(N) is exactlyU.
+Conclusion:Tightening the window is justified (and allows for stronger alpha-beta-pruning).
+Remark: An evaluation returning≥β new can yield the exact score if tightened by a TT upper
+bound. The algorithm sketched above returnsv new as a lower bound in that case and leaves this
+exact scoreS(N) =Uunused. Exploiting this effect allows for a better algorithm!
+The symmetric proof holds for lower bounds via Task 10.1(e).
+G. Opening Books
+Problem:The top of the game tree (the first 10–12 moves) has the highest branching factor
+and the positions require the deepest calculations. Evaluating these positions repeatedly during
+gameplay is too slow for real-time applications.
+Solution:Precompute anOpening Book (OB)for the early game.
+Key Optimization: Asymmetric Generation
+•Symmetric approach:Compute all valid moves for both players.
+–At depth 12, there are≈16 million unique positions. Fully solving all of them takes
+a considerable amount of time.
+•Asymmetric approach:
+– Bot’s turn:Only compute and store thesingle best move.
+– Opponent’s turn:Compute responses forall valid moves.
+–=⇒Reduces the state space (≈7·1·7·1·. . .+ 1·7·1·7·. . .move sequences)
+while guaranteeing a perfect response to any opponent play. Generation time drops
+to mere minutes or hours.
+•Implementation Details:How do we do this in code? We use an outer function that
+plays the first 12 moves asymmetrically. Every time it is the bot’s turn, we call our normal
+negamaxsolver. Sincenegamaxsearches a huge tree, we can save every score it finds for
+the first 12 moves directly into our opening book.
+Storage Strategies:To store these positions, one could use aHash T able, which re-
+quires a collision resolution strategy like open addressing with double hashing. Alterna-
+tively, one can collect all positions found during anegamaxcall in anarray. At the end of
+the call, these are appended to the opening book (an array again), sorted, and stripped of
+duplicates. During actual gameplay, the bot can then efficiently query the opening book
+using binary search.
+In both strategies, one should use the opening book created so far during opening book
+creation.
+23
+--- Page 24 ---
+•Perfect vs Imperfect Opening Book:
+–Option 1: Whenever our recursive negamax algorithm finds an EXACT bound for
+some position with at most, say, 12 moves played, we take it into the OB.
+–Option 2: Whenever our recursive negamax algorithm finds an EXACT bound or a
+LOWER bound that is winning, we take it into the OB. Note that for this imperfect
+variant, it is important that thenegamaxalgorithm aborts its recursion (prune) as
+soon as a winning move is found. Otherwise, it would still compute the perfect move
+but additionally write suboptimal winning moves into the OB, which does not save
+any time.
+Option 1 plays perfect moves, Option 2 wins whenever there is a winning chance, but not
+necessarily as fast as possible. Creating the opening book is much faster for Option 2.
+24
+--- Page 25 ---
+Algorithmic Number Theory and
+Cryptography
+Example 3.2: Extended Euclidean Algorithm
+We compute the greatest common divisor of 98 and 64 and express it as a linear combination
+of both numbers using the Extended Euclidean Algorithm.
+First, we apply the Euclidean algorithm to find the gcd:
+98 = 1·64 + 34 (1)
+64 = 1·34 + 30 (2)
+34 = 1·30 + 4 (3)
+30 = 7·4 + 2 (4)
+4 = 2·2 + 0
+=⇒gcd(98,64) = 2
+Now, we substitute the remainders backwards to express the gcd as a linear combination of 98
+and 64:
+2
+(4)
+= 1·30−7·4
+(3)
+= 1·30−7·(34−1·30) = 8·30−7·34
+(2)
+=−7·34 + 8·(64−1·34) =−15·34 + 8·64
+(1)
+= 8·64−15·(98−1·64) = 23·64−15·98
+Proof of Theorem 3.24: Correctness of RSA
+Becausee·d≡1 (modφ(n)), there exists aksuch thate·d= 1 +k(p−1)(q−1). Thus,
+(me)d =m e·d =m 1+k(p−1)(q−1) =m·
+
+mk(p−1)(q−1)
+
+=m·(m p−1)k(q−1) (5)
+We show:
+∀m (me)d ≡m(modp) (6)
+Case 1:p|m. Then both sides are≡0 (modp).
+Case 2:p∤m. Thenm≡a(modp) for somea∈ {1, . . . , p−1}=Z ∗
+p. By Fermat’s Little
+Theorem, we have:
+mp−1 ≡1 (modp)
+Substituting this into (5) yields:
+(me)d ≡m·1 k(q−1) ≡m(modp)
+25
+--- Page 26 ---
+This completes the proof of (6) for allm.
+Analogously, one can show:
+(me)d ≡m(modq) (7)
+From (6) and (7), it follows that (m e)d −mis divisible by bothpandq. Becausep̸=qand
+both are prime, it is also divisible byp·q=n(s. remark below)
+=⇒(m e)d ≡m(modp·q)
+The theorem follows, sincem < n.□
+FYI:Theorem 3.24 does not follow directly from Euler’s theorem, because gcd(m, n)>1 is
+possible.
+Remark (not done in the lecture): We discussed in the lecture why the following statement
+is true:
+For all positive natural numbersx, p, q, wherep, qare distinct primes, it holds: Ifp|xandq|x,
+thenpq|x.
+This statement is wrong if not bothpandqare prime: e.g., 6 and 3 are both divisors of 12, but
+18 = 6·3 is not.
+It also does not hold ifp=q: e.g., 3|6 and 3|6, but 9 = 3·3 does not divide 6.
+However, ifpandqare distinct primes, the statement holds and can be easily proven using the
+Extended Euclidean Algorithm (Theorem 3.6):
+Becausepandqare distinct primes, their greatest common divisor is 1. By the Extended
+Euclidean Algorithm, there exist integersu, v∈Zsuch that:
+1 =u·p+v·q
+Multiplying both sides byxyields:
+x=u·p·x+v·q·x
+Sinceq|x, there is an integerksuch thatx=k·q. Sincep|x, there is an integerlsuch that
+x=l·p. Substituting these appropriately on the right-hand side gives:
+x=u·p·(k·q) +v·q·(l·p)
+=p·q·(u·k+v·l)
+Because (u·k+v·l) is an integer, it follows immediately thatpq|x.□
+Remark for interested students (as discussed in the lecture):
+In the lecture, we touched upon the difference between primality and irreducibility. I originally
+intended to use irreducibility to fill the little gap left above. Using irreducibility, one can show
+that prime factor decompositions are unique, and with this uniqueness, we could have also filled
+the gap. But this would have been an unnecessary long proof.
+For now, let us formalize primality and irreducibility and show that they refer to the same
+concept.
+Definition of Irreducibility:A natural numberx >1 is called irreducible if for every product
+x=abfor naturalsa, b, it holdsa= 1 orb= 1.
+This is what most of us intuitively know under the name “prime”. But the actual mathematical
+definition of primality is different.
+Definition of Primality:A natural numberp >1 is called prime if for all naturalsa, bwith
+p|abit holdsp|aorp|b.
+Of course, in the context of natural numbers, primality and irreducibility mean the same thing.
+Let us prove this:
+26
+--- Page 27 ---
+Statement:A natural numberpis prime if and only if it is irreducible.
+Proof “prime⇒irreducible”:Letpbe prime. Letp=abfor naturalsa, b(indeeda, b >0, as
+elsep= 0 wouldn’t be prime). Thenp|ab. Aspis prime,p|aorp|b. W.L.O.G. we assume
+p|a(otherwise renameaandb). This impliesp≤a. Asp=ab, it also holdsp≥aand thus
+p=a. Consequently,b= 1. This shows thatpis irreducible.
+Proof “irreducible⇒prime”:Letpbe irreducible. Letp|abfor naturalsa, b. Ifab= 0,
+thena= 0 orb= 0, andp|0. Thus, it remains to consider the caseab >0. Assume that
+p∤a(otherwise, we were done). Hence, gcd(p, a) = 1. By the Extended Euclidean Algorithm
+(Theorem 3.6), there exist integersx, y∈Zwith:
+1 = gcd(p, a) =xp+ya
+Multiplying this equality withbleads to:
+b=xpb+yab
+However, asp|ab, there is an integerkwithkp=ab, i.e.:
+b=xpb+ykp=p(xb+yk)
+Because (xb+yk) is an integer,pdividesb, which completes the proof.□
+Example 3.25: RSA Protocol
+Let Σ ={0,1},r= 6 (max. message length), andℓ=⌈ r+1
+2 ⌉= 4.
+1. Bob generates his keys:
+•Chooses primesp= 17, q= 23∈ {2 4, . . . ,25 −1}randomly.
+•n= def p·q= 391, henceφ(n) = 16·22 = 352 (= 11·2 5).
+•Choosese= 109∈ {2, . . . , φ(n)−1}randomly with gcd(e, φ(n)) = 1.
+•d=e −1 modφ(n) = 109 −1 mod 352 = 197 (via Extended Euclidean Algorithm).
+(Check: 109·197≡1 (mod 352))
+•Public key:(n, e) = (391,109)
+•Private key:(n, d) = (391,197)
+2. Alice encrypts the messagem= 42:
+•c def =m e modn= 42 109 mod 391 = 247.
+•Sendsc= 247 to Bob.
+3. Bob decryptsc= 247:
+•m ′ =c d modn= 247 197 mod 391 = 42.
+27
+--- Page 28 ---
+Example 3.30: Square and Multiply
+We compute 337 mod 5:
+bin(37) = 1 0 0 1 0 1
+↓ ↓ ↓ ↓ ↓ ↓
+⇒37 = ((((( 1·2)+ 0 )·2+ 0 )·2+ 1 )·2+ 0 )·2+ 1
+↓ ↓ ↓ ↓ ↓ ↓
+⇒3 37 mod 5 = (((((3 1 )2·3 0 )2·3 0 )2·3 1 )2·3 0 )2·3 1 mod5
+= (((((31)2 ·3 0 mod 5| {z }
+4
+)2 ·3 0 mod 5
+| {z }
+1
+)2 ·3 1 mod 5
+| {z }
+3
+)2 ·3 0 mod 5
+| {z }
+4
+)2 ·3 1 mod 5
+| {z }
+3
+=3
+28

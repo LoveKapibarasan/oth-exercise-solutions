@@ -1,0 +1,178 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+%\usepackage{tikz}
+%\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forest}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.5}
+
+\title{Exercise 05}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+\section* {5. Normal Distribution}
+
+\subsection* { Ex10 }
+\begin{enumerate}
+\item $\Phi(1.63) \approx 0.4474$
+\item $\Phi(0.75) \approx 0.2734$
+\item $\Phi(1.10) \approx 0.3643$
+\item $\Phi(4.10) \approx 0.5000$
+\end{enumerate}
+
+\subsection* { Ex11 }
+
+\begin{enumerate}
+\item $z \approx 1.57$
+\item $P(Z \leq z ) = 0.7967 \Longleftrightarrow  \Phi(z) = 0.2967 \quad  \therefore z \approx 0.83 $
+\item $\Phi(2) \approx 0.47772, \; \Phi(z) = 0.37772 \quad \therefore z \approx 1.16$
+\end{enumerate}
+
+\subsection*{ Ex12 }
+
+\begin{enumerate}
+\item $P( -1.37 \leq Z \leq 2.01 ) = \Phi(1.37) + \Phi(2.01) \approx  0.8925$
+\item $P( 0.65 \leq Z \leq 1.26 ) = \Phi(1.26) - \Phi(0.65) \approx  0.1540$
+\item $P( -1.79 \leq Z \leq -0.54 ) = \Phi(1.79) - \Phi(0.54) \approx 0.2579 $
+\end{enumerate}
+
+
+\subsection*{ Ex13 }
+\[
+X \sim N(100, \; 20^2), \qquad Z = \frac{X-100}{20}
+\]
+
+\textbf{1. }$80 \le X \le 120$
+\[
+Z_1=\frac{80-100}{20}=-1,\qquad
+Z_2=\frac{120-100}{20}=1
+\]
+\[
+P(80\le X\le120)=2\Phi(1) \approx 68.26 \%
+\]
+
+\textbf{2. } $60 \le X \le 140$
+\[
+Z_1=\frac{60-100}{20}=-2,\qquad
+Z_2=\frac{140-100}{20}=2
+\]
+\[
+P(60\le X\le140) = 2\Phi(2) \approx 95.44 \%
+\]
+
+\textbf{3. } $40 \le X \le 160$
+\[
+Z_1=\frac{40-100}{20}=-3,\qquad
+Z_2=\frac{160-100}{20}=3
+\]
+\[
+P(40\le X\le160)= 2\Phi(3) \approx 99.730 \%
+\]
+
+\textbf{4. } $100 \le X \le 120$
+\[
+Z_1=\frac{100-100}{20}=0,\qquad
+\]
+\[
+P(100\le X\le120)=\Phi(1)-\Phi(0) \approx 34.13 \%
+\]
+
+\textbf{5. } $X > 160$
+\[
+P(X>160)=1-\Phi(3) \approx 0.135 \%
+\]
+
+\textbf{6. } $X < 80$
+\[
+P(X<80)=\Phi(-1)=1-\Phi(1) \approx 15.866\%
+\]
+
+\subsection*{ Ex14 }
+\[
+X \sim N(68,\;6^2),\qquad
+Z=\frac{X-68}{6}
+\]
+
+\textbf{1. } $70 \le X \le 80$
+\[
+Z_1=\frac{70-68}{6}=\frac{2}{6}=0.3333,\qquad
+Z_2=\frac{80-68}{6}=\frac{12}{6}=2
+\]
+\[
+P(70\le X\le80)=\Phi(2)-\Phi(0.3333) \approx 34.8 \%
+\]
+
+\textbf{2. } $X < 60$
+\[
+Z = \frac{60 - 68}{6} = \frac{-8}{6} = -1.3333
+\]
+\[
+P(X<60)=\Phi(-1.3333) \approx 9.18 \%
+\]
+
+\subsection*{ Ex15 }
+\[
+W \sim N(\mu=63.5,\ \sigma=4.54),\qquad Z=\frac{W-63.5}{4.54}
+\]
+
+\textbf{1. } $62.6 \le W \le 67.13$
+
+\[
+z_1=\frac{62.6-63.5}{4.54}=-0.1982378855,\qquad
+z_2=\frac{67.13-63.5}{4.54}=0.7995594714
+\]
+
+\[
+P(62.6\le W\le 67.13)=\Phi(z_2)-\Phi(z_1)
+=0.7880169615-0.4214294737
+=0.3665874879
+\]
+
+\[
+N = 800\times 0.3665874879 \approx 293.27 \Rightarrow
+\boxed{N\approx 293\ \text{students}}
+\]
+
+
+\textbf{2. } $W > 68.95$
+\[
+z=\frac{68.95-63.5}{4.54}=1.2004405286
+\]
+\[
+\Phi(z)=0.8850158517
+\]
+\[
+P(W>68.95)=1-\Phi(z)=1-0.8850158517=0.1149841483
+\]
+\[
+N = 800\times 0.1149841483 \approx 91.99 \Rightarrow
+\boxed{N\approx 92\ \text{students}}
+\]
+%=====
+\end{document}

@@ -1,0 +1,22 @@
+[
+  {
+    "sheet": "Exercise 12.1",
+    "question": "What is an Opening Book (OB) in Connect Four and how can we represent each entry compactly in C?",
+    "answer": "An Opening Book is a precomputed table of optimal moves for the early game (e.g., up to depth 12) to save computation time.\n\nTo minimize memory and disk space, we can pack the struct with `#pragma pack(push, 1)`:\n\n```c\n#pragma pack(push, 1)\nstruct ob_entry {\n    uint64_t board_a; // Player A's bitboard (8 bytes)\n    uint64_t board_b; // Player B's bitboard (8 bytes)\n    int8_t move;      // Best column index (1 byte)\n    int8_t score;     // Minimax score (1 byte)\n};\n#pragma pack(pop)\n```\n*Total size per entry: 18 bytes.*"
+  },
+  {
+    "sheet": "Exercise 12.2 & 12.3",
+    "question": "What are Iterative Deepening (ID) and Aspiration Windows, and why are they used together?",
+    "answer": "* **Iterative Deepening:** A search technique where depth-first search is run repeatedly with increasing depth limits (e.g., depth 12, then 14, 16...). It populates the Transposition Table (TT) with good moves, making alpha-beta pruning highly effective in subsequent deeper iterations.\n* **Aspiration Windows:** Restricting the search window $(\\alpha, \\beta)$ around the expected score from the previous ID iteration. If the score falls outside this narrow window, the search is repeated with a wider window.\n* **Synergy:** Together they maximize cutoffs. ID provides the expected score, while Aspiration Windows exploit this guess to narrow the search window, achieving faster pruning than a full $[-\\infty, +\\infty]$ search."
+  },
+  {
+    "sheet": "Exercise 12.4",
+    "question": "Explain how the Levenshtein distance between two strings of lengths $m$ and $n$ can be modeled as a graph search problem solved by $\\text{IDA}^*$, and state the admissible heuristic $h(i, j)$ for a state $(i, j)$.",
+    "answer": "* **Graph Model:** We model each cell $(i, j)$ in the Levenshtein distance matrix as a node. Edges exist from $(i, j)$ to neighboring cells:\n  - $(i+1, j)$ [Delete, cost 1]\n  - $(i, j+1)$ [Insert, cost 1]\n  - $(i+1, j+1)$ [Match cost 0, Substitute cost 1]\n* **Admissible Heuristic:** The absolute length difference of the remaining suffixes:\n  $$h(i, j) = |(m - i) - (n - j)|$$\n* **Why it is admissible:** Even in the best case where we can match all remaining characters using diagonal transitions costing 0, we must still perform at least $|(m-i)-(n-j)|$ insertions or deletions to match the string lengths. Thus, $h(i, j)$ never overestimates the actual remaining cost."
+  },
+  {
+    "sheet": "Exercise 12.5 & 12.6",
+    "question": "Compare the performance of Classical DP, Aspiration Window DP, and $\\text{IDA}^*$ for finding Levenshtein distance in the following scenarios:\n1. Small Grammar Fix\n2. Large Structural Change (deletion of a block of text)\n3. Random Strings",
+    "answer": "1. **Grammar Fix:** $\\text{IDA}^*$ is extremely fast ($<1$ ms) because the heuristic is highly accurate and guides search straight down the main diagonal. Classical DP is slow because it computes the entire grid.\n2. **Structural Change:** $\\text{IDA}^*$ remains very fast because the difference in text lengths is equal to the edit distance, meaning the heuristic is perfectly accurate. Aspiration Window DP is slow because it requires multiple restarts as the optimal path drifts outside the narrow band.\n3. **Random Strings:** Classical DP is the fastest because the edit distance is large and uniform, meaning the heuristic is uninformative. $\\text{IDA}^*$ suffers from exponential complexity due to redundant path evaluations (since it doesn't store visited states), making it too slow to run."
+  }
+]

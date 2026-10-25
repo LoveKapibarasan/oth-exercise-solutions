@@ -1,0 +1,465 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{metropolis} % Professional modern theme
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+
+\definecolor{primary}{HTML}{1A5276}
+\definecolor{secondary}{HTML}{2E86C1}
+\definecolor{accent}{HTML}{AED6F1}
+\definecolor{circle_bg}{HTML}{F4F6F7}
+\definecolor{AIGreen}{HTML}{22C55E}
+\tcbuselibrary{skins}
+\newcommand{\circlebullet}[1]{%
+    \begin{tikzpicture}[baseline=(char.base)]
+        \node[shape=circle, draw=primary, fill=primary, inner sep=2.5pt, text=white, font=\bfseries\small] (char) {#1};
+    \end{tikzpicture}%
+}
+
+% --- Presentation Info ---
+\title{AI-Charge Technologies Germany}
+\subtitle{Revolutionizing EV Infrastructure with Smart Backend Solutions}
+\author{Takanori Nagashima \\ \small Manager}
+\date{\today}
+\institute{TechBase Regensburg, Germany}
+
+\begin{document}
+
+% --- Custom Title Slide with Logo ---
+\begin{frame}[plain]
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \includegraphics[width=0.8\textwidth,height=0.4\textheight,keepaspectratio]{assets/Logo.png}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            {\Large \textbf{\inserttitle}} \\
+            {\small \insertsubtitle} \\
+            \vspace{0.8cm}
+            \textbf{\insertauthor} \\
+            \insertinstitute \\
+            \vspace{0.4cm}
+            \insertdate
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Company Overview}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \begin{itemize}
+                \item \textbf{Name:} AI-Charge Technologies Germany
+                \item \textbf{Location:} TechBase, Regensburg
+                \item \textbf{Mission:} Implementing AI-driven charging and energy management.
+                \item \textbf{Focus:} Scalable cross-platform connectivity for sustainable mobility.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \includegraphics[width=0.8\textwidth,height=0.4\textheight,keepaspectratio]{assets/office.jpg}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{About Me}
+    \begin{columns}[c]
+        
+        \begin{column}{0.35\textwidth}
+            \centering
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=primary,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=1mm, right=1mm, top=1mm, bottom=1mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm
+            ]
+            \centering
+            \includegraphics[width=\linewidth, height=4.5cm, keepaspectratio]{assets/me.jpg}
+            \end{tcolorbox}
+        \end{column}
+        
+        \hfill
+        
+        \begin{column}{0.60\textwidth}
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=secondary, title=Takanori Nagashima,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=4mm, right=4mm, top=3mm, bottom=3mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm
+            ]
+            \small
+            \textbf{Role:} Generalist \\
+            Managing core infrastructure, backend operations, web deployment, and system integration.
+            
+            \vspace{1em}
+            
+            \textbf{Contact:} takanori.nagashima@ai-charge.com \\
+            \textbf{Date of Birth:} August 27, 2025
+            \end{tcolorbox}
+        \end{column}
+        
+    \end{columns}
+\end{frame}
+
+\section{Backend System}
+
+\begin{frame}{Backend Server}
+    \begin{columns}
+        \begin{column}{0.65\textwidth}
+            \begin{itemize}
+                \item \textbf{K8s \& Docker:} Full orchestration for self-healing nodes and containerized microservices.
+                \item \textbf{Multi-Cloud Hybrid Strategy:} 
+                    \begin{itemize}
+                        \item AWS (Scalability) + Contabo (Efficiency) + Hetzner (Local Nodes).
+                        \item Strategic On-Premise integration for maximum sovereignty.
+                    \end{itemize}
+                \item \textbf{High Availability:} Targeted \textcolor{blue}{99.9999999..\%} uptime via Multi-AZ failover.
+                \item \textbf{OCPP Compliance:} Simultaneous, native support for versions 1.6, 2.0.1, and 2.1.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/ocpp.png}
+        \end{column}
+    \end{columns}
+    \vfill
+    \begin{center}
+        \tiny \textcolor{gray}{Reference: https://openchargealliance.org/protocols/open-charge-point-protocol/}
+    \end{center}
+\end{frame}
+
+\section{Payment Application}
+
+\begin{frame}{Payment Application Architecture}
+    \begin{columns}[c] 
+        
+        \begin{column}{0.55\textwidth}
+            
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=primary, title=1. Web Application,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=2mm, right=2mm, top=1.5mm, bottom=1.5mm,
+                boxsep=0mm, before skip=0mm, after skip=1.5mm
+            ]
+            \small
+            High-performance responsive user interface built with \textbf{React}.
+            \end{tcolorbox}
+            
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=secondary, title=2. iOS / Android App,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=2mm, right=2mm, top=1.5mm, bottom=1.5mm,
+                boxsep=0mm, before skip=0mm, after skip=2.5mm
+            ]
+            \small
+            Single-codebase cross-platform deployment powered by \textbf{Flutter}.
+            \end{tcolorbox}
+            
+            \begin{tcolorbox}[
+                colback=gray!5, colframe=gray!60, title=Shared Infrastructure,
+                width=\linewidth, boxrule=0.8pt, arc=1mm,
+                left=2mm, right=2mm, top=1.5mm, bottom=1.5mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm
+            ]
+            \footnotesize
+            \begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+                \item \textbf{Identity (IAM):} Secure enterprise SSO via \textbf{Keycloak}.
+                \item \textbf{Payment:} Core billing infrastructure via \textbf{Stripe}.
+            \end{itemize}
+            \end{tcolorbox}
+            
+        \end{column}
+        
+        \begin{column}{0.38\textwidth}
+            \centering
+            \includegraphics[width=\linewidth,height=0.7\textheight,keepaspectratio]{assets/payment.png}
+        \end{column}
+        
+    \end{columns}
+\end{frame}
+
+\section{Payment Modalities}
+
+\begin{frame}{Core Payment Modalities}
+    \begin{small}
+    \begin{enumerate}[label=\protect\circlebullet{\arabic*}, leftmargin=0.8cm, labelsep=0.3cm, itemsep=0.1cm]
+        \item \textbf{QR Code (Scan \& Charge)} -- \textit{Target: Guest Users} \\
+              Instant web-based payment flow. No app installation or registration required.
+        \item \textbf{NFC Sticker (Scan \& Charge)} -- \textit{Target: Guest Smartphone Users} \\
+              High-speed "Tap to Start" interaction via passive NDEF-formatted tags.
+        \item \textbf{RFID (Subscription)} -- \textit{Target: Fleet / Monthly Users} \\
+              Dedicated physical cards optimized for subscription-based flat-rate plans.
+        \item \textbf{Touch \& Charge (Stripe Terminal)} -- \textit{Target: Credit Card Holders} \\
+              Physical hardware integration supporting EMV contactless, Apple/Google Pay.
+        \item \textbf{Plug \& Charge (Hubject)} -- \textit{Target: ISO 15118 Compatible EVs} \\
+              Automated authentication and billing directly handled through the charging cable.
+    \end{enumerate}
+    \end{small}
+\end{frame}
+
+\begin{frame}{Payment System Comparison}
+    \centering
+    \vfill
+    \begin{tcolorbox}[colback=circle_bg, colframe=primary, title=System Comparison, width=0.95\textwidth]
+    \small
+    \centering
+    \begin{tabular}{lll}
+    \textbf{Method} & \textbf{Hardware} & \textbf{Pricing Model} \\ \hline
+    1. QR Code & Web, Mobile, Non-Logged-in & Pay-as-you-go \\
+    2. NFC Sticker & Mobile, Non-Logged-in & Pay-as-you-go \\
+    3. RFID & Physical Card & Monthly Subscription \\
+    4. Touch \& Charge & Stripe Terminal & Credit/Debit \\
+    5. Plug \& Charge & Hubject V2G & Fully Automated \\
+    \end{tabular}
+    \end{tcolorbox}
+    \vfill
+\end{frame}
+
+\section{Smart Charging Optimization}
+
+\begin{frame}{Data-Driven Optimization Ecosystem}
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \textbf{Inputs \& Integration}
+            \begin{itemize}
+                \item \textbf{Building:} Load Monitoring.
+                \item \textbf{Market:} \textbf{Transparency Tariff API}.
+                \item \textbf{Vehicle:} SOC \& GPS Telemetry.
+            \end{itemize}
+            \vspace{0.3cm}
+            \textbf{AI Engine}
+            \begin{itemize}
+                \item \textbf{Python Gymnasium} RL Core.
+                \item Autonomous Charging Plan Optimization.
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth,height=0.7\textheight,keepaspectratio]{assets/rl_graph.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Strategic Deployment Models}
+
+\begin{frame}{Core Service Ecosystems: Commercial \& Fleet}
+    \begin{columns}[t, totalwidth=\textwidth]
+        
+        \begin{column}{0.48\linewidth}
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=primary, title=1. Smart Building,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=3mm, right=3mm, top=3mm, bottom=3mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm,
+                equal height group=b2b
+            ]
+            \small
+            \textbf{Target:} Offices \& Apartments \\[0.5em]
+            Standard AC/DC hardware deployment. Focused on property value enhancement and daily visitor convenience.
+            \end{tcolorbox}
+        \end{column}
+        
+        \hfill
+        
+        \begin{column}{0.48\linewidth}
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=secondary, title=2. Mission-Critical Fleet,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=3mm, right=3mm, top=3mm, bottom=3mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm,
+                equal height group=b2b
+            ]
+            \small
+            \textbf{Target:} Logistics (Couriers) \\[0.5em]
+            Deep RL-driven schedule optimization. Ensures 100\% readiness for high-frequency delivery cycles.
+            \end{tcolorbox}
+        \end{column}
+        
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Core Service Ecosystems: Leaf (P2P Sharing)}
+    \begin{columns}[c]
+        
+        \begin{column}{0.50\textwidth}
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=AIGreen, title=3. Leaf (P2P Sharing),
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=4mm, right=4mm, top=4mm, bottom=4mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm
+            ]
+            \small
+            \textbf{Target:} Residential Hosts \\[0.5em]
+            Citizen-centric model. Homeowners monetize their private chargers by sharing with neighbors.
+            \end{tcolorbox}
+        \end{column}
+        
+        \hfill
+        
+        \begin{column}{0.45\textwidth}
+            \centering
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=AIGreen,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=1mm, right=1mm, top=1mm, bottom=1mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm
+            ]
+            \centering
+            \includegraphics[width=\linewidth, height=4.5cm, keepaspectratio]{assets/placeholder.jpg}
+            \end{tcolorbox}
+        \end{column}
+        
+    \end{columns}
+\end{frame}
+
+\section{Custom EVSE}
+
+\begin{frame}{Custom EVSE: PX Series}
+    \begin{columns}[c] 
+        \begin{column}{0.45\textwidth}
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=primary, title=1. Portable Single Phase,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=3mm, right=3mm, top=2.5mm, bottom=2.5mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm
+            ]
+            \centering
+            \includegraphics[width=0.9\linewidth, height=4cm, keepaspectratio]{assets/placeholder.jpg}
+            \vspace{0.5em}
+            
+            \begin{flushleft}
+            \small
+            \textbf{Series Name:} PX Series \\
+            \textbf{Power Capacity:} 3.7 kW / 7.4 kW
+            \end{flushleft}
+            \end{tcolorbox}
+        \end{column}
+        
+        \hfill 
+        
+        \begin{column}{0.50\textwidth}
+            \begin{tcolorbox}[
+                blanker, 
+                width=\linewidth, before skip=0mm, after skip=0mm
+            ]
+            \large \textbf{Key Features} \vspace{0.5em}
+            \small
+            \begin{itemize}[leftmargin=*, itemsep=0.8em]
+                \item \textbf{Highly Flexible \& Compact:} Lightweight design optimized for easy transport and storage in vehicle trunks.
+                \item \textbf{Plug-and-Play Architecture:} No complex installation required; seamless operation with standard residential grid sockets.
+                \item \textbf{Built-in Thermal Protection:} Intelligent sensors continuously monitor temperature to prevent overheating during high-frequency cycles.
+            \end{itemize}
+            \end{tcolorbox}
+        \end{column}
+        
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Custom EVSE: NX Series}
+    \begin{columns}[c]
+        
+        \begin{column}{0.45\textwidth}
+            \begin{tcolorbox}[
+                colback=circle_bg, colframe=secondary, title=2. Three-Phase Wall Box,
+                width=\linewidth, boxrule=1pt, arc=1mm,
+                left=3mm, right=3mm, top=2.5mm, bottom=2.5mm,
+                boxsep=0mm, before skip=0mm, after skip=0mm
+            ]
+            \centering
+            \includegraphics[width=0.9\linewidth, height=4cm, keepaspectratio]{assets/placeholder.jpg}
+            \vspace{0.5em}
+            
+            \begin{flushleft}
+            \small
+            \textbf{Series Name:} NX Series \\
+            \textbf{Power Capacity:} 11 kW / 22 kW
+            \end{flushleft}
+            \end{tcolorbox}
+        \end{column}
+        
+        \hfill
+        
+        \begin{column}{0.50\textwidth}
+            \begin{tcolorbox}[
+                blanker,
+                width=\linewidth, before skip=0mm, after skip=0mm
+            ]
+            \large \textbf{Key Features} \vspace{0.5em}
+            \small
+            \begin{itemize}[leftmargin=*, itemsep=0.8em]
+                \item \textbf{High-Speed Charging:} Utilizes three-phase power infrastructure to dramatically reduce vehicle downtime.
+                \item \textbf{IP55 Weatherproof Enclosure:} Robust engineering designed to withstand harsh outdoor environmental conditions.
+                \item \textbf{Smart Grid \& Authentication:} Fully integrated with RFID readers and smart-charging protocols for secure monetization.
+            \end{itemize}
+            \end{tcolorbox}
+        \end{column}
+        
+    \end{columns}
+\end{frame}
+
+\section{Homepage Content}
+
+\begin{frame}{Homepage Content}
+    \begin{tcolorbox}[
+        colback=circle_bg, colframe=primary, title=1. ai-charge.com,
+        width=\linewidth, boxrule=1pt, arc=1mm,
+        left=3mm, right=3mm, top=2mm, bottom=2mm,
+        boxsep=0mm, before skip=0mm, after skip=4mm
+    ]
+    \small
+    Corporate web presence built on \textbf{WordPress}. Focuses on brand identity, custom EVSE showcase, and B2B inquiries.
+    \end{tcolorbox}
+    
+    \begin{tcolorbox}[
+        colback=circle_bg, colframe=secondary, title=2. webshop.ai-charge.com,
+        width=\linewidth, boxrule=1pt, arc=1mm,
+        left=3mm, right=3mm, top=2mm, bottom=2mm,
+        boxsep=0mm, before skip=0mm, after skip=4mm
+    ]
+    \small
+    Fully integrated online shop powered by \textbf{WooCommerce}. Handles secure retail hardware sales and accessories.
+    \end{tcolorbox}
+    
+    \begin{tcolorbox}[
+        colback=gray!5, colframe=gray!60, title=3. legal.ai-charge.com,
+        width=\linewidth, boxrule=0.8pt, arc=1mm,
+        left=3mm, right=3mm, top=2mm, bottom=2mm,
+        boxsep=0mm, before skip=0mm, after skip=0mm
+    ]
+    \small
+    Centralized portal for Imprint (Impressum), GDPR Privacy Policy, and Terms of Service (AGB).
+    \end{tcolorbox}
+\end{frame}
+
+\section{Support \& Monitoring}
+
+\begin{frame}{Support \& Knowledge Base Infrastructure}
+    \begin{tcolorbox}[
+        colback=circle_bg, colframe=primary, title=1. support.ai-charge.com / support@ai-charge.com,
+        width=\linewidth, boxrule=1pt, arc=1mm,
+        left=3mm, right=3mm, top=2mm, bottom=2mm,
+        boxsep=0mm, before skip=0mm, after skip=4mm
+    ]
+    \small
+    Centralized Support Center powered by \textbf{Zammad}. Handles omni-channel ticketing, customer inquiries, and direct email support synchronization.
+    \end{tcolorbox}
+    
+    \begin{tcolorbox}[
+        colback=circle_bg, colframe=secondary, title=2. Knowledge Base \& Telemetry,
+        width=\linewidth, boxrule=1pt, arc=1mm,
+        left=3mm, right=3mm, top=2mm, bottom=2mm,
+        boxsep=0mm, before skip=0mm, after skip=0mm
+    ]
+    \small
+    Internal technical documentation and operational knowledge base driven by the \textbf{Grafana Stack} (\textbf{Grafana}, \textbf{Mimir}, \textbf{Loki}, and \textbf{Alloy}) for real-time EVSE telemetry analysis and log aggregation.
+    \end{tcolorbox}
+\end{frame}
+\end{document}

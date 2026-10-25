@@ -1,0 +1,343 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 12
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+This exercise sheet is rather extensive. To make up for this, the next sheet will be less extensive. The last two
+exercises will not be discussed next week, but in terms of content, they fit better on this sheet than on the next.
+12.1Opening Book Generation
+In this task, we want to create an Opening Book (OB) for our Connect Four agent to reduce the search
+time in the early game. An opening book is a table of precomputed moves for the first few turns.
+You should generate two different opening books:
+1.Perfect Opening Book: Contains only moves that lead to the optimal minimax score.
+2.Imperfect Opening Book: Contains moves that guarantee a win, even if they are not the optimal
+win, as long as they are winning. This relaxes the condition and can speed up generation.
+Struct Definition:We recommend the following compactstructto represent an entry in the opening
+book. The#pragma packdirective ensures that the compiler does not add padding bytes, minimizing
+memory and disk space:
+#pragma pack(push, 1)
+struct ob_entry {
+uint64_t board_a;
+uint64_t board_b;
+int8_t move;
+int8_t score;
+};
+#pragma pack(pop)
+Algorithmic Approach:To keep the size of the opening book manageable, compute it only up to depth
+12 and use an asymmetric approach: when it is the bot’s turn, we only need to store and follow the
+single best move. When it is the opponent’s turn, we must explore all valid replies, as the opponent
+might play anything. Note that the bot could play as the first player or as the second player, so you
+must build the book for both scenarios!
+File I/O Hints:
+• For writing the opening book to a file, you can write the raw bytes of your array sequentially using
+fwrite.
+• For reading the book, determine the file size first, allocate an array ofstruct ob entry, and
+load the entire file into memory at once usingfread. This allows for fast lookups (e.g., using
+bsearchif you sort the entries first).
+•Note:As an exception, you may use an LLM to generate the boilerplate code for the File I/O.
+However, the algorithmic implementation (generating and searching the book) must be written
+entirely by yourself.
+Solution:In repository
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Note:The remaining exercises explain some well-known AI search algorithms. If you need more in-
+depth explanations, please consult additional sources. Keep the first two exercises short. The focus
+should be on exercises 12.4 and 12.5.
+12.2Advanced Search Optimization in Connect Four
+Iterative Deepening (ID) is a technique where the search is run repeatedly with increasing depth limits.
+For example, we first search up to depth 12, then depth 14, then 16, and so on. When reaching the
+current depth limit without finding a terminal state, the search returns a score. We consider the variant
+where non-terminal positions are evaluated as 0, since it is unclear how to define a suitable heuristic
+for Connect Four, even though a good heuristic could potentially improve performance. The purpose
+of this approach is to populate the Transposition Table (TT) with good moves. In subsequent, deeper
+iterations, these moves can be examined first, which makes alpha-beta pruning more effective.
+Aspiration Windows are commonly used in combination with ID. The idea is to start the search using
+the best move obtained from the TT with a narrow alpha-beta window around the predicted score. If
+the returned score falls outside this window (i.e., is≤αor≥β), the search is repeated with a wider
+window.
+Do you expect these techniques to be effective in Connect Four? In particular, think of the deep endgame
+(e.g., from depth 36 onwards).
+Note:When answering, specifically analyze the depth-limited Iterative Deepening approach with the
+flat scoring function exactly as described above.
+Solution:
+12.3Iterative Deepening Search
+Iterative Deepening Search repeatedly performs a depth-first search, increasing the maximum search
+depth by 1 in each iteration (depth 1, then depth 2, etc.). Thus, it tries to combine the advantages of BFS
+and DFS in one algorithm.
+In terms of memory requirements, iterative deepening search has the same advantage as depth-first
+search over breadth-first search: it requires much less memory.1
+One advantage of iterative deepening search over DFS is its behavior in infinite graphs. While a stan-
+dard depth-first search can traverse an infinite path without reaching the goal, applying a growing
+depth limit forces iterative deepening to examine every node at a shallower depth before exploring
+deeper paths.
+What other advantage of BFS over DFS does iterative deepening search share?
+Solution: Optimality. Because of the layer-by-layer processing (first all nodes up to depth 1, then
+depth 2, etc.), the first path found to the goal is guaranteed to be a shortest path, as in breadth-first
+search.
+12.4A ∗ and Iterative DeepeningA ∗ (IDA*)
+a) TheA ∗ algorithm is a variant of Dijkstra’s algorithm. It uses a heuristic functionh(x)to estimate
+the remaining cost from the current node to the goal. Instead of processing nodes according to
+the path cost incurred so farg(x),A ∗ expands the node where the estimated total costf(x) =
+g(x) +h(x)is minimal. In geographical pathfinding, for example, the straight-line distance to the
+1This is primarily true for directed acyclic graphs. A depth-first search can traverse the entire graph using only the recursion
+stack, though subpaths may be traversed multiple times. A breadth-first search, on the other hand, requires a queue that can
+grow to linear size. Both algorithms could maintain a list of fully explored nodes (or a flag in the nodes) to avoid traversing
+subpaths multiple times, but this requires linear memory overhead. In AI applications, the graph is often so massive that it can
+never be explicitly generated and stored in memory. In these cases, a depth-first search variant is often the only viable approach.
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+destination can be used as the heuristich(x).A ∗ is guaranteed to find a shortest path (provided
+the heuristic does not overestimate the actual cost) and is often faster than Dijkstra because it
+guides the search towards the goal.
+Can you describe a geographical situation in which Dijkstra’s algorithm reaches the goal faster
+thanA ∗ with the straight-line heuristic?
+Solution:If the heuristic guides the algorithm into a dead end, such as a valley running
+towards the goal that is blocked at the end.A ∗ searches the valley to the end, whereas
+Dijkstra’s algorithm, expanding uniformly, can find a detour earlier.
+b) The Iterative DeepeningA ∗ (IDA*) algorithm combines iterative deepening search with the
+heuristic concept ofA ∗. Instead of defining the search limit as a depth limit, IDA* uses the
+f-value (f(x) =g(x) +h(x)) as the termination criterion. An iteration of the depth-first search
+backtracks as soon as the estimated total costf(x)exceeds the limit.
+How can we use IDA* to calculate the Levenshtein distance between two strings without com-
+puting the entireO(m×n)distance matrix as in the standard dynamic programming algorithm?
+Solution:We model each entry of the distance matrix(i,j)as a node in a graph. Edges
+exist to the neighboring nodes(i+1,j)[Delete],(i,j+1)[Insert] and(i+1,j+1)[Substi-
+tute/Match]. IDA* starts at(0, 0)and searches for a path to(m,n). The absolute length
+difference of the remaining suffixes|(m−i)−(n−j)|can be used as an admissible heuristic
+h(x).
+c) What would a concrete implementation of this calculation of the Levenshtein distance with IDA*
+in C23 look like?
+Solution:
+i n th e u r i s t i c (i n ti ,i n tj ,i n tlen1 ,i n tlen2 )
+{
+/ / d i f f e r e n c e o f t h e numbers o f r e m a i n i n g s t e p s t o be made p e r c o o r d i n a t e
+i n trem1 = len1 − i ;
+i n trem2 = len2 − j ;
+/ / a d i a g o n a l s t e p may c o s t 0 and we must not o v e r e s t i m a t e t h e d i s t a n c e
+/ / t o a c h i e v e an o p t i m a l r e s u l t
+/ / even i f we can make|rem2 − rem1|FREE d i a g n o a l moves ,
+/ /|rem1 − rem2|h o r i z o n t a l / v e r t i c a l moves have s t i l l t o be made a s w e l l
+returnabs ( rem1 − rem2 ) ;
+}
+i n tsearch (char * s1 ,char * s2 ,i n ti ,i n tj ,i n tg ,i n tbound ,
+i n tlen1 ,i n tlen2 )
+{
+i n tf = g + h e u r i s t i c ( i , j , len1 , len2 ) ;
+i f( f>bound )
+returnf ;
+i f( i == len1 & & j == len2 )
+return−1;/ / Found t h e t a r g e t
+i n tmin val = INT MAX ;
+/ / S u b s t i t u t e o r Match
+i f( i<len1 && j<len2 ){
+i n tc o s t = ( s1 [ i ] == s2 [ j ] ) ? 0 : 1 ;
+T. Dose 3 SS2026
+--- Page 4 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+i n tt = search ( s1 , s2 , i + 1 , j + 1 , g + cost , bound , len1 , len2 ) ;
+i f( t == −1)
+return−1;
+i f( t<min val )
+min val = t ;
+}
+/ / I n s e r t i o n
+i f( j<len2 ){
+i n tt = search ( s1 , s2 , i , j + 1 , g + 1 , bound , len1 , len2 ) ;
+i f( t == −1)
+return−1;
+i f( t<min val )
+min val = t ;
+}
+/ / D e l e t i o n
+i f( i<len1 ){
+i n tt = search ( s1 , s2 , i + 1 , j , g + 1 , bound , len1 , len2 ) ;
+i f( t == −1)
+return−1;
+i f( t<min val )
+min val = t ;
+}
+returnmin val ;
+}
+i n tl e v e n s h t e i n i d a s t a r (char * s1 ,char * s2 )
+{
+i n tlen1 = s t r l e n ( s1 ) ;
+i n tlen2 = s t r l e n ( s2 ) ;
+i n tbound = h e u r i s t i c ( 0 , 0 , len1 , len2 ) ;
+while( t r u e ){
+i n tt = search ( s1 , s2 , 0 , 0 , 0 , bound , len1 , len2 ) ;
+i f( t == −1)
+returnbound ;
+i f( t == (INT MAX ) )
+return−1;/ / Not found
+bound = t ;
+}
+}
+12.5Aspiration Windows for the Levenshtein Distance
+An Aspiration Window is a technique where we assume a target value to restrict the search space. If
+the search fails within this limited window, the window is successively enlarged.
+Applied to the Levenshtein distance: For example, we initially assume a target distance ofk=10.
+In dynamic programming, we no longer calculate the entirem×ngrid. Instead, we deviate from
+the diagonal of the distance matrix only so far that the horizontal and vertical coordinates differ by a
+maximum ofk. 2 If the search results in a distance greater thank, we discard the result and repeat with
+2This strategy of searching around the main diagonali=jassumes that both texts are of approximately equal length. If the
+T. Dose 4 SS2026
+--- Page 5 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+e.g. a doubled window (k=20,k=40, etc.).
+Implement this aspiration window approach in C23 code?
+Solution:
+/ / we c o u l d a l s o o n l y always s t o r e t h e l a s t two rows o f t h e DP m a t r i x
+/ / t h i s would make t h i n g s a b i t more e f f i c i e n t
+i n tl e v e n s h t e i n a s p i r a t i o n (const char * s1 ,const char * s2 )
+{
+i n tlen1 = s t r l e n ( s1 ) ;
+i n tlen2 = s t r l e n ( s2 ) ;
+i f( len1>len2 ){/ / Swap t o make l e n 1<= l e n 2 t o o p t i m i z e rows / c o l s l o g i c
+const char *tmp = s1 ;
+s1 = s2 ;
+s2 = tmp ;
+i n tt = len1 ;
+len1 = len2 ;
+len2 = t ;
+}
+i n tk = 1 0 ;/ / I n i t i a l window s i z e
+while( t r u e ){
+/ / c r e a t e dp t a b l e
+i n t * *dp = malloc ( ( len1 + 1 ) * s i z e o f(i n t * ) ) ;
+for(i n ti = 0 ; i<= len1 ; i ++){
+dp [ i ] = malloc ( ( len2 + 1 ) * s i z e o f(i n t) ) ;
+for(i n tj = 0 ; j<= len2 ; j ++){
+dp [ i ] [ j ] = (INT MAX / 2 ) ;/ / I n f i n i t y , t o a v o i d o v e r f l o w s we do not use INT MAX
+}
+}
+/ / i n i t f i r s t c o l
+dp [ 0 ] [ 0 ] = 0 ;
+for(i n ti = 1 ; i<= len1 ; i ++){
+i n tc e n t e r j = (i n t) ( ( (long long) i * len2 ) / len1 ) ;
+i f( c e n t e r j<= k )
+dp [ i ] [ 0 ] = i ;
+}
+/ / i n i t f i r s t row
+for(i n tj = 1 ; j<= len2 && j<= k ; j ++)
+dp [ 0 ] [ j ] = j ;
+for(i n ti = 1 ; i<= len1 ; i ++){
+/ / f i l l r e l e v a n t p a r t o f row i
+i n tc e n t e r j = (i n t) ( ( (long long) i * len2 ) / len1 ) ;
+i n ts t a r t j = M A X( 1 , c e n t e r j − k ) ;
+i n te n d j = MIN( len2 , c e n t e r j + k ) ;
+i n tc e n t e r p r e v = (i n t) ( ( (long long) ( i − 1 ) * len2 ) / len1 ) ;
+i n tp r e v s t a r t = M A X( 0 , c e n t e rp r e v − k ) ;
+lengths|u|and|v|differ significantly, the optimal path naturally drifts away from the main diagonal. In this case, the window
+should be centered around the ideal diagonal connecting(0, 0)to(|u|,|v|). A cell(i,j)is then included in the window if it lies
+close to this ideal line, for example by checking the condition
+j−i· |v|
+|u|
+ ≤k.
+T. Dose 5 SS2026
+--- Page 6 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+i n tprev end = MIN( len2 , c e n t e r p r e v + k ) ;
+for(i n tj = s t a r t j ; j<= e n d j ; j ++){
+/ / compute dp [ i ] [ j ]
+i n tc o s t = ( s1 [ i − 1 ] == s2 [ j − 1 ] ) ? 0 : 1 ;
+/ / Use INT MAX / 2 i f r e s p e c t i v e c e l l i s o u t s i d e o f our window
+/ / i f we were u s i n g INT MAX i n s t e a d o f INT MAX / 2 , t h e n we c o u l d g e t o v e r f l o w s
+i n tdel = ( j>= p r e v s t a r t & & j<= prev end ) ? dp [ i − 1 ] [ j ] + 1 : (INT MAX / 2 ) ;
+i n ti n s = ( j − 1>= s t a r t j ) ? dp [ i ] [ j − 1 ] + 1 : (INT MAX / 2 ) ;
+i n tsub =
+( j − 1>= p r e v s t a r t & & j − 1<= prev end ) ? dp [ i − 1 ] [ j − 1 ] + c o s t : (INT MAX / 2 ) ;
+dp [ i ] [ j ] = MIN3( del , ins , sub ) ;
+}
+}
+/ / f r e e e v e r y t h i n g
+i n tr e s u l t = dp [ len1 ] [ len2 ] ;
+for(i n ti = 0 ; i<= len1 ; i ++)
+f r e e ( dp [ i ] ) ;
+f r e e ( dp ) ;
+i f( r e s u l t<= k ){
+returnr e s u l t ;
+}
+k *= 2 ;/ / Double t h e window s i z e i f d i s t a n c e e x c e e d s k
+}
+}
+12.6Benchmark with Wikipedia Histories
+To compare the behavior of IDA*, Aspiration Windows, and conventional dynamic programming (DP)
+in practice, historical revisions of Wikipedia articles can be used (e.g.,https://en.wikipedia.org/
+wiki/Algorithm).
+Compare the runtimes of the three algorithms implemented in C23 in the following scenarios?
+1. Two revisions with a small, incremental change (e.g., a grammar fix between revision1353786557
+and1353852266).
+2. Two revisions with a larger structural change (e.g., the deletion of a section on ’Original Research’
+between revision1352905838and1353441387).
+Note: You can follow the links and view the source text (click “edit”). Run the algorithms on the source
+texts.
+Solution:The benchmark includes three scenarios to evaluate the algorithms under different con-
+ditions:
+1.Small change:Two revisions with a minor grammar correction.
+2.Structural change:Two revisions with a section deleted, resulting in a localized but larger
+difference.
+3.Random text:The original text compared against a randomly generated text of similar
+length, creating uniformly distributed differences.
+T. Dose 6 SS2026
+--- Page 7 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Implementation Details
+•Classical DP:Computes the fullm×nmatrix. It has a constant overhead per cell.
+•Aspiration Window:Computes a narrow band around the main diagonal. If the target
+distance exceeds the band width, the computation is repeated with a larger band.
+•IDA*:Uses depth-first search with the length difference of the remaining suffixes as an
+admissible heuristic. It requires little memory but may recompute overlapping paths.
+•A* and Dijkstra:Both algorithms explore the graph systematically. To handle the search
+space efficiently, the priority queue is implemented as a circular buffer (bucket queue) of size
+3 (for A*) or 2 (for Dijkstra), based on the maximum possible cost increase per step. This keeps
+memory usage linear.
+•Banded DP:Computes only a fixed-width band around the diagonal. It is fast but does not
+guarantee the optimal distance if the true path leaves the band.
+Results and Discussion
+1. Grammar Fix (Length: 67506 vs 67507)
+DP Approach: Dist = 1, Time = 7.79 s
+Aspiration Window: Dist = 1, Time = 4.76 s
+IDA*: Dist = 1, Time = 0.003 s
+Dijkstra: Dist = 1, Time = 0.10 s
+A*: Dist = 1, Time = 0.10 s
+Banded DP (k=250): Dist = 1, Time = 4.86 s
+2. Structural Change (Length: 68541 vs 67420)
+DP Approach: Dist = 1121, Time = 8.20 s
+Aspiration Window: Dist = 1121, Time = 40.50 s
+IDA*: Dist = 1121, Time = 0.003 s
+Dijkstra: Dist = 1121, Time = 0.46 s
+A*: Dist = 1121, Time = 0.33 s
+Banded DP (k=250): Dist = 34691, Time = 5.09 s
+3. Random Text (Length: 67506 vs 67500)
+DP Approach: Dist = 64064, Time = 11.33 s
+Aspiration Window: Dist = 64064, Time = 100.21 s
+IDA*: Skipped (computation time too high)
+Dijkstra: Dist = 64064, Time = 139.48 s
+A*: Dist = 64064, Time = 113.58 s
+Banded DP (k=250): Dist = 64067, Time = 5.05 s
+In Scenario 1, IDA* performs fastest because the heuristic estimate closely matches the true dis-
+tance. A* and Dijkstra also finish quickly.
+In Scenario 2, the true distance corresponds exactly to the length difference of the texts. IDA* can
+therefore find the optimal path in its first iteration. Banded DP fails to find the optimal distance be-
+cause the structural change shifts the optimal path outside the fixed band. The Aspiration Window
+approach requires multiple restarts, which increases runtime.
+In Scenario 3, the differences are distributed uniformly, making the heuristic uninformative. IDA*
+is skipped because its computation time becomes prohibitive. The primary advantage of IDA* is
+its memory efficiency, as it requires no additional overhead. However, in a grid graph like the
+Levenshtein state space, this IDA* to re-evaluate identical subpaths frequently (it does not store
+T. Dose 7 SS2026
+--- Page 8 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+which nodes have already been visited). For human-generated text revisions with localized edits,
+the heuristic guides the search along the main diagonal, mitigating this issue. In contrast, when
+texts differ drastically, the search space broadens. IDA* must then explore a large portion of the
+graph, and the redundant path evaluations lead to a high increase in runtime.
+A* and Dijkstra process a large number of nodes, resulting in high runtimes. The classical DP
+approach is the fastest exact algorithm here because it avoids the overhead of managing a priority
+queue.
+T. Dose 8 SS2026

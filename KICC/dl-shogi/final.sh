@@ -1,0 +1,5 @@
+#!/bin/bash
+az group list --query "[].name" -o tsv | xargs -I {} az group delete --name {} --yes --no-wait
+
+
+az group list -o table

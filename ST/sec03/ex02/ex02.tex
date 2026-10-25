@@ -1,0 +1,190 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forest}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.5}
+\title{Exercise 02}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+
+\section*{2. The Central Limit Theorem and Applications}
+
+\subsection*{T4}
+
+\textbf{1.}
+
+Let $X \sim \text{Bin}(12, 0.5)$, then
+\begin{align*}
+P(4 \leq X \leq 7) &= \sum_{k=4}^{7} \binom{12}{k} \left(\frac{1}{2}\right)^{12} = \frac{3003}{4096} \approx 0.733
+\end{align*}
+
+\textbf{2.}
+
+Let $X \approx N(\mu = 6, \sigma^2 = 3)$
+
+\textbf{Continuity Correction:} $X = k \Leftrightarrow k - 0.5 \leq Y \leq k + 0.5$
+
+Then, $P(4 \leq X \leq 7) \approx P(a_1 = 3.5 \leq Y \leq a_2 = 7.5)$
+
+Normalization: $z_1 = -1.443$ for $a_1$ and $z_2 = 0.866$ for $a_2$
+
+Therefore,
+\begin{align*}
+P(4 \leq X \leq 7) &\approx \Phi(|z_1|) + \Phi(|z_2|) \approx 0.732
+\end{align*}
+
+\subsection*{T5}
+
+Let $X \sim \text{Bin}(180, 1/6) \approx N(\mu = 30, \sigma^2 = 5^2)$
+
+\textbf{1.}
+
+Then, $P(29 \leq X \leq 32) \approx P(a_1 = 28.5 \leq Y \leq a_2 = 32.5)$
+
+Normalization: $z_1 = -0.3$ for $a_1$ and $z_2 = 0.5$ for $a_2$
+
+Therefore,
+\begin{align*}
+P(29 \leq X \leq 32) &\approx \Phi(|z_1|) + \Phi(|z_2|) \approx 0.309
+\end{align*}
+
+\textbf{2.}
+
+$P(31 \leq X \leq 35) \approx P(a_1 = 30.5 \leq Y \leq a_2 = 35.5)$
+
+Normalization: $z_1 = 0.1$ for $a_1$ and $z_2 = 1.1$ for $a_2$
+
+Therefore,
+\begin{align*}
+P(31 \leq X \leq 35) &\approx -\Phi(|z_1|) + \Phi(|z_2|) \approx 0.325
+\end{align*}
+
+\textbf{3.}
+
+$P(X \leq 22) \approx P(Y \leq a_2 = 21.5)$
+
+Normalization: $z_2 = -1.7$ for $a_2$
+
+Therefore,
+\begin{align*}
+P(X \leq 21) &\approx \Phi(|z_2|) \approx 0.446
+\end{align*}
+
+\subsection*{T6}
+
+Let $X \sim \text{Bin}(10000, 0.1) \approx N(\mu = 1000, \sigma^2 = 30^2)$
+
+\textbf{1.}
+
+Then, $P(975 \leq X \leq 1025) \approx P(a_1 = 974.5 \leq Y \leq a_2 = 1025.5)$
+
+Normalization: $z_1 = -0.85$ for $a_1$ and $z_2 = 0.85$ for $a_2$
+
+Therefore,
+\begin{align*}
+P(975 \leq X \leq 1025) &\approx \Phi(|z_1|) + \Phi(|z_2|) \approx 0.605
+\end{align*}
+
+\textbf{2.}
+
+$P(X \leq 950) \approx P(Y \leq a_2 = 950.5)$
+
+Normalization: $z_2 = -1.65$ for $a_2$
+
+Therefore,
+\begin{align*}
+P(X \leq 950) &\approx \Phi(|z_2|) \approx 0.0495
+\end{align*}
+
+\subsection*{Ex3}
+
+\begin{align*}
+\mu = E[X] &= \int_{-\infty}^{\infty} x \cdot 3(1 - x)^2 \, dx = \frac{1}{4} \\
+E[X^2] &= 0.1 \\
+\text{Var}(X) &= \sigma^2 = 0.0375
+\end{align*}
+
+Let
+\begin{align*}
+S &= X_1 + \cdots + X_{625} \\
+E[S] &= 625\mu = 156.25 \quad \text{(Linearity)} \\
+\text{Var}(S) &= 625\sigma^2 = 23.4375
+\end{align*}
+
+Thus by the Central Limit Theorem,
+\begin{align*}
+S &\approx N(E[S], \text{Var}(S))
+\end{align*}
+
+$P(S \leq 170 = a_2)$
+
+Normalization: $z_2 = 2.84$ for $a_2$
+
+Therefore,
+\begin{align*}
+P(S \leq 170) &\approx \Phi(|z_2|) \approx 0.9977
+\end{align*}
+
+\subsection*{Ex4}
+
+$X$, $E[X] = 5$, $\text{Var}(X) = 0.04 = \sigma^2$
+
+Let
+\begin{align*}
+S &= X_1 + \cdots + X_{1002} \\
+E[S] &= 1002\mu = 5010 \quad \text{(Linearity)} \\
+\text{Var}(S) &= 1002\sigma^2 = 40.08
+\end{align*}
+
+\textbf{1.}
+
+Thus by the Central Limit Theorem,
+\begin{align*}
+S &\approx N(E[S], \text{Var}(S))
+\end{align*}
+
+$P(S \leq 5000 = a_2)$
+
+Normalization: $z_2 = -1.58$ for $a_2$
+
+Therefore,
+\begin{align*}
+P(S \leq 5000) &\approx \Phi(|z_2|) \approx 0.057
+\end{align*}
+
+\textbf{2.}
+
+If $E[X] = 4.99$, $P(S \leq 5000) \approx 0.9222$
+
+Changing the expected length seems tiny, but over 1002 links $1002(0.01) \approx 10$ cm is a total loss and it is huge.
+%=====
+\end{document}

@@ -1,0 +1,188 @@
+\documentclass[12pt, a4paper]{article}
+ % article, report, book, beamer
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes}
+% colors
+\usepackage{xcolor}
+\usepackage{titlesec}
+% header
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+% Basic
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{forest}
+
+\title{Exercise 01}
+\author{LoveKapibarasan}
+\date{\today}                   % or specific date
+
+\begin{document}
+\maketitle                      % Create title
+% Content here
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyhead[L]{\leftmark}     % section name
+\fancyhead[R]{\thepage}      % page number
+% colors
+\titleformat{\section}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{red}\normalfont\Large\bfseries}  % Blue, Bold
+  {\thesection}{1em}{}
+%=====
+
+\section {1. Counting techniques, sample spaces and events}
+
+\subsection* {T1}
+\begin{enumerate}
+  \item \underline{\underline{14\text{ combinations.}}} 
+  \item $ 8 \times 6 = \underline{\underline{48\text{ combinations.}}} $
+  \item $ 14 \times (14 - 1) = \underline{\underline{163\text{ combinations.}}}$
+\end{enumerate}
+
+\subsection* {T2} 
+\begin{enumerate}
+  \item \underline{\underline{20\text{ combinations.}}} 
+  \item $20 \times 20 = \underline{\underline{400\text{ combinations.}}}$
+  \item $400 -  5(4 \times 3) - 4(5 \times 4) - 5 \times 4 = \underline{\underline{240\text{ combinations.}}}$
+\end{enumerate}
+
+\subsection* {T3} 
+\textbf{Sequence:}
+\begin{enumerate}
+  \item $5! = \underline{\underline{120\text{ combinations.}}} $
+  \item $2! ( 2! \times 3!) = \underline{\underline{24\text{ combinations.}}}$
+\end{enumerate}
+
+\subsection* {T4} 
+\textbf{Sequence:}
+\begin{enumerate}
+  \item $8 ^ 3 = \underline{\underline{512\text{ combinations.}}} $
+  \item $ 8 \times 7 \times 6 = \underline{\underline{336\text{ combinations.}}}$
+\end{enumerate}
+
+\subsection* {T5} 
+\textbf{Combination:}
+\begin{enumerate}
+  \item $ C(12, 4) = \underline{\underline{495\text{ combinations.}}} $
+\end{enumerate}
+
+\subsection* {T6} 
+\textbf{Combination: dodecagon}
+\begin{enumerate}
+  \item $C(12, 2) = \underline{\underline{66\text{ combinations.}}} $
+  \item \underline{\underline{11\text{ combinations.}}} 
+  \item $ C(11, 2) = \underline{\underline{55\text{ combinations.}}} $
+\end{enumerate}
+
+\subsection* {T6} 
+\textbf{Random walk:}
+\begin{enumerate}
+  \item $1 + 1 + 12 = \underline{\underline{14\text{ combinations.}}} $
+  \item $\underline{\underline{2\text{ combinations.}}} $
+  \item $ 1 + 1 + 2 = \underline{\underline{4\text{ combinations.}}} $
+\end{enumerate}
+
+
+\begin{forest}
+  for tree={
+    grow=south,
+    edge={->},
+    l sep=1.5cm, 
+    s sep=1cm,
+    scale=0.4
+  }
+[Root-1
+  [W-2
+    [W-3
+      [W-4
+        [W-5
+          [W-6]
+          [L-4]
+        ]
+        [L-3
+          [W-4]
+          [L-2]
+        ]
+      ]
+      [L-2
+        [W-3
+          [W-4]
+          [L-2]
+        ]
+        [L-1
+          [W-2]
+          [L-0]
+        ]
+      ]
+    ]
+    [L-1
+      [W-2
+        [W-3
+          [W-4]
+          [L-2]
+        ]
+        [L-1
+          [W-2]
+          [L-0]
+        ]
+      ]
+      [L-0]
+    ]
+  ]
+  [L-0]
+]
+\end{forest}
+
+\subsection* {T8} 
+H = head, T = tail
+\textbf{Sample Space:}
+\begin{itemize}
+  \item $A = \{ (H, 2), (H, 4), (H, 6) \} $
+  \item $B = \{ (H, 1), (H, 2), (T, 1), (T, 2) \} $
+  \item $C = \{ (T, 1),  (T, 3), (T, 5) \} $
+\end{itemize}
+\begin{enumerate}
+	\item $\underline{\underline{ \{ (H, 2), (H, 4), (H, 6), (H, 1), (T, 1), (T, 2) \} }}$
+	\item $\underline{\underline{ \{ (T, 1) \} }}$
+	\item $\underline{\underline{ \{ (H, 1), (T, 2) \} }}$
+\end{enumerate}
+
+\subsection* {T9} 
+\textbf{Sample Space:}
+\begin{itemize}
+  \item A = $\{ (1, 1),  (2, 2),... (6, 6) \}   $
+  \item B = $\{ (4, 6), (5, 5), (5, 6), (6, 4), (6, 5), (6, 6) \} $
+  \item C = $\{ (5, 1),  (5, 2),... (5, 6) \} $
+  \item D = $\{ (5, 1),  (5, 2),... (5, 6), (1, 5),  (2, 5),...(4, 5) , (6, 5) \} $
+\end{itemize}
+\begin{enumerate}
+	\item $\underline{\underline{ \{ (H, 2) \} }}$
+	\item $\underline{\underline{ \{ (T, 1) \} }}$
+	\item $\underline{\underline{ \{ (H, 1), (T, 2) \} }}$
+\end{enumerate}
+\begin{table}[h]                % h=here, t=top, b=bottom
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|c|}      % c=center, l=left, r=right
+    \hline
+	  Die / Die & 1 & 2 & 3 & 4 & 5 & 6 \\
+    \hline
+	  1 & (1, 1) & (2, 1) & (3, 1) & (4, 1) & (5, 1) & (6, 1)\\
+	  2 & (1, 2) & (2, 2) & (3, 2) & (4, 2) & (5, 2) & (6, 2) \\
+	  3 & (1, 3) & (2, 3) & (3, 3) & (4, 3) & (5, 3) & (6, 3) \\
+	  4 & (1, 4) & (2, 4) & (3, 4) & (4, 4) & (5, 4) & (6, 4) \\
+	  5 & (1, 5) & (2, 5) & (3, 5) & (4, 5) & (5, 5) & (6, 5) \\
+	  6 & (1, 6) & (2, 6) & (3, 6) & (4, 6) & (5, 6) & (6, 6) \\
+    \hline
+  \end{tabular}
+  \caption{Table 1}
+  \label{tab:mytable}
+\end{table}
+
+
+%=====
+\end{document}

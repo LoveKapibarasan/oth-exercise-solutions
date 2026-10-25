@@ -1,0 +1,464 @@
+\documentclass[12pt,addpoints]{exam}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{tikz}
+
+\printanswers
+
+\title{Mock Examination (Advanced Level): Advanced Algorithms}
+\author{Course: Advanced Algorithms (EX01--EX15)}
+\date{Time Allowed: 120 minutes \\ Total Points: 100}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\fbox{\fbox{\parbox{5.5in}{\centering
+\textbf{Instructions to Candidates:}
+\begin{itemize}
+    \item This exam contains 6 questions.
+    \item Answer all questions in English.
+    \item Show all working out and proofs clearly.
+    \item No calculators or external materials are permitted.
+\end{itemize}
+}}}
+\end{center}
+
+\vspace{0.2in}
+\gradetable[v][questions]
+\newpage
+
+\begin{questions}
+
+%=============================================================================
+% QUESTION 1
+%=============================================================================
+\question[20] \textbf{Computational Complexity and co-NP}
+
+\begin{parts}
+\part[5] Let $A \subseteq \{0,1\}^*$ be a language. Prove that if $A \in \text{NP}$ and there exists a polynomial-time reduction from its complement $\overline{A}$ to $A$ (i.e., $\overline{A} \le_p A$), then $\text{NP} = \text{co-NP}$.
+
+\begin{solution}
+To prove $\text{NP} = \text{co-NP}$, we show containment in both directions:
+\begin{enumerate}
+    \item \textbf{Show $\text{NP} \subseteq \text{co-NP}$:}
+    Let $L \in \text{NP}$. Since $A$ is $\text{NP}$-complete (or simply $\text{NP}$-hard), we have $L \le_p A$. 
+    By taking the complement, this implies $\overline{L} \le_p \overline{A}$.
+    We are given that $\overline{A} \le_p A$. Thus, by transitivity of polynomial-time reductions, we have:
+    $$\overline{L} \le_p \overline{A} \le_p A \implies \overline{L} \le_p A$$
+    Since $A \in \text{NP}$ and $\overline{L} \le_p A$, it follows that $\overline{L} \in \text{NP}$. 
+    By definition of $\text{co-NP}$, since the complement of $L$ is in $\text{NP}$, $L$ must be in $\text{co-NP}$. Therefore, $\text{NP} \subseteq \text{co-NP}$.
+    
+    \item \textbf{Show $\text{co-NP} \subseteq \text{NP}$:}
+    Let $L' \in \text{co-NP}$. By definition, $\overline{L'} \in \text{NP}$.
+    Since $\overline{L'} \in \text{NP}$, we have $\overline{L'} \le_p A$, which implies $L' \le_p \overline{A}$.
+    Since $\overline{A} \le_p A$, we have:
+    $$L' \le_p \overline{A} \le_p A \implies L' \le_p A$$
+    Since $A \in \text{NP}$, it follows that $L' \in \text{NP}$. Therefore, $\text{co-NP} \subseteq \text{NP}$.
+\end{enumerate}
+Combining these two containments gives $\text{NP} = \text{co-NP}$.
+\end{solution}
+
+\part[5] Prove that the problem $4\text{-COLOR}$ is $\text{NP}$-complete, assuming that $3\text{-COLOR}$ is $\text{NP}$-complete. Describe the reduction function and prove its correctness.
+
+\begin{solution}
+\begin{enumerate}
+    \item \textbf{Membership in NP:} Given a 4-coloring assignment $c: V \to \{1,2,3,4\}$, we can verify in polynomial time $O(|V| + |E|)$ if $c(u) \neq c(v)$ for all $\{u,v\} \in E$. Thus, $4\text{-COLOR} \in \text{NP}$.
+    \item \textbf{Reduction $3\text{-COLOR} \le_p 4\text{-COLOR}$:} Given a graph $G = (V,E)$, we construct a new graph $G' = (V', E')$ as follows:
+    \begin{itemize}
+        \item Add one new vertex $x$, so $V' = V \cup \{x\}$.
+        \item Connect $x$ to every vertex in $V$, so $E' = E \cup \{\{v, x\} \mid v \in V\}$.
+    \end{itemize}
+    This construction takes $O(|V|)$ time, which is polynomial.
+    \item \textbf{Proof of Equivalence:}
+    \begin{itemize}
+        \item \textbf{Forward Direction ($\implies$):} Suppose $G$ is 3-colorable with coloring $c: V \to \{1,2,3\}$. Define a coloring $c': V' \to \{1,2,3,4\}$ on $G'$ by setting $c'(v) = c(v)$ for $v \in V$, and $c'(x) = 4$. Since $c$ is a valid 3-coloring and $x$ has a unique color not used by any vertex in $V$, no adjacent vertices in $G'$ share a color. Thus, $G'$ is 4-colorable.
+        \item \textbf{Backward Direction ($\impliedby$):} Suppose $G'$ is 4-colorable with coloring $c': V' \to \{1,2,3,4\}$. Without loss of generality, assume $c'(x) = 4$. Since $x$ is connected to every vertex in $V$, no vertex $v \in V$ can be colored 4. Thus, the restriction of $c'$ to $V$ must only use colors from $\{1,2,3\}$. This yields a valid 3-coloring of $G$.
+    \end{itemize}
+\end{enumerate}
+Thus, $4\text{-COLOR}$ is $\text{NP}$-complete.
+\end{solution}
+
+\part[10] Let $\text{NEG-SOS}$ be a variation of the Sum of Subsets problem where the elements and target value can be negative integers:
+$$\text{NEG-SOS} = \{\langle a_1, \dots, a_m, b \rangle \mid \exists I \subseteq \{1, \dots, m\} \text{ s.t. } \sum_{i \in I} a_i = b \text{ where } a_i, b \in \mathbb{Z}\}$$
+Prove that $\text{NEG-SOS}$ is $\text{NP}$-complete by reducing the standard $\text{SOS}$ problem (where all $a_i, b \in \mathbb{N}$) to $\text{NEG-SOS}$. Discuss why standard certifications still hold for negative numbers.
+
+\begin{solution}
+\begin{enumerate}
+    \item \textbf{Membership in NP:} The certificate is the set of indices $I$. The certifier computes the sum $\sum_{i \in I} a_i$ and compares it to $b$. The arithmetic additions of integers take polynomial time, regardless of sign. Thus, $\text{NEG-SOS} \in \text{NP}$.
+    \item \textbf{Reduction $\text{SOS} \le_p \text{NEG-SOS}$:}
+    The standard $\text{SOS}$ problem is defined for positive integers. Since $\mathbb{N} \subset \mathbb{Z}$, any instance of $\text{SOS}$ is already a valid instance of $\text{NEG-SOS}$. The reduction function is the identity function:
+    $$f(\langle a_1, \dots, a_m, b \rangle) = \langle a_1, \dots, a_m, b \rangle$$
+    This is trivially computable in $O(1)$ time.
+    \item \textbf{Proof of Equivalence:}
+    \begin{itemize}
+        \item If $\langle a_1, \dots, a_m, b \rangle \in \text{SOS}$, there exists $I \subseteq \{1, \dots, m\}$ such that $\sum_{i \in I} a_i = b$. Since the elements and target are integers, the same index set $I$ satisfies the equation in $\text{NEG-SOS}$, so $f(x) \in \text{NEG-SOS}$.
+        \item If $f(x) \in \text{NEG-SOS}$, there exists $I \subseteq \{1, \dots, m\}$ such that $\sum_{i \in I} a_i = b$. Since the input elements $a_i$ and target $b$ are positive, this equation holds exactly in $\text{SOS}$, so $x \in \text{SOS}$.
+    \end{itemize}
+\end{enumerate}
+Thus, $\text{NEG-SOS}$ is $\text{NP}$-complete.
+\end{solution}
+\end{parts}
+
+%=============================================================================
+% QUESTION 2
+%=============================================================================
+\question[15] \textbf{Approximation Algorithms: Christofides' Algorithm}
+
+The \textbf{Metric Traveling Salesperson Problem (Metric TSP)} is a variant of the TSP where the graph is complete and the edge weights satisfy the triangle inequality: $w(u,v) \le w(u,x) + w(x,v)$ for all $u, v, x \in V$.
+The Christofides-Serdyukov algorithm is a famous $3/2$-approximation algorithm for Metric TSP. It improves upon the basic $2$-approximation (which simply duplicates all edges of a Minimum Spanning Tree) by adding a minimum-weight perfect matching on the set of odd-degree vertices of the MST. This results in a connected multigraph where every vertex has an even degree, which by Euler's Theorem guarantees the existence of an Eulerian tour. A Hamiltonian cycle (TSP tour) is then obtained by shortcutting the Eulerian tour.
+
+\begin{parts}
+\part[3] State the steps of the \textbf{Christofides-Serdyukov 3/2-approximation algorithm} for the Metric Traveling Salesperson Problem (metric TSP).
+
+\begin{solution}
+\begin{enumerate}
+    \item \textbf{Compute MST:} Compute a Minimum Spanning Tree $T$ of the input complete graph $G$.
+    \item \textbf{Odd-Degree Vertices:} Find the set $O$ of vertices in $T$ that have odd degrees.
+    \item \textbf{Perfect Matching:} Compute a minimum-weight perfect matching $M$ on the complete subgraph induced by the vertices in $O$.
+    \item \textbf{Eulerian Multigraph:} Combine the edges of $T$ and $M$ to form a multigraph $H = T \cup M$. Since every vertex in $H$ has an even degree, $H$ is Eulerian.
+    \item \textbf{Eulerian Tour:} Find an Eulerian tour $C_{\text{Euler}}$ in $H$.
+    \item \textbf{Shortcuts:} Obtain a Hamiltonian cycle $C_{\text{TSP}}$ by traversing $C_{\text{Euler}}$ and skipping already visited vertices using direct shortcuts.
+\end{enumerate}
+\end{solution}
+
+\part[4] Prove that the number of odd-degree vertices in any tree (or graph) is even, thereby justifying why a perfect matching on $O$ always exists.
+
+\begin{solution}
+Let $G = (V,E)$ be any graph, and let $d(v)$ denote the degree of vertex $v$.
+By the Handshaking Lemma, the sum of all vertex degrees is equal to twice the number of edges:
+$$\sum_{v \in V} d(v) = 2|E|$$
+Since the right-hand side $2|E|$ is an even integer, the sum on the left-hand side must also be even. 
+We partition the sum into two groups: vertices of even degree and vertices of odd degree:
+$$\sum_{v \in V \text{ s.t. } d(v) \text{ is even}} d(v) + \sum_{v \in O} d(v) = 2|E|$$
+The first term is a sum of even numbers, which is always even. Thus, the second term $\sum_{v \in O} d(v)$ must also be even.
+Since every term in the second sum $d(v)$ is odd, the only way for the sum of odd numbers to be even is if the number of terms $|O|$ is even. 
+Since $|O|$ is even, we can partition $O$ into $|O|/2$ disjoint pairs, guaranteeing that a perfect matching on the induced subgraph of $O$ always exists.
+\end{solution}
+
+\part[8] Prove that the matching $M$ computed in step 3 satisfies $\text{cost}(M) \le \frac{1}{2} \text{OPT}$, and show how this completes the proof that the algorithm is a $3/2$-approximation.
+
+\begin{solution}
+\begin{enumerate}
+    \item \textbf{Proof of $\text{cost}(M) \le \frac{1}{2} \text{OPT}$:}
+    Let $C^*_{\text{TSP}}$ be the optimal TSP tour of $G$, so $\text{cost}(C^*_{\text{TSP}}) = \text{OPT}$.
+    Consider the cycle $C_O$ obtained by traversing $C^*_{\text{TSP}}$ and skipping vertices not in $O$. By the triangle inequality (since the graph is metric), we have:
+    $$\text{cost}(C_O) \le \text{cost}(C^*_{\text{TSP}}) = \text{OPT}$$
+    The cycle $C_O$ has an even number of vertices $|O|$. We can partition the edges of $C_O$ into two disjoint perfect matchings on $O$, say $M_1$ and $M_2$.
+    The sum of their costs is equal to the cost of $C_O$:
+    $$\text{cost}(M_1) + \text{cost}(M_2) = \text{cost}(C_O) \le \text{OPT}$$
+    Since the sum of the costs of the two matchings is at most $\text{OPT}$, the minimum-weight matching $M$ must satisfy:
+    $$\text{cost}(M) \le \min(\text{cost}(M_1), \text{cost}(M_2)) \le \frac{1}{2} \text{OPT}$$
+    
+    \item \textbf{Proof of $3/2$-approximation:}
+    The cost of the Eulerian tour $C_{\text{Euler}}$ is:
+    $$\text{cost}(C_{\text{Euler}}) = \text{cost}(T) + \text{cost}(M)$$
+    We know that $\text{cost}(T) \le \text{OPT}$ (removing an edge from the optimal TSP tour yields a spanning tree).
+    Using the matching bound:
+    $$\text{cost}(C_{\text{Euler}}) \le \text{OPT} + \frac{1}{2} \text{OPT} = \frac{3}{2} \text{OPT}$$
+    By the triangle inequality, shortcutting does not increase the tour cost:
+    $$\text{cost}(C_{\text{TSP}}) \le \text{cost}(C_{\text{Euler}}) \le \frac{3}{2} \text{OPT}$$
+    This proves that Christofides' algorithm is a $3/2$-approximation.
+\end{enumerate}
+\end{solution}
+\end{parts}
+
+%=============================================================================
+% QUESTION 3
+%=============================================================================
+\question[15] \textbf{Alpha-Beta Search Bounds and Proofs}
+
+\begin{parts}
+\part[7] In the best-case scenario (perfect move ordering), the number of leaf nodes evaluated by Alpha-Beta pruning in a complete game tree with branching factor $b$ and depth $d$ is given by the formula:
+$$V(b,d) = b^{\lceil d/2 \rceil} + b^{\lfloor d/2 \rfloor} - 1$$
+\begin{subparts}
+    \subpart[4] Prove this formula for $d=3$. Explain which nodes must be evaluated (often called PV nodes or type 1 nodes) and which ones can trigger cutoffs.
+    \subpart[3] Provide a brief intuitive explanation of why the exponents $\lceil d/2 \rceil$ and $\lfloor d/2 \rfloor$ represent the mathematical limit of minimax search reduction.
+\end{subparts}
+
+\begin{solution}
+\begin{subparts}
+    \subpart For $d=3$, the formula yields:
+    $$V(b,3) = b^{\lceil 1.5 \rceil} + b^{\lfloor 1.5 \rfloor} - 1 = b^2 + b^1 - 1$$
+    Let's analyze the leaf node evaluations in the game tree under optimal move ordering:
+    \begin{itemize}
+        \item \textbf{Evaluating the first child $L$ of the root (depth 1, Min):} 
+        We must evaluate its first child $LL$ (depth 2, Max) completely, which requires searching all $b$ leaf children of $LL$ (Count: $b$ leaves). 
+        Since $LL$ returns the optimal value for the Min node $L$, we obtain a beta bound $\beta = \text{val}(LL)$. For the remaining $b-1$ siblings of $LL$ under $L$, we only need to evaluate their first leaf child. Since move ordering is optimal, the first leaf child of each sibling will be worse (greater than or equal to $\beta$ for a Min node), immediately triggering a beta cutoff and pruning the remaining $b-1$ leaf children. This takes $1$ evaluation per sibling, totaling $b-1$ leaf evaluations.
+        Thus, evaluating $L$ takes exactly $b + (b-1) = 2b-1$ leaf evaluations.
+        
+        \item \textbf{Evaluating the remaining $b-1$ children of the root, say $R$ (depth 1, Min):}
+        Since $L$ has returned the minimax value $v$ of the root, we set the alpha bound at the root to $\alpha = v$. For each of the remaining $b-1$ siblings $R$ of $L$, under optimal move ordering, the value of $R$ is worse for Max (i.e., $\text{val}(R) \le \alpha$). 
+        To prove $\text{val}(R) \le \alpha$ and trigger an alpha cutoff at the root, we only need to find one child of $R$ at depth 2 with value $\le \alpha$. Under optimal move ordering, the first child $RL$ (depth 2, Max) will be the best choice for Min node $R$, so it will satisfy $\text{val}(RL) \le \alpha$.
+        Once we verify $\text{val}(RL) \le \alpha$, we trigger an alpha cutoff at the root for $R$, pruning the remaining $b-1$ children of $R$.
+        However, to verify that the Max node $RL$ satisfies $\text{val}(RL) \le \alpha$, we must prove that ALL of its children (which are leaves) are $\le \alpha$. Thus, we cannot prune any children of $RL$; we must evaluate all $b$ of its leaf children.
+        This requires $b$ leaf evaluations for each of the $b-1$ siblings $R$. The total number of leaf evaluations for these siblings is $(b-1) \times b = b^2 - b$.
+        
+        \item \textbf{Total Leaf Evaluations:}
+        Summing these two components yields:
+        $$\text{Total} = (2b - 1) + (b^2 - b) = b^2 + b - 1$$
+        This exactly matches the formula $V(b,3) = b^{\lceil 3/2 \rceil} + b^{\lfloor 3/2 \rfloor} - 1 = b^2 + b - 1$.
+    \end{itemize}
+    
+    \subpart To mathematically prove that a node in a minimax tree has a value of at least $v$:
+    \begin{enumerate}
+        \item The player whose turn it is (e.g., the Maximizer) only needs to find \textbf{one} move that leads to a value of at least $v$ (branching factor of $1$).
+        \item However, to guarantee this value, they must verify that for \textbf{every possible reply} by the opponent (e.g., the Minimizer), the outcome remains at least $v$ (branching factor of $b$).
+    \end{enumerate}
+    As a result, down any search path of depth $d$, we only explore $1$ branch at our turns and must verify all $b$ branches at the opponent's turns. 
+    This means there are $\lfloor d/2 \rfloor$ levels with branching factor $1$ (our choices) and $\lceil d/2 \rceil$ levels with branching factor $b$ (opponent's choices). The number of leaf evaluations is therefore dominated by $b^{\lceil d/2 \rceil} \cdot 1^{\lfloor d/2 \rfloor} = b^{\lceil d/2 \rceil}$.
+    This represents the absolute mathematical limit of search reduction: we cannot prune any further because we must, at a minimum, verify one move for ourselves and all replies for the opponent.
+\end{subparts}
+\end{solution}
+
+\part[8] Prove the \textbf{Fail-Low} and \textbf{Exact-Value} properties of Negamax Alpha-Beta search: If the search function \texttt{negamax(N, depth, alpha, beta)} returns a value $v$, then:
+\begin{enumerate}
+    \item If $v \le \alpha$, the true minimax score satisfies $S(N) \le v$.
+    \item If $\alpha < v < \beta$, the true minimax score satisfies $S(N) = v$.
+\end{enumerate}
+
+\begin{solution}
+We prove these properties by induction on the depth of the search.
+\begin{itemize}
+    \item \textbf{Base Case (depth = 0):} The node $N$ is a leaf. Negamax returns the static evaluation $v = S(N)$.
+    \begin{enumerate}
+        \item If $v \le \alpha$, then $S(N) = v \le v$, so $S(N) \le v$ holds.
+        \item If $\alpha < v < \beta$, then $S(N) = v$ holds.
+    \end{enumerate}
+    
+    \item \textbf{Inductive Step:} Assume both properties hold for all calls at depth $d-1$. Let $N$ be a node of depth $d$ with children $C_1, \dots, C_k$.
+    Negamax iterates through the children, calling:
+    $$v_i = -\texttt{negamax}(C_i, d-1, -\beta, -\alpha)$$
+    Let $S(N) = \max_i (-S(C_i))$ be the true minimax score.
+    \begin{enumerate}
+        \item \textbf{Fail-Low ($v \le \alpha$):}
+        If the algorithm returns $v \le \alpha$, it means that for all children $C_i$, the recursive call returned $v_i \le \alpha$.
+        Thus, for all $i$:
+        $$-v_i \le \alpha \implies \texttt{negamax}(C_i, d-1, -\beta, -\alpha) \ge -\alpha$$
+        By the induction hypothesis (Fail-High case, since returned value is $\ge$ beta-bound of the child), we have:
+        $$S(C_i) \ge -\alpha \implies -S(C_i) \le \alpha$$
+        Since this holds for all children $C_i$:
+        $$S(N) = \max_i (-S(C_i)) \le \alpha$$
+        Since $v$ is the maximum value found (which is $\le \alpha$), it follows that $S(N) \le v$.
+        
+        \item \textbf{Exact Value ($\alpha < v < \beta$):}
+        If the algorithm returns a value $v$ in the open interval $(\alpha, \beta)$, there must exist some child $j$ such that:
+        $$v = -v_j \in (\alpha, \beta) \implies v_j \in (-\beta, -\alpha)$$
+        Since $v_j$ falls strictly inside the child's window, by the induction hypothesis (Exact Value):
+        $$S(C_j) = v_j \implies -S(C_j) = -v_j = v$$
+        For all other children $i$, the search returned $v_i \ge -v$, which by induction implies:
+        $$S(C_i) \ge v_i \implies -S(C_i) \le -v_i \le v$$
+        Therefore:
+        $$S(N) = \max( -S(C_j), \max_{i \neq j} (-S(C_i)) ) = \max(v, \le v) = v$$
+        This proves $S(N) = v$.
+    \end{enumerate}
+\end{itemize}
+\end{solution}
+\end{parts}
+
+%=============================================================================
+% QUESTION 4
+%=============================================================================
+\question[15] \textbf{Connect Four Solver and Bitboards}
+
+\begin{parts}
+\part[5] In the $6 \times 7$ Connect Four bitboard representation, the shift value for checking anti-diagonal wins (top-left to bottom-right) is $S = 6$.
+\begin{subparts}
+    \subpart[2] Write the complete C/C++ code snippet to check for a 4-in-a-row anti-diagonal win.
+    \subpart[3] Explain why $S = 6$ corresponds to this direction, referencing the row and column structure of the padded bitboard.
+\end{subparts}
+
+\begin{solution}
+\begin{subparts}
+    \subpart \textbf{Code Snippet:}
+    \begin{lstlisting}[language=C]
+uint64_t d2 = board & (board >> 6);
+if (d2 & (d2 >> 12)) return true;
+    \end{lstlisting}
+    
+    \subpart \textbf{Explanation:}
+    Moving from one cell to its neighbor in the anti-diagonal direction means moving one column to the right (which increases the column index by 1) and one row down (which decreases the row index by 1).
+    In our padded bitboard layout:
+    \begin{itemize}
+        \item Moving one column to the right increases the bit index by 7.
+        \item Moving one row down decreases the bit index by 1.
+    \end{itemize}
+    Thus, the net change in bit index for an anti-diagonal step is $7 - 1 = 6$. A shift of 6 aligns every cell with its top-left neighbor.
+\end{subparts}
+\end{solution}
+
+\part[10] Let \texttt{board} represent the current player's pieces, and \texttt{mask} represent the occupied board mask (containing pieces of both players). 
+Write a C/C++ function \texttt{uint64\_t get\_winning\_moves(uint64\_t board, uint64\_t mask)} that returns a bitboard containing all legal winning moves for the current player on their next turn. 
+A move is legal if and only if it is the lowest empty cell in its column (i.e., it sits directly above the top occupied cell in that column).
+
+\begin{solution}
+To find the winning moves, we must:
+\begin{enumerate}
+    \item Identify all empty cells that are legal moves (directly playable). 
+    A playable cell in column $c$ is the cell immediately above the highest occupied cell in $c$. In bitboard representation, this corresponds to shifting the occupied \texttt{mask} up by 1 row (shift 1) and checking which cells are empty, plus adding row 0 cells if the column is completely empty:
+    $$\texttt{legal\_moves} = (\texttt{mask} + \texttt{bottom\_mask}) \setminus \texttt{mask}$$
+    where \texttt{bottom\_mask} contains 1s at row 0 of all columns. An easier way using addition:
+    $$\texttt{legal\_moves} = (\texttt{mask} + \texttt{0x01020408102040}) \& \sim\texttt{mask}$$
+    Wait, in Connect Four, since we can only drop pieces from the top, the playable cells can be found by adding the column bottom bits to the mask:
+    $$\texttt{playable} = (\texttt{mask} \text{ shifted up by 1}) \cup \text{bottom row}$$
+    And then subtracting the mask:
+    $$\texttt{legal} = ((\texttt{mask} \ll 1) \lor \texttt{bottom}) \& \sim\texttt{mask}$$
+    Here, \texttt{bottom} is \texttt{0x01020408102040} (since row 0 bits are 0, 7, 14, 21, 28, 35, 42, which correspond to $2^0, 2^7, 2^{14}, \dots$).
+    
+    \item For each of these legal cells, check if playing there creates a 4-in-a-row win. 
+    We can test if a bit $p$ creates a win by temporarily setting it in `board` and running the win check, or we can use bitwise operations to check if the cell completes a 3-in-a-row.
+\end{enumerate}
+
+\textbf{C/C++ Implementation:}
+\begin{lstlisting}[language=C]
+#define BOTTOM 0x01020408102040ULL
+
+// Helper function to check if a board has a win
+bool is_winning_board(uint64_t b) {
+    // Horizontal (shift 7)
+    uint64_t h = b & (b >> 7);
+    if (h & (h >> 14)) return true;
+    // Diagonal (shift 8)
+    uint64_t d1 = b & (b >> 8);
+    if (d1 & (d1 >> 16)) return true;
+    // Anti-diagonal (shift 6)
+    uint64_t d2 = b & (b >> 6);
+    if (d2 & (d2 >> 12)) return true;
+    // Vertical (shift 1)
+    uint64_t v = b & (b >> 1);
+    if (v & (v >> 2)) return true;
+    return false;
+}
+
+uint64_t get_winning_moves(uint64_t board, uint64_t mask) {
+    // 1. Compute legal playable moves
+    uint64_t legal = ((mask + BOTTOM) & ~mask) & 0x1F3E7CF9F3E7CFULL; // mask out sentinels
+    uint64_t winning_moves = 0;
+    
+    // 2. Test each legal move bit
+    uint64_t temp = legal;
+    while (temp > 0) {
+        uint64_t move = temp & -temp; // Extract lowest set bit (LSO)
+        if (is_winning_board(board | move)) {
+            winning_moves |= move;
+        }
+        temp &= temp - 1; // Clear lowest set bit
+    }
+    return winning_moves;
+}
+\end{lstlisting}
+\end{solution}
+\end{parts}
+
+%=============================================================================
+% QUESTION 5
+%=============================================================================
+\question[15] \textbf{Dynamic Programming: Bounded Levenshtein Distance}
+
+\begin{parts}
+\part[8] In spelling correction, we are often only interested in checking if the Levenshtein distance between two strings $X$ (length $m$) and $Y$ (length $n$) is at most $k$ (where $k \ll \min(m,n)$). 
+Show how to optimize the classical $O(mn)$ dynamic programming algorithm to run in $O(k \cdot \min(m,n))$ time by only filling a diagonal band of width $2k+1$ around the main diagonal of the DP matrix. 
+State the modified DP recurrence relation, including the boundary conditions for the band.
+
+\begin{solution}
+To compute the bounded Levenshtein distance:
+\begin{enumerate}
+    \item \textbf{DP Matrix Band:} For any entry $D(i, j)$, if $|i - j| > k$, the edit distance must exceed $k$ due to the difference in prefix lengths. Thus, we only need to compute $D(i, j)$ for indices satisfying:
+    $$i - k \le j \le i + k$$
+    This restricts the computation to a band of width $2k+1$ along the diagonal.
+    \item \textbf{Boundary Conditions:}
+    Any cell $D(i, j)$ lying outside the band is implicitly treated as having a value of $\infty$ (or $k+1$):
+    $$D(i, j) = \infty \quad \text{if } |i - j| > k$$
+    \item \textbf{Base Cases:}
+    $$D(i, 0) = i \quad \text{for } 0 \le i \le k$$
+    $$D(0, j) = j \quad \text{for } 0 \le j \le k$$
+    Other base cells outside the band ($i > k$ or $j > k$) are initialized to $\infty$.
+    \item \textbf{Recurrence Relation:} For $1 \le i \le m$ and $\max(1, i-k) \le j \le \min(n, i+k)$:
+    $$D(i, j) = \min \begin{cases} D(i-1, j) + 1 & \text{if } j \ge i-k+1 \\ D(i, j-1) + 1 & \text{if } j \le i+k-1 \\ D(i-1, j-1) + \text{cost} & \text{always} \end{cases}$$
+    where $\text{cost} = 0$ if $X[i] = Y[j]$, and $1$ otherwise.
+\end{enumerate}
+Since we only evaluate $2k+1$ cells per row, the total number of cells computed is at most $(2k+1) \cdot \min(m,n)$, yielding a running time of $O(k \cdot \min(m,n))$.
+\end{solution}
+
+\part[7] Explain how the concept of Aspiration Windows in Alpha-Beta search shares a similar logical philosophy with the Bounded Levenshtein Distance algorithm described in part (a). Focus on the handling of out-of-bounds results.
+
+\begin{solution}
+Both algorithms restrict computation by focusing on a narrow range of interest:
+\begin{itemize}
+    \item \textbf{Aspiration Windows} search within a narrow window $[\alpha, \beta]$ around an expected score. If the true value lies outside this window, the search returns a fail-low or fail-high bound, requiring a re-search with an expanded window.
+    \item \textbf{Bounded Levenshtein Distance} restricts computation to a narrow diagonal band of width $2k+1$ corresponding to an edit distance threshold $k$. If the true distance is larger than $k$, the DP matrix values will propagate $\infty$, signifying that the edit distance lies outside our window of interest.
+\end{itemize}
+The key philosophy is \textbf{efficiency via optimism}: both algorithms assume the result lies in a narrow, favorable range. If it does, we save significant computation ($O(mn) \to O(kn)$ in DP, and massive branch cuts in game trees). If it does not, we quickly detect the boundary violation (``$\infty$'' in DP, fail-low/high in search) and adjust.
+\end{solution}
+\end{parts}
+
+%=============================================================================
+% QUESTION 6
+%=============================================================================
+\question[20] \textbf{RSA Cryptography: Optimization and Attacks}
+
+\begin{parts}
+\part[10] \textbf{RSA-CRT Optimization:} In practice, RSA decryption $m \equiv c^d \pmod n$ is accelerated using the Chinese Remainder Theorem (CRT) when the prime factors $p$ and $q$ of $n = pq$ are known.
+\begin{subparts}
+    \subpart[4] State the modular equations used to compute $m_p \equiv m \pmod p$ and $m_q \equiv m \pmod q$ directly from the ciphertext $c$ using the precomputed private key components $d_p = d \pmod{p-1}$ and $d_q = d \pmod{q-1}$. Explain why this is mathematically valid.
+    \subpart[6] Show how to reconstruct the final message $m \pmod n$ using Garner's formula:
+    $$m = m_q + q \cdot \left( q^{-1} \cdot (m_p - m_q) \pmod p \right)$$
+    Explain why this CRT method is computationally faster than standard modular exponentiation $c^d \pmod n$.
+\end{subparts}
+
+\begin{solution}
+\begin{subparts}
+    \subpart \textbf{Equations:}
+    $$m_p \equiv c^{d_p} \pmod p$$
+    $$m_q \equiv c^{d_q} \pmod q$$
+    \textbf{Mathematical Validity:}
+    By Fermat's Little Theorem, for any prime $p$ and any integer $a \not\equiv 0 \pmod p$, we have $a^{p-1} \equiv 1 \pmod p$.
+    Thus, we can reduce the exponent modulo $p-1$:
+    $$m \equiv c^d \equiv c^{d \pmod{p-1}} \equiv c^{d_p} \pmod p$$
+    This guarantees that the computed $m_p$ is equivalent to $m \pmod p$. The same logic holds for $m_q \pmod q$.
+    
+    \subpart \textbf{Garner's Formula Verification:}
+    Let $h = q^{-1} \cdot (m_p - m_q) \pmod p$. Then $m = m_q + q \cdot h$.
+    \begin{itemize}
+        \item Modulo $q$: $m \equiv m_q + 0 \equiv m_q \pmod q$, which is correct.
+        \item Modulo $p$: $m \equiv m_q + q \cdot q^{-1} (m_p - m_q) \equiv m_q + (m_p - m_q) \equiv m_p \pmod p$, which is correct.
+    \end{itemize}
+    Since $0 \le m_p < p$ and $0 \le m_q < q$, the value $m_q + q \cdot h$ lies in $[0, pq - 1]$, matching the range of the unique CRT solution.
+    
+    \textbf{Performance Benefit:}
+    Modular exponentiation $x^y \pmod N$ has a complexity of $O(\log y \cdot \log^2 N)$ using schoolbook multiplication.
+    - Standard RSA decryption uses a modulus $n$ of size $B$ bits.
+    - RSA-CRT performs two exponentiations modulo $p$ and $q$, which are each of size $B/2$ bits.
+    Since multiplication complexity is quadratic in bit-length, a modular multiplication modulo $p$ is $4 \times$ faster than modulo $n$.
+    Moreover, the exponents $d_p$ and $d_q$ are only $B/2$ bits long (compared to the $B$-bit exponent $d$), reducing the number of multiplications by half.
+    Thus, each of the two exponentiations takes $(1/4) \times (1/2) = 1/8$ of the work of a full exponentiation. 
+    Running both takes $2 \times (1/8) = 1/4$ of the time of standard decryption, resulting in a $\approx 4\times$ speedup.
+\end{subparts}
+\end{solution}
+
+\part[10] \textbf{Common Modulus Attack:} Suppose a sender encrypts the same message $m$ using two different public exponents $e_1$ and $e_2$ such that $\gcd(e_1, e_2) = 1$, using the same RSA modulus $n$.
+An eavesdropper intercepts the two ciphertexts:
+$$c_1 \equiv m^{e_1} \pmod n \quad \text{and} \quad c_2 \equiv m^{e_2} \pmod n$$
+Show how the eavesdropper can recover the message $m$ in polynomial time without factoring $n$.
+
+\begin{solution}
+Since $\gcd(e_1, e_2) = 1$, by Bezout's Identity there exist integers $a$ and $b$ (which can be computed in polynomial time using the Extended Euclidean Algorithm) such that:
+$$a \cdot e_1 + b \cdot e_2 = 1$$
+Without loss of generality, assume that $a > 0$ and $b < 0$.
+The eavesdropper can compute:
+$$c_1^a \cdot (c_2^{-1})^{-b} \pmod n$$
+where $c_2^{-1}$ is the modular multiplicative inverse of $c_2$ modulo $n$ (which exists and can be computed in polynomial time using the Extended Euclidean Algorithm since $\gcd(c_2, n) = 1$ under plain RSA).
+Let's evaluate this expression:
+$$c_1^a \cdot (c_2^{-1})^{-b} \equiv (m^{e_1})^a \cdot (m^{-e_2})^{-b} \equiv m^{a e_1} \cdot m^{b e_2} \equiv m^{a e_1 + b e_2} \equiv m^1 \equiv m \pmod n$$
+Thus, the eavesdropper can recover $m$ by computing:
+$$m \equiv c_1^a \cdot (c_2^{-1})^{-b} \pmod n$$
+This takes $O(\log n)$ arithmetic operations (using Extended Euclidean Algorithm and binary exponentiation), which runs in polynomial time.
+\end{solution}
+\end{parts}
+
+\end{questions}
+\end{document}

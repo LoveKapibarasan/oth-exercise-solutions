@@ -1,0 +1,345 @@
+\documentclass[12pt, a4paper]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{url}
+\usepackage[expansion=false]{microtype}
+\usepackage{graphicx}
+\usepackage{float}
+
+
+\geometry{
+  a4paper,
+  top=2.5cm,
+  bottom=2.5cm,
+  left=2.5cm,
+  right=2.5cm
+}
+
+\onehalfspacing
+
+% --- Title ---
+\title{
+  \Large\textbf{Case Study: Urban E-waste Management Infrastructure in Regensburg, Germany} \\[1em]
+  \large Introduction to e-Governance and SMART CITY \\
+  Smart City Problem Solving --- Summer 2026
+}
+\author{
+  Takanori Nagashima \\
+  Student ID: 3485262 \\
+  OTH Regensburg
+}
+\date{\today}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+\maketitle
+\newpage
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+% ------------------------------------------------------------
+\subsection{Background and Global Context}
+% ------------------------------------------------------------
+
+Electronic waste --- here referred to as e-waste or WEEE (Waste Electrical and Electronic Equipment) ---
+is now one of the fastest-growing waste streams in the world. As more people use electronic devices, the amount of discarded equipment keeps growing. According to the Global E-waste Monitor 2024,
+a record 62 billion kilograms of e-waste was generated globally in 2022, and this
+figure is expected to reach 82 billion kilograms by 2030
+\cite{unitar2024}.
+
+Even so, only 22.3\% of global e-waste was properly collected and recycled that year
+--- well below the 30\% target set by the International Telecommunication Union (ITU) for 2023.
+
+In 2022, Europe generated the most e-waste per capita of any region at 17.6 kilograms per person,
+while achieving a collection and recycling rate of 42.8\%
+\cite{unitar2024}.
+
+% ------------------------------------------------------------
+\subsection{The Case: Regensburg, Bavaria}
+% ------------------------------------------------------------
+
+This case study focuses on Regensburg, a mid-sized city in the state of Bavaria,
+Germany. With a population of 151,389 as of December 2024, Regensburg is the
+fourth-largest city in Bavaria and covers an area of 80.76~km$^2$
+\cite{wikipedia_regensburg}. Beyond its UNESCO World Heritage status, Regensburg has a significant high-technology industrial base.
+Infineon Technologies operates a major innovation and semiconductor manufacturing
+site in Regensburg, employing more than 3,000 people \cite{infineon_regensburg}.
+The BMW Group plant in Regensburg --- recognised as Factory of the Year 2024 ---
+produces approximately 1,400 vehicles per day, including electric and plug-in
+hybrid models \cite{bmw2025}. This concentration of electronics-intensive industry makes Regensburg a relevant context for studying urban e-waste flows.
+
+The city's existing e-waste infrastructure is managed by the municipal waste
+authority (\textit{Amt für Kreislaufwirtschaft, Stadtreinigung und
+Flottenmanagement}). Residents may drop off end-of-life electronics free of charge
+at the city's Recyclinghof or at participating retail stores, and large household
+appliances such as refrigerators and washing machines can be collected from homes
+by appointment at no cost \cite{regensburg_elektroschrott}. While this system meets the requirements of Germany's
+\textit{ElektroG} law and the EU's WEEE Directive, it is largely passive:
+it only works if citizens take the initiative and can reach a drop-off point.
+
+% ------------------------------------------------------------
+\subsection{Problem Statement}
+% ------------------------------------------------------------
+
+Despite Regensburg's well-developed municipal infrastructure, the current e-waste
+collection system has several weaknesses.
+
+First, participation is optional and requires effort: citizens must bring their devices to the
+Recyclinghof, which has limited opening hours.
+
+Second, there is no way to track how full collection points are or to plan pickups more efficiently.
+
+Third, there is no shared digital system linking citizens, waste processors, and buyers ---
+so information is not shared and less material is recovered.
+
+At the same time, Regensburg has a large public bus network
+(\textit{Stadtbus Regensburg}) that covers the whole city,
+and buses are often not full. This unused capacity is an opportunity:
+if e-waste collection were added to existing bus routes, the city could reach more households
+without extra fuel costs or new vehicles. Combined with an open-source digital platform
+and citizen incentives, this could turn Regensburg's e-waste system from a passive drop-off
+model into an active, data-driven one.
+
+% ------------------------------------------------------------
+\subsection{Research Question and Hypothesis}
+% ------------------------------------------------------------
+
+This paper addresses the following research question:
+
+\begin{quote}
+  \textit{How can Regensburg achieve a 60\% reuse or recycling rate for e-waste
+  with no additional energy costs in terms of human resources and fuel, by
+  integrating e-waste collection into the existing city bus network and deploying
+  an open-source digital platform?}
+\end{quote}
+
+The hypothesis is that a collection scheme using city buses, supported by an
+AI routing system and a public digital platform, can raise Regensburg's formal
+e-waste collection rate to meet Germany's legal recycling targets at no extra
+cost to the city.
+
+% ============================================================
+\section{Proposed Solutions}
+% ============================================================
+
+% ------------------------------------------------------------
+\subsection{System Architecture Overview}
+% ------------------------------------------------------------
+
+The proposed solution has three parts:
+(1) an open-source platform (OSS platform) that acts as the central data system,
+(2) a physical collection scheme using city buses, run by citizens and city staff, and
+(3) an AI routing layer that improves collection efficiency over time using data from the OSS platform.
+
+The OSS platform is the core of the system. It stores data on e-waste registrations, collection status,
+bus occupancy, and recycling results. All source code is published under an open-source licence,
+and all non-personal data is publicly accessible, so any citizen, researcher, or developer
+can view, use, or improve the system.
+The city runs the platform, and citizens add and check data in return for small rewards.
+
+The physical layer uses the existing bus network, so no extra vehicles or fuel are needed.
+The AI layer reads real-time and past data from the OSS platform to plan the best collection runs.
+
+The system is built on three principles.
+\textit{Cost-neutrality}: no extra vehicles, fuel, or staff are needed.
+\textit{Openness}: code and data are public, so anyone can check or contribute.
+\textit{Incrementality}: the system is rolled out in stages, so each part can be tested before the next begins.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{diagram.png}
+  \caption{System architecture of the proposed e-waste management platform}
+  \label{fig:architecture}
+\end{figure}
+
+% ------------------------------------------------------------
+\subsection{City Bus Integration}
+% ------------------------------------------------------------
+
+The proposed collection scheme is built around the existing
+public bus network operated by \textit{das Stadtwerk.Mobilität}
+within the Regensburger Verkehrsverbund (RVV). 
+The network carries more than 70,000 passengers daily --- 
+up to 90,000 on peak days --- and its routes cover the city 
+comprehensively \cite{stadtwerk_busverkehr}. 
+Buses are not at full capacity at all times: off-peak services, early morning runs, and outer-district routes regularly operate with spare capacity, and this forms the basis of the proposed collection scheme.
+
+This idea already exists elsewhere. Since 2003, the city of Zürich has run its
+\textit{Cargo-Tram} and \textit{E-Tram} services, using public trams to collect
+bulky waste and old electronics from stops across the city \cite{circle_economy_zurich}.
+The service was both popular and affordable: in its first year, 272 tonnes of waste
+were collected across 35 rides \cite{circle_economy_zurich}. Regensburg has no trams,
+but can apply the same idea to its bus network.
+
+Unlike conventional morning-collection models with dedicated vehicles on fixed rounds, collection runs are scheduled dynamically by the platform, which reads real-time occupancy data from the RVV bus API and selects windows of low passenger load --- late-night services, midday off-peak runs, and outer-district routes. This ensures e-waste transport never competes with passenger demand, keeping the extra cost of each run near zero.
+
+Buses handle the middle part of the journey, not the last step. Citizens place items in boxes at nearby stops; buses then carry the sealed boxes from outer stops --- Burgweinting or Harting, for example --- to the nearest major hub such as the central Recyclinghof, on services that already make that journey. Final sorting and transfer to recycling processors is handled separately at the hub. This reduces how far dedicated vehicles need to travel, cutting fuel and staff costs without changing any timetables or adding new staff. The city pays nothing extra: the saving comes from using transport that already runs at a fixed cost.
+
+% ------------------------------------------------------------
+\subsection{Open-Source Digital Platform}
+\label{sec:platform}
+% ------------------------------------------------------------
+
+The second component is an open-source digital platform 
+(OSS platform) connecting citizens, the municipal government, 
+city bus operations, and waste processors. All source code 
+is published under an open-source licence and all 
+non-personal operational data is openly accessible, 
+enabling any organisation or citizen to inspect, contribute to, and build upon the system.
+
+The platform offers citizens three features: an
+interactive map showing collection points and Recyclinghof opening hours;
+a tool that shows the estimated material value of registered items; and a
+pickup form for larger items, which the routing system (Section~\ref{sec:ai})
+assigns to a bus with spare capacity.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{mockup.png}
+  \caption{Citizen-facing interface: collection map, material 
+  value lookup, and pickup registration}
+  \label{fig:mockup}
+\end{figure}
+
+For the city, a dashboard shows how much waste was collected in each district,
+how buses were used, and recycling results. The same data is available through
+a public API, so all information is shared openly.
+
+% ------------------------------------------------------------
+\subsection{AI-Optimised Routing}
+\label{sec:ai}
+% ------------------------------------------------------------
+
+The third component is a reinforcement learning (RL) system that decides
+which existing bus runs should pick up e-waste. The goal is to move as much
+material as possible from collection stops to hubs using only scheduled services,
+without sending out any extra vehicles.
+
+\subsubsection*{1. Input Data}
+
+The system uses four types of data:
+
+\begin{itemize}
+  \item \textbf{Bus position and occupancy} --- real-time data
+  from the RVV GTFS-RT feed, showing which buses have enough
+  room to carry a collection box.
+  \item \textbf{Fill-level reports} --- submitted by citizens
+  via the OSS platform, showing which stops have enough material
+  to be worth collecting.
+  \item \textbf{Recyclinghof capacity and opening hours} ---
+  setting the time limits within which deliveries must arrive.
+  \item \textbf{Past collection records} --- route, time of day,
+  volume, and outcome, stored and used to train the RL model.
+\end{itemize}
+
+\subsubsection*{2. Optimisation Target}
+
+The model scores each run by how much waste it moves relative to any extra cost.
+A bus that carries a full box from an outer stop to the Recyclinghof on a quiet
+scheduled run scores well; one that needs a detour or runs at a busy time scores poorly.
+
+\subsubsection*{3. Constraints}
+
+\begin{itemize}
+  \item \textbf{Zero additional fuel cost} --- the model may
+  only select from runs that already exist in the published
+  timetable; no detours or extra services are permitted.
+  \item \textbf{Bus payload limit} --- collection box weight
+  must remain within the spare capacity of the assigned run.
+  \item \textbf{Delivery window} --- all transfers must arrive
+  at the Recyclinghof within its opening hours.
+  \item \textbf{Inter-hub scope only} --- last-metre collection
+  is not included; the model only plans between stops and hubs,
+  which keeps it computationally manageable.
+\end{itemize}
+
+The model is trained using data from a one-year pilot in which the system runs
+without AI. After that, the model takes over scheduling and keeps learning
+as more data comes in.
+
+% ============================================================
+\section{Conclusion}
+% ============================================================
+
+This paper proposed a cost-neutral e-waste management system for Regensburg
+with three parts: a city-bus-based collection scheme, an open-source digital
+platform, and an AI routing layer. By adding e-waste transport to quiet existing
+bus runs, the system avoids extra fuel and labour costs while reaching more of
+the city. The OSS platform keeps the system open and involves citizens, and the
+RL model keeps improving as more data comes in.
+
+Two problems need to be solved before the system can be used: the reliability
+of data entered by citizens, and the physical challenge of safely storing e-waste
+on passenger buses. Both are solvable, and addressing them is the main direction
+for future work.
+
+% ============================================================
+% References (BibTeX placeholder)
+% ============================================================
+\newpage
+\bibliographystyle{plain}
+\bibliography{references}
+
+% --- Manual reference list (replace with .bib file) ---
+\begin{thebibliography}{99}
+
+\bibitem{unitar2024}
+UNITAR/ITU.
+\textit{The Global E-waste Monitor 2024}.
+United Nations Institute for Training and Research, Geneva, 2024.
+\url{https://www.itu.int/en/ITU-D/Environment/Pages/Publications/The-Global-E-waste-Monitor-2024.aspx}
+
+\bibitem{wikipedia_regensburg}
+Wikipedia contributors.
+\textit{Regensburg}.
+Wikipedia, The Free Encyclopedia, 2025.
+\url{https://en.wikipedia.org/wiki/Regensburg}
+
+\bibitem{infineon_regensburg}
+Infineon Technologies AG.
+\textit{Regensburg: Innovation site and high-tech factory}.
+\url{https://www.infineon.com/regional/regensburg}
+
+\bibitem{bmw2025}
+BMW Group Press.
+\textit{BMW Group Plant Regensburg gears up for the future}.
+March 2025.
+\url{https://www.press.bmwgroup.com/global/article/detail/T0448612EN}
+
+\bibitem{regensburg_elektroschrott}
+Stadt Regensburg.
+\textit{Abfall und Recycling: Elektroschrott}.
+\url{https://www.regensburg.de/leben/umwelt/abfall-und-recycling/elektroschrott}
+
+\bibitem{lfu2024}
+Bayerisches Landesamt für Umwelt (LfU).
+\textit{Hausmüll in Bayern --- Bilanzen 2024}.
+November 2025.
+\url{https://www.lfu.bayern.de/publikationen/get_pdf.htm?art_nr=lfu_abfall_00283}
+
+\bibitem{stadtwerk_busverkehr}
+das Stadtwerk.Mobilität.
+\textit{Busverkehr Regensburg}.
+\url{https://www.das-stadtwerk-regensburg.de/busverkehr}
+
+\bibitem{circle_economy_zurich}
+Circle Economy Knowledge Hub.
+\textit{Cargo-Tram Zürich: Waste collection via public transport}.
+\url{https://knowledge-hub.circle-economy.com/article/9083}
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,127 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 1
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+Polynomial Time
+1.1Prove that the following two statements about an algorithmAare equivalent:
+1.Aruns in polynomial time.
+2. There existsk∈Nsuch thatAruns in timeO(n k).
+Hints: You only need to work with Definitions 1 and 6 as well as the definition of Big-O.
+Solution:LetT(n)denote the worst-case running time of algorithmAon an input of lengthn. We
+prove the equivalence by demonstrating both implications.
+Part 1: Statement 1 implies Statement 2 (⇒)
+• AssumeAruns in polynomial time. By definition, there exists a polynomialp(n)such that
+Aruns in timep.
+• Letp(n) =a knk +a k−1nk−1 +· · ·+a1n+a 0 be this polynomial, wherek∈Nis the degree
+of the polynomial anda i ∈Rare its coefficients.
+• It suffices to show thatp∈O(n k). To do this, we bound the polynomial forn≥1:
+p(n)≤ |ak|nk +|a k−1|nk−1 +· · ·+|a0|
+≤ |ak|nk +|a k−1|nk +· · ·+|a0|nk (sincen i ≤n k fori≤kandn≥1)
+=
+ 
+k
+∑
+i=0
+|ai|
+!
+nk
+• Letc= ∑k
+i=0 |ai|. Then for alln≥1, we havep(n)≤c·n k.
+• By the formal definition of Big-O, settingn 0 =1 and using the constantc>0 as defined
+above, it follows directly thatp∈O(n k). Thus, Statement 2 holds.
+Part 2: Statement 2 implies Statement 1 (⇐)
+• Assume there existsk∈Nsuch thatAruns in timeO(n k).
+• Hence, there existst∈O(n k)so thatAruns in timet.
+• By the definition of Big-O, there exist constantsc>0 andn 0 ≥0 such that for alln≥n 0,
+t(n)≤c·n k.
+• Define a polynomialpviap(n) =⌈c⌉ ·n k +max({t(0),t(1), . . . ,t(n 0 −1)}). We claim that
+Aruns in timep:
+–forn<n 0, this holds by the definition ofp(the part max({t(0),t(1), . . . ,t(n 0 −1)}))
+–forn≥n 0 we know thatAruns in timetand thatt(n)≤c·n k ≤p(n).
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Problems in P
+1.2IsA={(x,y,z)∈N 3 |x y =z}in P? Prove your assertion. You may use Big-O notation.
+Note:The length of a triple(x,y,z)isℓ(x,y,z):=|bin(x)|+|bin(y)|+|bin(z)|, where bin(a)for a
+natural numberadenotes the binary representation ofa. Note that forx∈Nit holds 2 |bin(x)|−1 ≤x<
+2|bin(x)| .
+Solution:Idea: Perform exponentiation step by step, stopping if the result would become too long.
+Handle special cases. Care is needed forx=1.
+def a(x, y, z):
+if x == 1: return z == 1
+if x == 0: return (z == 0 and y != 0) or (y == 0 and z == 1)
+if y == 0: return z == 1
+prod = x
+while prod < z and y > 1:
+prod = prod * x
+y = y - 1
+return prod == z and y == 1
+Justification for polynomial running time:
+1. Up to the while-loop, only a constant number of steps are required.
+2. Just before each multiplicationprod = prod * x, it always holds thatprod≤zandx≤z.
+Thus, each individual multiplication requires at most 2|z|2 ≤2n 2 ∈O(n 2)steps.
+3. We determine the number of loop iterations. After iterationi, it holdsprod=x i+1. The loop
+terminates oncey==1 orprod≥z. In caseprod≥z, the loop terminates afteriiterations,i
+is the smallest natural number withprod=x i+1 ≥z, i.e., the number of loop iterations is at
+mosti=⌈log x z⌉ −1≤logz(taking the log on both sides of the inequality).
+So the number of loop iterations is min(y, logz), which is inO(n)(aszis part of the input, it
+holds logz≤n, wherenis the input).
+4. All other operations require constant running time.
+5. This results in a total running time ofO(n 3).
+1.3An Euler tour is an undirected, connected graph is a circuit from some node of the graph to itself
+that uses each edge exactly once. A graphGis called Eulerian if it has an Euler tour.
+Prove: An undirected, connected graphGis Eulerian if and only if each node inGhas even degree.
+Hint: You have to prove two implications:
+1. IfGis Eulerian, then each node inGhas even degree.
+2. If each node inGhas an even degree,Gis Eulerian.
+One implication is simple, for the other just start walking and see where it leads you to. . . Once you
+have a circuit, enlarge it as long as necessary.
+Solution:We prove the equivalence by showing both implications, as suggested in the hint.
+Part 1: IfGis Eulerian, then each node inGhas an even degree (⇒)
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+• LetG= (V,E)be an Eulerian graph. By definition, there exists an Euler tour (a closed
+circuit) that traverses every edge of the graph exactly once.
+• Consider an arbitrary nodev∈V. Each time the tour enters the nodevvia some edge, it
+must leavevvia adifferentedge, because the tour continues and every edge is used exactly
+once.
+• Every such “visit” (entering and leaving) consumes exactly two edges incident tov. There-
+fore, each visit contributes exactly 2 to the degree of the node.
+• Since the tour starts and ends at the same nodev 0, the very first outgoing edge and the very
+last incoming edge atv 0 also form a paired visit.
+• Because the Euler tour containseveryedge inGexactly once, the total degree of each node is
+completely determined by these pairwise traversals. Consequently, the degree of every node
+must be a multiple of 2, meaning it is even.
+Part 2: If each node inGhas an even degree,Gis Eulerian (⇐)
+• We prove this constructively. LetGbe a connected graph in which every node has an even
+degree.
+• Start at an arbitrary nodev 0 and walk along unused edges, marking each traversed edge
+as “visited”.We continue this walk until we reach a node from which we cannot leave
+(because all its incident edges have been visited).
+• Because every node has an even degree, whenever we enter any nodev̸=v 0, we have used
+an odd number of its incident edges during the current walk (including the one just used to
+enter). Since its total degree is even, there must necessarily be at least one unvisited edge
+remaining to leavev.
+• Therefore, the walk canneverget stuck at a nodev̸=v 0. It must inevitably get stuck at the
+starting nodev 0 (it must get stuck at all as the graph is finite). This guarantees that our walk
+forms an initial closed circuitC 1.
+• IfC 1 contains all the edges ofG, the proof is complete;C 1 is our Euler tour.
+• IfC 1 does not contain all edges, we logically remove all edges ofC 1 fromG. In the resulting
+subgraphG ′, every node still has an even degree, because we removed an even number of
+incident edges (a matched sequence of entering and leaving) from every node present inC 1.
+• Since the original graphGis connected, there must be at least one nodeu∈C 1 that still has
+incident, unvisited edges inG ′.
+• We now start a new walk fromuinG ′, again walking until we get stuck. By the same logic
+as above, this walk will inevitably close into a new circuitC 2 atu.
+• We can now “splice”C 2 intoC 1: The new, enlarged tour followsC 1 up tou, then completely
+traversesC 2 until returning tou, and finally follows the remainder ofC 1.
+• Since the number of edges inGis finite, we can continuously repeat this process of enlarging
+the circuit until all edges are consumed. The final result is a single closed circuit containing
+every edge exactly once—an Euler tour.
+T. Dose 3 SS2026

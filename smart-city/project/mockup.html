@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Waste Regensburg</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1a5c3a;
+    --green-light: #2d8a58;
+    --green-pale: #e8f5ee;
+    --amber: #c47d1a;
+    --amber-pale: #fdf3e0;
+    --gray-0: #f5f4f0;
+    --gray-1: #e8e6e0;
+    --gray-2: #b0aca0;
+    --gray-3: #6b6760;
+    --gray-4: #2a2826;
+    --white: #fdfcfa;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--gray-0);
+    color: var(--gray-4);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--green);
+    padding: 0 32px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.06em;
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    grid-template-rows: auto auto;
+    gap: 1px;
+    background: var(--gray-1);
+    min-height: calc(100vh - 52px);
+  }
+
+  .panel {
+    background: var(--white);
+    padding: 28px 32px;
+  }
+
+  .panel-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-2);
+    margin-bottom: 16px;
+  }
+
+  /* MAP PANEL */
+  .map-panel {
+    grid-row: 1 / 3;
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+    min-height: 560px;
+  }
+
+  .map-bg {
+    width: 100%;
+    height: 100%;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--gray-1) 39px, var(--gray-1) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, var(--gray-1) 39px, var(--gray-1) 40px);
+    background-color: #eeecea;
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Simplified Regensburg street shapes */
+  .map-roads {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .map-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .map-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-3);
+    background: var(--white);
+    display: inline-block;
+    padding: 6px 10px;
+    border: 1px solid var(--gray-1);
+  }
+
+  /* Collection point pins */
+  .pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transform: translate(-50%, -100%);
+  }
+  .pin-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.15s;
+  }
+  .pin:hover .pin-dot { transform: scale(1.3); }
+  .pin-line {
+    width: 1.5px;
+    height: 10px;
+    background: var(--green);
+  }
+  .pin.hub .pin-dot {
+    width: 18px;
+    height: 18px;
+    background: var(--amber);
+  }
+  .pin-label {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 9px;
+    white-space: nowrap;
+    background: var(--gray-4);
+    color: #fff;
+    padding: 3px 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+  .pin:hover .pin-label { opacity: 1; }
+
+  /* Legend */
+  .map-legend {
+    display: flex;
+    gap: 16px;
+    background: var(--white);
+    padding: 10px 14px;
+    border: 1px solid var(--gray-1);
+    width: fit-content;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--gray-3);
+    font-family: var(--mono);
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* VALUE PANEL */
+  .value-panel {
+    border-left: none;
+  }
+
+  .waste-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .waste-chip {
+    border: 1.5px solid var(--gray-1);
+    background: var(--white);
+    padding: 10px 12px;
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--gray-3);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .waste-chip:hover, .waste-chip.active {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-pale);
+  }
+  .waste-chip .chip-value {
+    display: block;
+    font-size: 10px;
+    color: var(--gray-2);
+    margin-top: 2px;
+  }
+  .waste-chip.active .chip-value { color: var(--green-light); }
+
+  .value-result {
+    background: var(--green-pale);
+    border: 1px solid #b8dfc8;
+    padding: 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .value-number {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--green);
+  }
+  .value-unit {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green-light);
+  }
+  .value-note {
+    font-size: 11px;
+    color: var(--gray-2);
+    margin-top: 4px;
+  }
+
+  /* FORM PANEL */
+  .form-panel {
+    border-top: none;
+  }
+
+  .form-row {
+    margin-bottom: 14px;
+  }
+  .form-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-2);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .form-input, .form-select {
+    width: 100%;
+    border: 1.5px solid var(--gray-1);
+    background: var(--white);
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: var(--sans);
+    color: var(--gray-4);
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus {
+    border-color: var(--green);
+  }
+
+  .bus-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--amber-pale);
+    border: 1px solid #e8c97a;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+  .bus-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--amber);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .bus-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 13px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .submit-btn:hover { background: var(--green-light); }
+
+  /* Bus route overlay on map */
+  .route-line {
+    position: absolute;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">E-Waste Regensburg</span>
+  <span class="nav-tag">Open Data Platform · Stadt Regensburg</span>
+</nav>
+
+<div class="layout">
+
+  <!-- MAP -->
+  <div class="panel map-panel">
+    <div class="map-bg"></div>
+
+    <!-- SVG road skeleton (simplified Regensburg) -->
+    <svg class="map-roads" viewBox="0 0 700 560" preserveAspectRatio="xMidYMid slice">
+      <!-- Danube river -->
+      <path d="M0 120 Q180 100 350 130 Q500 155 700 140" fill="none" stroke="#a8c8e8" stroke-width="18" opacity="0.6"/>
+      <path d="M0 120 Q180 100 350 130 Q500 155 700 140" fill="none" stroke="#c0d8f0" stroke-width="8" opacity="0.4"/>
+
+      <!-- Major roads -->
+      <line x1="350" y1="0" x2="350" y2="560" stroke="#d8d4cc" stroke-width="6"/>
+      <line x1="0" y1="280" x2="700" y2="280" stroke="#d8d4cc" stroke-width="6"/>
+      <line x1="0" y1="180" x2="700" y2="200" stroke="#d8d4cc" stroke-width="4"/>
+      <line x1="150" y1="0" x2="200" y2="560" stroke="#d8d4cc" stroke-width="3"/>
+      <line x1="500" y1="0" x2="520" y2="560" stroke="#d8d4cc" stroke-width="3"/>
+      <path d="M0 380 Q200 360 400 390 Q550 410 700 380" fill="none" stroke="#d8d4cc" stroke-width="3"/>
+
+      <!-- Bus route highlight (Line 1) -->
+      <path d="M60 280 L350 280 L520 280 L640 280" fill="none" stroke="#c47d1a" stroke-width="3" stroke-dasharray="8 4" opacity="0.6"/>
+
+      <!-- Old town block -->
+      <rect x="280" y="155" width="120" height="80" rx="4" fill="#ddd9d0" opacity="0.5"/>
+      <text x="340" y="200" text-anchor="middle" font-family="'DM Mono',monospace" font-size="9" fill="#9a9690">Altstadt</text>
+
+      <!-- Danube label -->
+      <text x="80" y="118" font-family="'DM Mono',monospace" font-size="9" fill="#6090b8">Donau</text>
+    </svg>
+
+    <!-- Collection point pins -->
+    <div class="pin" style="left:18%;top:55%" title="Hauptbahnhof">
+      <span class="pin-label">Hauptbahnhof</span>
+      <div class="pin-dot"></div>
+      <div class="pin-line"></div>
+    </div>
+    <div class="pin" style="left:35%;top:62%">
+      <span class="pin-label">Jakobsplatz</span>
+      <div class="pin-dot"></div>
+      <div class="pin-line"></div>
+    </div>
+    <div class="pin" style="left:52%;top:55%">
+      <span class="pin-label">Universität</span>
+      <div class="pin-dot"></div>
+      <div class="pin-line"></div>
+    </div>
+    <div class="pin" style="left:68%;top:58%">
+      <span class="pin-label">Burgweinting</span>
+      <div class="pin-dot"></div>
+      <div class="pin-line"></div>
+    </div>
+    <div class="pin" style="left:24%;top:72%">
+      <span class="pin-label">Kumpfmühl</span>
+      <div class="pin-dot"></div>
+      <div class="pin-line"></div>
+    </div>
+    <!-- Hub (Recyclinghof) -->
+    <div class="pin hub" style="left:44%;top:75%">
+      <span class="pin-label">Recyclinghof ★</span>
+      <div class="pin-dot"></div>
+      <div class="pin-line"></div>
+    </div>
+
+    <div class="map-overlay">
+      <span class="map-label">Collection map · Regensburg</span>
+      <div class="map-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--green)"></div>
+          Collection stop
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--amber)"></div>
+          Recyclinghof hub
+        </div>
+        <div class="legend-item">
+          <div style="width:18px;height:2px;background:var(--amber);opacity:0.6;border-top:2px dashed var(--amber)"></div>
+          Bus route
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUE PANEL -->
+  <div class="panel value-panel">
+    <div class="panel-label">Material value lookup</div>
+
+    <div class="waste-type-grid">
+      <button class="waste-chip active" onclick="selectWaste(this, 4.20)">
+        Mobile phone
+        <span class="chip-value">~€4.20 / unit</span>
+      </button>
+      <button class="waste-chip" onclick="selectWaste(this, 1.80)">
+        Laptop
+        <span class="chip-value">~€1.80 / kg</span>
+      </button>
+      <button class="waste-chip" onclick="selectWaste(this, 0.60)">
+        Cable / PCB
+        <span class="chip-value">~€0.60 / kg</span>
+      </button>
+      <button class="waste-chip" onclick="selectWaste(this, 0.30)">
+        Small appliance
+        <span class="chip-value">~€0.30 / kg</span>
+      </button>
+    </div>
+
+    <div class="value-result">
+      <div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="value-number" id="val-display">€ 4.20</span>
+          <span class="value-unit">per unit</span>
+        </div>
+        <div class="value-note">Estimated recoverable material value · Open data</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM PANEL -->
+  <div class="panel form-panel">
+    <div class="panel-label">Register pickup</div>
+
+    <div class="bus-indicator">
+      <div class="bus-dot"></div>
+      <span class="bus-text">Next low-occupancy run: 23:14 · Line 6 · Burgweinting → Recyclinghof</span>
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">Address</label>
+      <input class="form-input" type="text" placeholder="Straße, Hausnummer">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Waste type</label>
+      <select class="form-select">
+        <option>Mobile phone</option>
+        <option>Laptop</option>
+        <option>Cable / PCB</option>
+        <option>Small appliance</option>
+        <option>Large appliance</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Quantity</label>
+      <input class="form-input" type="text" placeholder="e.g. 3 units / 5 kg">
+    </div>
+
+    <button class="submit-btn">Register pickup →</button>
+  </div>
+
+</div>
+
+<script>
+function selectWaste(el, val) {
+  document.querySelectorAll('.waste-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('val-display').textContent = '€ ' + val.toFixed(2);
+}
+</script>
+</body>
+</html>

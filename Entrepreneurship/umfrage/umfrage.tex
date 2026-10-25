@@ -1,0 +1,125 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.65in} 
+\usepackage{enumitem}
+\usepackage{amssymb} 
+\usepackage{booktabs} 
+
+\usepackage{titling}
+\setlength{\droptitle}{-1.5cm}
+
+\title{\textbf{Umfrage: Herausforderungen im Enterprise Architecture Management (EAM)}}
+\author{%
+  \textbf{Takanori Nagashima} \,$\cdot$\, Group 5 \\[0.05cm]
+  \textit{Entrepreneurship in ICT} \,$\cdot$\, DEPS -- Sommersemester 2026 \\
+  Prof. Dr. Santana \,$\cdot$\, Ostbayerische Technische Hochschule (OTH) Regensburg
+}
+\date{\vspace{-0.5cm}}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+\noindent Vielen Dank für Ihre Unterstützung! Diese Umfrage ist Teil eines Forschungsprojekts im Rahmen des Kurses \textbf{Entrepreneurship in ICT (SoSe 2026)} an der \textbf{OTH Regensburg} unter der Leitung von \textbf{Prof. Dr. Santana}. Als \textbf{Group 5} validieren wir aktuell die Potenziale von KI-gestützten Lösungen im EAM für mittelständische Unternehmen. Das Ausfüllen dauert maximal 3--5 Minuten. Alle Daten werden anonymisiert ausgewertet.
+\end{abstract}
+
+\vspace{-0.2cm}
+\section*{Fragenkatalog}
+\vspace{-0.1cm}
+
+\begin{enumerate}[label=\textbf{F\arabic*.}, leftmargin=*, itemsep=0.2cm]
+
+    % =======================================================
+    % Q1: Unternehmenshintergrund
+    % =======================================================
+    \item \textbf{Angaben zu Ihrem Unternehmen}
+    \begin{enumerate}[label=\alph*), itemsep=0.05cm, topsep=0.05cm]
+        \item Größe des Unternehmens (Anzahl der Mitarbeitenden): \underline{\hspace{5cm}}
+        \item Gründungsjahr des Unternehmens: \underline{\hspace{5cm}}
+        \item Name des Unternehmens (Optional): \underline{\hspace{5cm}}
+    \end{enumerate}
+
+    \vspace{0.1cm}
+
+    % =======================================================
+    % Q2: Verständnis und Nutzung von EA
+    % =======================================================
+    \item \textbf{Wie gut ist Ihr Verständnis von Enterprise Architecture (EA)?}
+    \begin{itemize}[label=$\bigcirc$, itemsep=0.02cm, topsep=0.05cm]
+        \item 1. Ich weiß nicht, was EA ist. $\rightarrow$ \textit{Bitte weiter mit Frage F5 (KI-Lösungen)}
+        \item 2. Ich weiß, was EA ist. $\rightarrow$ \textit{Bitte weiter mit Frage F3 (Operative Pain Points)}
+        \item 3. Wir haben ein EA-Tool im Unternehmen eingeführt. \\
+        $\rightarrow$ Welches Tool?: \underline{\hspace{5cm}} \textit{(Bitte weiter mit Frage F3 und F4)}
+    \end{itemize}
+
+    \vspace{0.1cm}
+
+    % =======================================================
+    % Q3: Pain Points bezüglich der operativen Arbeit
+    % =======================================================
+    \item \textbf{Bewertung der Pain Points bezüglich Ihrer alltäglichen Arbeit und Prozesse} \\
+    {\small\textit{Hinweis: Wenn Sie bei F2 Option 3 gewählt haben, bitte F3 und F4 beantworten. Bei Option 2 nur F3 beantworten und zu F5 springen.}}
+    
+    \noindent Bitte bewerten Sie die Herausforderungen von \textbf{1 (kein Problem)} bis \textbf{3 (schwerwiegendes Problem)} oder \textbf{0} für Sonstiges/Nicht relevant:
+    \\[0.1cm]
+    \begin{tabular}{p{9.8cm}cccc}
+        \toprule
+        \textbf{Pain Point (Arbeit / Prozesse)} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{0} \\
+        \midrule
+        Informationen sind über zu viele Tools verstreut (Fragmentierung) & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        Architekturdiagramme veralten extrem schnell & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        Hoher manueller Aufwand bei der ständigen Aktualisierung & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        Personen außerhalb des IT-Teams verstehen die Diagramme nicht & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        Einzelne Teams befolgen völlig unterschiedliche Standards & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        \bottomrule
+    \end{tabular}
+
+    \newpage 
+
+    % =======================================================
+    % Q4: Pain Points bezüglich bestehender EAM-Tools
+    % =======================================================
+    \item \textbf{Bewertung der Pain Points bezüglich bestehender EAM-Tools (z. B. LeanIX, ServiceNow etc.)} \\
+    {\small\textit{Hinweis: Nur auszufüllen, wenn Sie bei F2 die Option 3 gewählt haben. Ansonsten weiter mit F5.}}
+    
+    \noindent Bitte bewerten Sie die Herausforderungen von \textbf{1 (kein Problem)} bis \textbf{3 (schwerwiegendes Problem)} oder \textbf{0} für Sonstiges/Nicht relevant:
+    \\[0.1cm]
+    \begin{tabular}{p{9.8cm}cccc}
+        \toprule
+        \textbf{Pain Point (EAM-Tools)} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{0} \\
+        \midrule
+        Die Einführung und Lizenzierung ist viel zu teuer & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        Die Tools sind zu komplex und überfordern die Nutzer & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        Die initiale Dateneingabe erfordert zu viel manuellen Aufwand & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        Es fehlt an Flexibilität für die Anpassung an eigene Prozesse & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ & $\bigcirc$ \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{0.4cm}
+
+    % =======================================================
+    % Q5: Großen Freitextfeld für gewünschte KI-Lösungen
+    % =======================================================
+    \item \textbf{Welche Art von Lösungen oder Funktionen -- insbesondere unter Einsatz von Künstlicher Intelligenz (KI) -- würden Sie sich wünschen, um Ihre aktuellen Herausforderungen im EAM zu bewältigen?}
+    \\[0.2cm]
+    \noindent\vbox{
+        \noindent\hrulefill\vskip.5cm
+        \noindent\hrulefill\vskip.5cm
+        \noindent\hrulefill\vskip.5cm
+        \noindent\hrulefill\vskip.5cm
+        \noindent\hrulefill
+    }
+
+\end{enumerate}
+
+\vspace{0.6cm}
+\begin{center}
+    \textbf{Vielen Dank für Ihre geschätzte Unterstützung und Ihre Zeit! Bitte nimm dir ein Süßigkeit vom Tisch.}
+\end{center}
+
+\end{document}

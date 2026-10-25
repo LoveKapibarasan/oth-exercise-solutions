@@ -1,0 +1,225 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 5
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+Warmup
+5.1Show 3-COLOR≤ p k-COLOR fork≥3.
+Solution:Idea for the reduction: Addk−3 nodes each of which has an edge to each other node in
+the graph (new and old nodes).
+Definef(⟨V,E⟩) =⟨V∪ {x 1, . . . ,xk−3},E∪ {{v,xi} |v∈V, 1≤i≤k−3} ∪ {{x i,x j} |1≤i<
+j≤k−3}⟩, wherex 1, . . . ,xk−3 are nodes that are not inV.
+Thenf∈FP.
+It remains to show
+⟨V,E⟩ ∈3-COLOR⇔f(⟨V,E⟩)∈k-COLOR.
+⇒If⟨V,E⟩ ∈3-COLOR then we have a 3-coloringc:V→ {1, 2, 3}so thatc(u)̸=c(v)for all
+{u,v} ∈E. Definec ′ :V∪ {x1, . . . ,xk−3} → {1, 2, . . . ,k}viac′(u) =c(u)for allu∈Vand
+c′(xi) =i+3. Thenc ′ is ak-coloring off(⟨V,E⟩). Hence,f(⟨V,E⟩)∈k-COLOR.
+⇐Assumef(⟨V,E⟩)∈k-COLOR. Hence, there is ac ′ :V∪ {x1, . . . ,xk−3} → {1, 2, . . . ,k}so
+thatc ′(u)̸=c ′(v)for all edges{u,v}inf(⟨V,E⟩). There are exactly 3 colors that none of the
+nodesx 1, . . . ,xk−3 has underc ′ (k−3 nodes can’t have more thank−3 colors in total, and
+since the nodesx 1, . . . ,xk−3 are all connected via an edge, their colors underc′ are all distinct).
+W.L.O.G., these colors are 1, 2, 3 (otherwise, rename the colors).
+As each node inVhas an edge to each of the nodesx i, it holdsc ′(v)∈ {1, 2, 3}for allv∈V.
+Asc ′ is a valid coloring off(⟨V,E⟩), no two adjacent nodes inVhave the same color under
+c′. Thus,c:V→ {1, 2, 3}withc(v) =c ′(v)is a 3-coloring of⟨V,E⟩and⟨V,E⟩ ∈3-COLOR.
+5.2Show that the problem
+5SOS={⟨a 1, . . . ,am,b⟩ |m,a1, . . . ,am,b∈N,∃ I⊆{1,...,m} ∑
+i∈I
+ai =5b}.
+is NP-hard.
+Hint: You may use any result stated in the lecture slides.
+Solution:We claim SOS≤ p 5SOS viafwith
+f(⟨a 1, . . . ,am,b⟩) =⟨5a 1, 5a2, . . . , 5am,b⟩.
+Clearlyf∈FP.
+• Next we show⟨a 1, . . . ,am,b⟩ ∈SOS=⇒f(⟨a 1, . . . ,am,b⟩)∈5SOS:
+⟨a1, . . . ,am,b⟩ ∈SOS implies that there isI⊆ {1, . . . ,m}with ∑i∈I ai =b. Hence, ∑i∈I 5ai =
+5 ∑i∈I ai =5b. Thus,f(⟨a 1, . . . ,am,b⟩) =⟨5a 1, . . . , 5am,b⟩ ∈5SOS.
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+• Finally, we show⟨a 1, . . . ,am,b⟩ ∈SOS⇐=f(⟨a 1, . . . ,am,b⟩)∈5SOS:
+f(⟨a 1, . . . ,am,b⟩) =⟨5a 1, . . . , 5am,b⟩ ∈5SOS implies that there isI⊆ {1, . . . ,m}with∑i∈I 5ai =
+5b. Dividing both sides by 5 gives us ∑i∈I ai =b. So⟨a 1, . . . ,am,b⟩ ∈SOS.
+Reductions
+5.3Show 3-COLOR is NP-complete. For the membership in NP you can refer to an exercise from a
+previous exercise sheet. You may use all problems that are proven explicitly to be NP-complete in the
+lecture slides: SAT, 3-SAT, CLIQUE.
+Try to solve the exercise withas few hints as possible.
+Hints:
+• Use the problem listed second among the three problems that can be used.
+• Use triangles in a smart way.
+• Use one big triangle with nodesT,F,N(imagine them as “true”, “false”, “neutral”).
+• For each variablexand its negation¬xintroduce nodesxand¬xand draw a triangle{x,¬x,N}
+(i.e., the negated variable has the negated truth value, both are not neutral).
+• Consider clauses of two literals first. Introduce a node for each such node and try to force it to
+have the “appropriate” color.
+• Use your construction for clauses of two literals to also “express” clauses of three literals.
+• Party hard!
+Solution:The following construction explains a possible reduction function. By construction, the
+function is polynomial time computable.
+Hint: Draw a picture to better understand the construction.
+1. Add nodesT,F,Nand for each variablexadd nodesxand¬x.
+2. Add edges{T,F},{F,N},{N,T},{N,x},{x,¬x}, and{¬x,N}
+3. For each clausec=lfor a literalladd a nodecand a triangle{c,F,N}.
+4. For each clausec= (l∨l ′)(l, andl ′ are literals)
+(a) add nodesl 1,l ′
+1, andc
+(b) add edges{l,l 1},{l ′,l ′
+1}, and a triangle{l 1,l ′
+1,c}.
+(c) add a triangle{c,F,N}.
+5. For each clausec= (l∨l ′ ∨l ′′)
+(a) add nodesl 1,l ′
+1, andh.
+(b) add edges{l,l 1},{l ′,l ′
+1}, and a triangle{l 1,l ′
+1,h}.
+(c) add nodesh 1,l ′′
+1 , andc.
+(d) add edges{h,h 1},{l ′′,l ′′
+1 }, and a triangle{h 1,l ′′
+1 ,c}.
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+(e) add a triangle{c,F,N}.
+For a Boolean formulaφwe call the graph constructed as aboveG φ. It remains to show that⟨φ⟩ ∈
+3-SAT if and only if⟨G φ⟩ ∈3-COLOR.
+“⇒”:Letνbe a satisfying assignment forφ. We construct a 3-coloring forG φ using colors{t,f,n}.
+Assign colorst,f,nto nodesT,F,Nrespectively. For each variablex, assign colorttoxandf
+to¬xifν(x) =true; otherwise, assignftoxandtto¬x. This satisfies all{x,¬x,N}triangles.
+Sinceνsatisfiesφ, every clause has at least one true literal (coloredt). For the nodes added
+for each clause, if a literallis coloredt, its neighborl 1 can be coloredf, allowing the node
+c(or nodeh) to be coloredt. Sinceccan always be coloredt, the triangle{c,F,N}is validly
+colored. Thus⟨G φ⟩ ∈3-COLOR.
+“⇐”:LetG φ be 3-colorable. Without loss of generality, let the colors ofT,F,Nbet,f,n. The
+{x,¬x,N}triangles force each literal node to be colored with eithertorf. Define the assign-
+mentν(x) =true if and only if nodexis coloredt. For any clause, the triangle{c,F,N}forces
+the nodecto be coloredt. Among the nodes added for a clausec= (l∨l ′), if bothlandl ′
+are coloredf, then their neighborsl 1 andl ′
+1 must take distinct colors from{t,n}, forcing their
+third triangle node (corh) to be coloredf. Cascading this logic to a clausec= (l∨l ′ ∨l ′′),
+if all three literals aref, thenhis forced to bef, which in turn forcescto bef. This contra-
+dicts thatcmust be coloredt. Therefore, every clause must have at least one literal coloredt,
+meaningνsatisfiesφ. Thus⟨φ⟩ ∈3-SAT.
+Cook-Levin Theorem
+5.4Recall the proof of the Cook-Levin Theorem (NP-completeness of SAT), which constructs a boolean
+formulaF x that simulates the computation of a non-deterministic Turing Machine (NTM).
+Consider the following NTMM= (Σ,S,f,s 0,s 1)which accepts words overΣ={0, 1}whose third-
+to-last letter is a 1. The states 1 is the unique final state. The transitions are given ascurrent state
+read→next state write move(where0stands for no movement,Rfor right):
+s0 1 -> s0 _ R
+s0 1 -> s2 _ R
+s0 0 -> s0 _ R
+s2 0 -> s3 _ R
+s2 1 -> s3 _ R
+s3 0 -> s4 _ R
+s3 1 -> s4 _ R
+s4 0 -> s4 0 0
+s4 1 -> s4 1 0
+s4 _ -> s1 1 0
+s1 1 -> s1 1 0
+The running time of this machine is exactlyp(n) =n+1. We consider the input wordx=00101 with
+n=|x|=5. Thus, the maximum time isp(n) =6.
+According to the lecture, the formulaF x uses the boolean variablesS(t,s),H(t,i), andL(t,i,a)for
+t,i∈ {0, . . . , 6}. Let∆denote the blank symbol ‘ ‘.
+a) Write down the exact, fully expanded boolean formulas forF 1 (initial tape content) andF6 (initial
+state and head position) for this specific inputx.
+b) Write down the sequence of configurations (state, head position, tape content) for theaccepting
+pathofMonxfromt=0 tot=6.
+T. Dose 3 SS2026
+--- Page 4 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+c) A core part of the Cook-Levin proof is capturing non-determinism in the transition formulaF 7.
+Consider the specific time stept=2 and celli=2. At this point, the accepting path requires
+the machine to read a1in states 0. Write down the specific logical implication from the big
+conjunctionF 7 for the parameterst=2,i=2,s=s 0, anda=1.
+In other words, express the red part in the formula below for the above TM (for the specified
+values oft,i,s, anda).
+p(n)−1^
+t=0
+p(n)^
+i=0
+^
+s∈S,a∈Σ
+ 
+S(t,s)∧H(t,i)∧L(t,i,a)
+
+→
+_
+(s,a)→(s ′,b,D)
+ 
+S(t+1,s ′)∧H(t+1,i ′)∧L(t+1,i,b)
+
+,
+Solution:
+a) Based on the lecture slides, the variables are initialized up to cellp(n) =6. The word is
+placed in cells 0 . . . 4.
+F1 =
+4^
+i=0
+L(0,i,x i)∧
+6^
+i=5
+L(0,i,∆)
+=L(0, 0, 0)∧L(0, 1, 0)∧L(0, 2, 1)∧L(0, 3, 0)∧L(0, 4, 1)∧L(0, 5,∆)∧L(0, 6,∆)
+The machine starts in states 0 with the head at cell 0:
+F6 =S(0,s 0)∧H(0, 0)
+b) The accepting computation path is:
+•t=0 :(s 0, 0,00101 )
+•t=1 :(s 0, 1, 0101 )(vias0 0→s0 R)
+•t=2 :(s 0, 2, 101 )(vias0 0→s0 R)
+•t=3 :(s 2, 3, 01 )(vias0 1→s2 R, non-deterministic guess to accept)
+•t=4 :(s 3, 4, 1 )(vias2 0→s3 R)
+•t=5 :(s 4, 5, )(vias3 1→s4 R)
+•t=6 :(s 1, 5, 1 )(vias4 →s1 1 0, Accept)
+c) The sub-formulaF 7 states that if a specific state, head, and tape symbol combination is ac-
+tive, it must imply the disjunction of all valid following configurations according to the
+transitions. ForMin states 0 reading a 1, there are two transitions:(s 0,∆,R)and(s 2,∆,R).
+Applying this tot=2,i=2,s=s 0, anda=1:
+ 
+S(2,s 0)∧H(2, 2)∧L(2, 2, 1)
+
+→
+ 
+S(3,s 0)∧H(3, 3)∧L(3, 2,∆)
+
+∨
+ 
+S(3,s 2)∧H(3, 3)∧L(3, 2,∆)
+
+(Note: Since the head moves right, the new head position is i ′ =i+1=3. The written symbol
+b=∆replaces the symbol at the old position i=2).
+Extra exercise – for TM lovers
+5.5In the proof of the Cook-Levin theorem, we made some assumptions about the TMMthat accepts
+A(the “WLOG” part on page 269).
+T. Dose 4 SS2026
+--- Page 5 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+In general, we only know that having a setAin NP guarantees that there issomenondet. TMMthat
+acceptsA, but not such a specific one. Explain why our assumptions are nonetheless justified: Argue
+that when havinganynon-det. TMM, we can transform it into am TMM ′ that acceptsA, but also
+satisfies the properties mentioned in the proof.
+Do not argue formally, but try to explain in your own words how you can —starting with an arbitrary
+TM that acceptsA— build a TM with the properties stated in the proof.
+Hint:You can duplicate the alphabet (useΣ×Σinstead ofΣas the alphabet) and imagine the tape as
+having two tracks, one for the part left of the first input symbol and one track for the rest.
+Solution:
+•No movement left of the initial input:Use a two-track tape (by expanding the alphabet to
+pairs). Track 1 represents the tape from cell 0 extending right. Track 2 represents the tape
+from cell -1 extending left (folded over). The TM simulates moving left of cell 0 by switching
+to Track 2 and reversing its movement direction.
+•Unique accepting configuration (clean tape, head at 0, states 1, timep(|x|)):We add a new
+unique accepting states clean. Whenever the original TM accepts, we transition tosclean. In this
+state, the TM sweeps across the tape to erase all symbols, moves the head back to position 0,
+writes a ’1’, and then stays ins clean doing nothing (looping) until exactlyp(|x|)steps have
+passed.
+•No path stops ifx/∈A:Modify all previously halting, rejecting states (or undefined transi-
+tions) to enter a ”sink” states reject. Ins reject, the TM simply loops forever.
+•Looping instructions 11→s 110:As described above, the new accepting states clean gets
+exactly this instruction to ”burn” remaining time up top(|x|)steps.
+T. Dose 5 SS2026

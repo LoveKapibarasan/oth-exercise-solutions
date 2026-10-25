@@ -1,0 +1,58 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 8
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+8.1Connect Four Optimizations
+In the previous exercise, you implemented the basic Negamax algorithm for Connect Four. Now, we
+will optimize this implementation using Bitboards and Alpha-Beta Pruning.
+Work in the shared git repository. Wait until the code for last week’s exercise sheet is on themaster-
+branch and then create a branch namede08 firstname(e.g.,git checkout -b e08 titus) from
+themaster-branch. Then, selected branches will later be merged back into themaster-branch.
+Use the filessrc/connect four.c,src/connect four.h, andtest/test connect four.c.
+a)Bitboard RepresentationRewrite your board representation and the win-check logic using the
+64-bit padded Bitboard approach discussed in the lecture. Use bit operations extensively. Imple-
+ment a functionbool has won(uint64 t board)that checks if the given bitboard contains
+four pieces in a row (horizontally, vertically, or diagonally). Make your code as fast as you pos-
+sibly can.
+b)Alpha-Beta PruningExtend yournegamaxfunction to include Alpha-Beta Pruning. The signa-
+ture should look like this:
+int negamax(uint64_t board_player,
+uint64_t board_opponent,
+int depth,
+int alpha,
+int beta)
+c)Performance BenchmarksIn your test file (test connect four.c), establish a global variable
+node countthat tracks the number of calls to thenegamaxfunction. Compare the number of
+nodes visited by the standard Negamax algorithm versus your new Alpha-Beta Pruning version
+(you can e.g. use a globalboolvariable to switch on/off alpha-beta-pruning).
+Run the performance comparison for the following two positions (X to move):
+1.Position 1:
+. . O . . . .
+. . X X . . .
+. O X O . O .
+. X X O . X .
+O X O X X O .
+X O O X O O X
+2.Position 2(two moves earlier):
+. . O . . . .
+. . X X . . .
+. O X O . . .
+. X X O . . .
+O X O X X O .
+X O O X O O X
+Print thenode countfor both implementations and both positions to the console. What per-
+centage of nodes can be saved by Alpha-Beta Pruning in each case?
+Note: The search space grows exponentially with each additional free cell. Be prepared for significantly
+longer execution times for the second position!
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+d)Bitboard vs. Array PerformanceUsing the first of the two board positions above, measure and
+compare the total execution time of your new Bitboard-based algorithm against the previous
+array-based (char board[6][7]) implementation (alpha-beta-pruning should be switched off,
+use the array-based implementation in themaster-branch).
+T. Dose 2 SS2026

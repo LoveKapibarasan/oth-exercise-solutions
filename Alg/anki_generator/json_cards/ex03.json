@@ -1,0 +1,17 @@
+[
+  {
+    "sheet": "Exercise 3.1 a)",
+    "question": "Prove that for all $A, B \\in \\text{NP}$, the sets $A \\cup B$ and $A \\cap B$ are also in $\\text{NP}$.",
+    "answer": "Since $A, B \\in \\text{NP}$, by Theorem 47 there exist non-deterministic polynomial-time algorithms `acceptA(x)` and `acceptB(x)` that accept $A$ and $B$, respectively.\n\nWe can define non-deterministic polynomial-time algorithms for union and intersection as follows:\n\n* **Union ($A \\cup B$):**\n  ```python\n  def acceptAorB(x):\n      return acceptA(x) == 1 or acceptB(x) == 1\n  ```\n  If $x \\in A \\cup B$, then either `acceptA(x)` has an accepting path or `acceptB(x)` does. The combined check will run in polynomial time.\n\n* **Intersection ($A \\cap B$):**\n  ```python\n  def acceptAandB(x):\n      return acceptA(x) == 1 and acceptB(x) == 1\n  ```\n  If $x \\in A \\cap B$, both algorithms have at least one accepting path, so the combined check will accept in polynomial time."
+  },
+  {
+    "sheet": "Exercise 3.1 b)",
+    "question": "Explain why the following student's \"proof\" that $\\text{NP} = \\text{co-NP}$ (specifically $A \\in \\text{NP} \\implies \\overline{A} \\in \\text{NP}$) is incorrect:\n\n*\"Let $A \\in \\text{NP}$. There exists a non-deterministic program `acceptA(x)` that accepts $A$. Define `acceptNotA(x)` as:*\n```python\ndef acceptNotA(x):\n    if acceptA(x) == 0:\n        return 1\n    return 0\n```\n*As `acceptA` is non-deterministic polynomial-time, so is `acceptNotA`, which accepts $\\overline{A}$.\"*",
+    "answer": "The fallacy lies in treating the output of the non-deterministic algorithm `acceptA(x)` as a simple return value that can be inverted.\n\n* **Non-Deterministic Acceptance:** An algorithm accepts an input if there is **at least one** accepting execution path. It might have many paths that reject (return 0), even if it accepts the input.\n* **Inversion Failure:** If $x \\in A$, `acceptA(x)` has at least one path returning 1, but it may also have paths returning 0. In those paths, `acceptNotA(x)` will see `acceptA(x) == 0` and return 1 (accepting $x$). Thus, both `acceptA(x)` and `acceptNotA(x)` accept $x$, meaning `acceptNotA` does not accept $\\overline{A}$.\n\n* **Counterexample:** Let $A = \\mathbb{N} \\in \\text{NP}$ accepted by:\n  ```python\n  def acceptA(x):\n      val = 1 | 0  # non-deterministic choice\n      return val\n  ```\n  The constructed `acceptNotA(x)` would also accept $\\mathbb{N}$ because of the path where `acceptA(x)` chooses 0."
+  },
+  {
+    "sheet": "Exercise 3.2",
+    "question": "Specify a non-deterministic polynomial-time algorithm that accepts the $3\\text{-Color}$ problem (checking if a graph can be colored with 3 colors such that no adjacent vertices share a color).",
+    "answer": "```python\ndef accept3color(G):\n    n = len(G)  # G is the adjacency matrix, n is the number of vertices\n    coloring = [0] * n\n    \n    # Non-deterministically guess a color (0, 1, or 2) for each vertex\n    for i in range(n):\n        coloring[i] = 0 | coloring[i] = 1 | coloring[i] = 2\n    \n    # Verify that the coloring is valid\n    for i in range(n):\n        for j in range(n):\n            if i != j and G[i][j] and coloring[i] == coloring[j]:\n                return 0 # Invalid coloring\n                \n    return 1 # Valid coloring found\n```\n\n* **Complexity:** Guessing takes $O(n)$ steps. Verifying takes $O(n^2)$ steps. Total time is $O(n^2)$, which is polynomial."
+  }
+]

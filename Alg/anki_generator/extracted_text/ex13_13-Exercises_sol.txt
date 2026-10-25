@@ -1,0 +1,355 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 13
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+13.1Calculation of Euler’s Totient Function
+Use Theorem 3.20 to computeφ(2075). As in the exam, no external tools are allowed.
+Solution:2075=25·83=5 2 ·83.
+Since 5 and 83 are prime numbers, we have:
+φ(2075) =φ(5 2)·φ(83)
+= (52 −5 1)·(83−1)
+=20·82
+=1640
+13.2Cryptanalysis of the Vigen `ere Cipher
+Below you will find a text encrypted with the Vigen`ere cipher.
+OAZSGOQQKDXVLYTBVDUWWQWLPQIOKHSKKRLOQSJDQZDEBSMUWGJCISTVTLYPENGWGCBUSHCMWJPPM
+QVTBMLFTUIPSJPMLFTWZRLTXNDZGBIGVPRMUVTBIQVTBMVSWSPQWGCBDMCDIQMCNNUSVDMVWXDEDF
+CPIKJHDLXVTXVISWBZDVWKJHARRRDFDMPQATQMVWWOVGWGZZRYGKUPATBMUSJPLHEUKPUJPNOUACC
+BHMCNIQLLYZWWIORDVPCEDJTSVHFTDBHTTQMEWCRMLLSOZDFSOZHKRRIXLTXMXYXOZLYJXLIJPQBH
+OTSBHJTBHDZAGIVAHDLHFCZIVKXOZWVTBXUGVBIPEXOZHJPENGWBPIKJGKLHJZVIHJIOIOKDSKKOP
+BOHJPNMDMUNMPOTQPLWGRMUSACQFZTSVHZJOJVUWONUSJSVHACOUEDPEMQCAOQGSJPMLFTWNDZGBI
+GYTDZRXUOVKSQOALWWKBPARRIQYTVIHUWVBLKINIQFKYVLZGOUISWBZDVPLOHKISMJWCRIWVPCSOW
+XNIXKVOHRYTXCQVVOADYINCNSCXAWNDXULJPVTHKWKJHFLKAGMLSTOKINMUSCNMUWEBWJJPWULWGO
+ZZSGCKKGCQMVHPXVWMCNNUSVDMXFSGIVZPCBGMVOUDUWDLHJEBWJJPWULWGOZDMUNMPXPRZUSSJCF
+CIOULLSOVVUWETWWGXCQVHKOWWCKQFZWKJHVPCNDZGBIGYTXWPETXLDJPENGWGKVGWGOXUGVBIPEX
+OZHJPRLDKLKZVUWVIXNDXLLJXXMLFTWJOSJOVNDTSLKSTDBHKINCHUWDLRGUKCVYTCMKWCKVPWGUC
+QYSOADMUQIEWCCBHDAOZVUWKBJHIRIWEXBLLWHOVZAIJIXXVOAFZGSMEWCSKKNTBAWWWOMKJASKKY
+TCIJLCSKKLLKAGSGKVOMHDQJKTSVVGAVEDJJWARDADMHACWIQFPEKKVPCJOSJOSOWXNVHZBOVYATV
+THARRBNGTXVHFHSMHKBSZLFSOVXWQEVJWCOZNDPOZHF
+Your task in this exercise is to break the cipher and decrypt the given German text consisting of capital
+letters (no spaces, no punctuation marks). The password’s length is less than 20.
+Break the encryption as follows:
+1. Determine the password length.
+2. Determine the password.
+3. Compute the plaintext.
+You may use any programming language to solve this, but no external cryptographic tools.
+Background / Hint: Finding the Password Length
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+In the following, you will find a description of how to determine the password length. Once you have
+determined the password length, you can deduce the password by exploiting the fact that the letter E
+is the most frequent in the German language.
+Letc=c 1 . . .c n be a ciphertext over an alphabetΣ={a 1, . . . ,ak}.
+We define
+w1 =c 1,c 1+t,c 1+2t, . . .
+w2 =c 2,c 2+t,c 2+2t, . . .
+...
+which corresponds to writing the ciphertext in a grid of widthtand reading it column-wise. It is crucial
+that every letter in a fixed blockw i is encrypted with the same key.
+Friedman T est
+What is the probability that two randomly chosen letters of the text are identical? (Letα 1,α 2, . . . ,αk be
+the absolute frequencies of occurrence ofa 1, . . . ,ak).
+Answer:
+∑k
+i=1 αi(αi −1)
+n(n−1) =
+k
+∑
+i=1
+ αi
+n
+2
+· n
+n−1 − ∑k
+i=1 αi
+n(n−1)
+For largen, this can be approximated as:
+k
+∑
+i=1
+ αi
+n
+2
+(Note that αi
+n is the relative frequency ofa i).
+This number is called theIndex of Coincidence (IC).
+For randomly chosen sequences of letters, the IC is:
+IC≈
+k
+∑
+i=1
+ 1
+k
+2
+= 1
+k
+So, for example, 1
+26 ≈0.0384 for the alphabet{A,B, . . . ,Z}.
+In German or English texts, the IC is about 0.065 to 0.075.
+For each “realistic” password lengtht=1, 2, 3, . . . , we now compute the ICs of the following texts and
+then the average of all obtained ICs:
+w1 =c 1,c 1+t,c 1+2t, . . .
+w2 =c 2,c 2+t,c 2+2t, . . .
+w3 =. . .
+Iftis a multiple of the password length, we expect an average IC of approx. 0.065 (the letters in each
+wi were encoded with the same key). We consider the firsttfor which the average IC is significantly
+higher than 0.0384 (ideally around 0.07) as a candidate for the password length.
+Iftis not a multiple of the password length, the letters in each of thew i were encrypted with different
+keys, which is why the frequency distribution of the plaintext is “blurred”. The average IC is expected
+to be smaller.
+Solution:Using the Friedman test, we determine the password lengtht=5. By performing fre-
+quency analysis on the 5 blocks, we find the password:KIDSP.
+The plaintext is:
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+ESWAREINSONNIGERNACHMITTAGALSSICHZWEIPROGRAMMIERERZUFAELLIGAUFDERSTRASSETRAFENDEREINEKAMA
+UFEINEMROTENFAHRRADDAHERDERANDERESAHIHNERSTAUNTANUNDFRAGTESEITWANNFAHRSTDUDENNFAHRRADHABE
+ICHJANOCHNIEGESEHENDERPROGRAMMIERERAUFDEMFAHRRADGRINSTEUNDANTWORTETEJADASWAREINENETTEBEGE
+BENHEITDERANDERESCHAUTENEUGIERIGUNDFRAGTEWEITERERZAHLWASISTDENNPASSIERTDERPROGRAMMIERERAU
+FDEMFAHRRADERKLAERTEALSOICHWARGERADEAUFDEMWEGHIERHERALSICHEINEHUEBSCHEFRAUINEINEMBLAUENKL
+EIDAUFEINEMFAHRRADGETROFFENHABESIEHATMICHANGELAECHLTISTDANNVONIHREMFAHRRADABGESTIEGENHATD
+ASKLEIDAUSGEZOGENUNDGESAGTDUKANNSTVONMIRALLESHABENWASDUWILLSTDERANDEREPROGRAMMIERERWARSCH
+ONGESPANNTUNDFRAGTEUNDWASHASTDUGEMACHTDERPROGRAMMIERERAUFDEMFAHRRADZUCKTEMITDENSCHULTERNU
+NDSAGTENAICHHABEDASFAHRRADGENOMMENDARAUFDERANDEREPROGRAMMIERERAHDASWARSCHLAUVONDIRINEINEM
+BLAUENKLEIDHAETTESTDUECHTDOOFAUSGESEHENANMERKUNGDESAUFGABENSTELLERSCHATGPTHATMIRDIESENWIT
+ZAUFGESCHRIEBENICHVERSTEHEEHRLICHGESAGTNICHTWASDARANLUSTIGSEINSOLLWARUMSOLLTEEINMANNAUCHD
+ASBLAUEKLEIDNEHMENVIELLEICHTKOENNENSIEESMIRINDENUEBUNGENERKLAEREN
+13.3Number-Theoretic Proofs
+We will discuss this exercise whenever any of you has something to present. There is no need to complete it for
+next week.
+ProveONEof the following statements:
+• Theorem 3.19
+• Theorem 3.20.1
+• Theorem 3.20.2
+• Theorem 3.22
+Hint for Theorem 3.22:Prove the more general statement that in any commutative group(G,·)with
+neutral elementeand for any elementg∈Git holds thatg |G| =e, whereg |G| =g·g· · · · ·g| {z }
+|G|times
+. To do
+this, letG={a 1,a 2, . . . ,an}. Consider the elementsga 1,ga 2, . . . ,gan and show that this set is exactly
+G. Then write the product of all group elements in two different ways and use commutativity and the
+existence of inverse elements.
+T. Dose 3 SS2026
+--- Page 4 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Solution: Preliminary Lemma: Multiplication of Coprime Numbers
+We first prove a fundamental lemma: If two integersaandbare both coprime ton, then their
+producta·bis also coprime ton.
+Proof:Let gcd(a,n) =1 and gcd(b,n) =1. By the Extended Euclidean Algorithm, there exist
+integersu,v,r,ssuch that:
+u·a+v·n=1 andr·b+s·n=1
+Multiplying both equations yields:
+1= (u·a+v·n)(r·b+s·n)
+=u·r·a·b+u·a·s·n+v·n·r·b+v·s·n 2
+= (u·r)·(a·b) + (u·a·s+v·r·b+v·s·n)·n
+Letd=gcd(a·b,n). Sinceddivides botha·bandn, it must divide the entire right side of the
+equation. Thus,dmust divide 1. Sincedis a positive integer,d=1. This proves that gcd(a·b,n) =
+1. □
+1.Proof of Theorem 3.19:We show thatZ ∗
+n is a group under multiplication modulon. We
+must verify the group axioms for(Z ∗
+n,·modn). Because multiplication inZis commutative,
+the operation modulonis also commutative. We therefore only need to check the left-sided
+properties for the neutral and inverse elements.
+Step 1: T otal Mapping (Closure)
+We must show that for anya,b∈Z ∗
+n, the result(a·bmodn)is also inZ ∗
+n. By definition ofZ ∗
+n,
+we have gcd(a,n) =1 and gcd(b,n) =1. Applying our Preliminary Lemma directly yields
+gcd(a·b,n) =1. Since subtracting multiples ofndoes not change the common divisors with
+n, we have gcd(a·bmodn,n) =gcd(a·b,n) =1. Thus,(a·bmodn)∈Z ∗
+n.
+Step 2: Associativity
+Leta,b,c∈Z ∗
+n. We want to show that((a·bmodn)·c)modn= (a·(b·cmodn))modn.
+Letkbe the integer such thata·bmodn=a·b−k·n. Substituting this into the left side:
+((a·bmodn)·c)modn= ((a·b−k·n)·c)modn
+= (a·b·c−k·c·n)modn
+Since subtracting a multiple ofn(herek·c·n) does not change the remainder modulon, this
+simplifies exactly to(a·b·c)modn. By a symmetric argument, the right side also simplifies
+to(a·b·c)modn. Thus, the operation is associative.
+Step 3: Neutral Element
+The number 1 is clearly inZ∗
+n because gcd(1,n) =1. For anya∈Z ∗
+n, we have(1·a)modn=
+amodn. Sincea<n, this is simplya. Thus, 1 is the neutral elemente.
+Step 4: Inverse Elements
+For everya∈Z ∗
+n, we need an elementu∈Z ∗
+n such that(u·a)modn=1. Sincea∈Z ∗
+n, we
+know gcd(a,n) =1. By the Extended Euclidean Algorithm, there exist integersu,v∈Zsuch
+that:
+u·a+v·n=1
+Taking this equation moduloneliminates thev·nterm, leaving:
+(u·a)modn=1 modn=1
+Letu ′ =umodn. Then(u ′ ·a)modn=1. We only need to verify thatu ′ ∈Z ∗
+n, meaning
+gcd(u′,n) =1. Any common divisor ofuandnmust also divideu·a+v·n=1. Thus,
+T. Dose 4 SS2026
+--- Page 5 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+gcd(u,n) =1. Sinceu ′ =umodn,uandu ′ share the same common divisors withn. There-
+fore, gcd(u′,n) =1. Therefore,u ′ is the inverse element ofainZ ∗
+n.
+Step 5: Uniqueness
+Finally, we show that neutral and inverse elements are unique in any group. Ifeande ′ are
+both neutral elements, thene=e·e ′ =e ′ (applying the neutrality ofe ′ and thene). Ifhandh ′
+are both inverses ofg, thenh=h·e=h·(g·h ′) = (h·g)·h ′ =e·h ′ =h ′.
+2.Proof of Theorem 3.20.1:For all naturalsm,n≥1 with gcd(m,n) =1, it holdsφ(m·n) =
+φ(m)·φ(n).
+We write the numbers 0, 1, 2, . . . ,m·n−1 from left to right and top to bottom into a table with
+mcolumns andnrows. Let the columns be indexed bya∈ {0, . . . ,m−1}and the rows be
+indexed byc∈ {0, . . . ,n−1}. Then the entry in rowcand columnais exactlyc·m+a.
+Step 1: Columns and coprimality tom.
+We observe that all entries in a column share the same property of being coprime tomor not.
+Let us prove this rigorously: Assume an entryc·m+ashares a common divisord>1 with
+m. Thend|(c·m+a)andd|m. Thusdalso divides the difference(c·m+a)−c·m=a. So
+aandmshare the divisord. Conversely, assumeaandmshare a common divisord>1. Then
+d|aandd|m. Thusdalso divides the sumc·m+a. Soc·m+aandmshare the divisord.
+Consequently, an entryc·m+ais coprime tomif and only ifais coprime tom. This means
+a column is either entirely coprime tom(if gcd(a,m) =1) or it contains no numbers coprime
+tomat all. Sincea∈ {0, . . . ,m−1}, there are exactlyφ(m)columns in which all entries are
+coprime tom.
+Step 2: Entries within a column and remainders modulon.
+Now we look at the entrieswithin a single column. Let us take two entries from the same
+columna:c·m+aandc ′ ·m+a, wherec,c ′ <n. Assume they have the same remainder
+modulon. Thennmust be a divisor of their difference:
+(c·m+a)−(c ′ ·m+a) = (c−c ′)·m
+Thus,ndivides(c−c ′)·m. Since gcd(m,n) =1, the Extended Euclidean Algorithm states
+there are integersu,vsuch thatu·m+v·n=1. Multiplying this equation by(c−c ′)gives:
+u·m·(c−c ′) +v·n·(c−c ′) = (c−c ′)
+Sincendivides both terms on the left side (it divides the second term trivially, and the first
+term becausen|(c−c ′)m), it must also divide their sum, which is(c−c ′).
+However,candc ′ are both between 0 andn−1, so their difference is strictly smaller thann
+in absolute value. Sincendivides this difference, the difference must be exactly 0, meaning
+c=c ′.
+This shows that two entries in the same column can only have the same remainder modn
+if they are the exact same entry. In other words, thendifferent entries in any column have
+ncompletely different remainders modn. Thus, every possible remainder from 0 ton−1
+appears exactly once in each column!
+Step 3: Coprimality ton.
+We make a general observation: A numberxis coprime tonif and only if its remainder
+xmodnis coprime ton. Why? We can writex= (xdivn)·n+ (xmodn). Ifxandnshare a
+common divisord>1, thend|xandd|n. Thusdalso dividesx−(xdivn)·n=xmodn.
+Conversely, if(xmodn)andnshare a divisord>1, thendalso divides(xdivn)·n+
+(xmodn) =x.
+Since each column contains all remainders 0, . . . ,n−1 exactly once, and exactlyφ(n)of these
+remainders are coprime ton, we conclude: Ineverycolumn, exactlyφ(n)entries are coprime
+ton.
+T. Dose 5 SS2026
+--- Page 6 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Step 4: Putting it together.
+To find numbers that are coprime to bothmandn: We only look at theφ(m)columns that are
+coprime tom. In each of these columns, there are exactlyφ(n)numbers that are also coprime
+ton. Thus, there are exactlyφ(m)·φ(n)numbers in our table that are coprime to bothmand
+n.
+Step 5: Coprime tomandn⇐ ⇒coprime tom·n.
+Finally, we show that a numberxis coprime to bothmandnif and only if it is coprime to
+m·n.
+One direction is trivial by definition: Ifxis not coprime tom(orn), then there is a common
+divisord>1 that divides bothxandm. But ifddividesm, it trivially also divides the product
+m·n. Thusxandm·nshare the common divisord>1, so they are not coprime.
+For the other direction, we assume thatxis coprime tom(gcd(m,x) =1) andxis coprime
+ton(gcd(n,x) =1). We want to show that gcd(m·n,x) =1. By applying our Preliminary
+Lemma (witha=m,b=n, andc=x), it follows immediately that the productm·nis
+coprime tox.
+This proves that the set of numbers coprime tom·nis exactly the set of numbers coprime
+to bothmandn. Since our table contains all numbers from 0 tom·n−1 exactly once, the
+number of entries coprime tom·nis by definitionφ(m·n). From Step 4, we counted exactly
+φ(m)·φ(n)such entries. Therefore,φ(m·n) =φ(m)·φ(n).
+3. We prove Theorem 3.20.2.
+Letp k for a primepbe given. Definea 0 =0,a 1 =1·p,a 2 =2·p, . . . ,a pk−1 −1 = (pk−1 −1)·p.
+We defineA={a 0,a 1, . . . ,apk−1 −1}.
+We show
+A={x|0≤x≤p k −1} −Z∗
+pk (1)
+⊆: Take an arbitrarya i ∈A. Thena i is between 0 andp k −1, soa i ∈ {x|0≤x≤p k −1}. As
+ai =i·pandp k both are divisible byp, it holdsa i /∈Z∗
+pk. Hence,a i is in the set on the right
+side.
+⊇: Take an arbitrary numberafrom the set on the right side. Thena/∈Z ∗
+pk and thus
+gcd(a,p k)>1.
+As every natural number≥1 has a unique prime factor decomposition, there is no other
+prime that dividesp k (note thatp k itself is the only prime factor decomposition ofp k). So
+every divisor ofp k and thus every common divisor ofp k anda, must havepas a prime
+divisor.
+Sop|gcd(a,p k)anda=p·cfor somec. Asa<p k by the choice ofa, the numbercmust be
+<p k−1. Consequently,a=a c ∈A, which completes the proof of (1).
+As thea i are all distinct,|A|=p k−1.
+As by definitionZ ∗
+pk ⊆ {x|0≤x<p k}, it holds|{x|0≤x<p k} −Z∗
+pk |=|{x|0≤x<
+pk}| − |Z∗
+pk |.
+By (1) we thus obtain
+pk−1 =|A|=|{x|0≤x<p k} −Z∗
+pk |=|{x|0≤x<p k}| − |Z∗
+pk |=p k − |Z∗
+pk |
+| {z }
+φ(p k)
+Thus,φ(p k) =p k −p k−1.
+T. Dose 6 SS2026
+--- Page 7 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+4.Proof of Theorem 3.22:We will prove the more general statement given in the hint. Let
+(G,·)be a finite commutative group with|G|=nand neutral elemente. Leta 1,a 2, . . . ,an
+denote thenelements ofG. We want to show that for anyg∈G,g n =e.
+Step 1: Multiplying the entire group byg.
+Let us definennew elements by multiplying every element ofGwithg: Letb 1 =g·a 1,b 2 =
+g·a 2, . . . ,bn =g·a n. Because·:G×G→Gis a total mapping, everyb i is an element ofG.
+We now show that thesenelementsb 1, . . . ,bn are pairwise distinct. Assumeb i =b j for some
+1≤i,j≤n. This meansg·a i =g·a j. By theinverse elementsaxiom,ghas an inverseg −1 ∈G.
+Multiplying both sides from the left byg −1 (which is an equivalence operation) yields:
+g·a i =g·a j
+⇐ ⇒g −1 ·(g·a i) =g −1 ·(g·a j)(as·is a mapping)
+⇐ ⇒(g −1 ·g)·a i = (g−1 ·g)·a j (Associativity)
+⇐ ⇒e·a i =e·a j (Inverse elements:g −1 ·g=e)
+⇐ ⇒a i =a j (Neutral element:e·x=x)
+This shows thatb i =b j impliesa i =a j. Since alla 1, . . . ,an are distinct, the elementsb 1, . . . ,bn
+must also be pairwise distinct. Because we havenpairwise distinct elementsb 1, . . . ,bn, and
+all of them are inG(which has exactlynelements), the groupGconsists ofb 1, . . . ,bn, i.e.,
+{b1,b 2, . . . ,bn}={a 1,a 2, . . . ,an}
+Step 2: T aking the product of all elements.
+Since the two sets are equal and the group is commutative, the product of all elementsb1, . . . ,bn
+equals the product of all elementsa 1, . . . ,an.
+b1 ·b 2 · · · · ·bn =a 1 ·a 2 · · · · ·an
+Substituting the definition of theb i, this gives:
+(g·a 1)·(g·a 2)· · · · ·(g·an) =a 1 ·a 2 · · · · ·an
+Usingassociativityandcommutativity, we can rearrange the left side to group allg’s together
+and alla i’s together:
+(g·g· · · · ·g)| {z }
+ntimes
+·(a1 ·a 2 · · · · ·an) =a 1 ·a 2 · · · · ·an
+LetP=a 1 ·a 2 · · · · ·an. Because·is a total mapping fromG×G→G, this productPis an
+element ofG. We can rewrite our equation as:
+gn ·P=P
+Step 3: Solving forg n.
+SinceP∈G, theinverse elementsaxiom guarantees the existence ofP −1 ∈G. Multiplying
+both sides from the right byP −1 yields:
+gn ·P=P
+⇐ ⇒(g n ·P)·P −1 =P·P −1 (as·is a mapping)
+⇐ ⇒g n ·(P·P −1) =P·P −1 (Associativity)
+⇐ ⇒g n ·e=e(Inverse elements)
+⇐ ⇒g n =e(Neutral element)
+T. Dose 7 SS2026
+--- Page 8 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+This completes the proof for the general statementg |G| =e.
+Step 4: Conclusion.
+We apply this result to the group of unitsG=Z ∗
+p for a primep. This group has neutral
+elemente=1 and size|G|=p−1. For anya∈Z ∗
+p, the equationg |G| =edirectly becomes
+ap−1 ≡1(modp).
+T. Dose 8 SS2026

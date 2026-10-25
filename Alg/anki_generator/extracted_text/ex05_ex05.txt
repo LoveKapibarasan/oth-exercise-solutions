@@ -1,0 +1,340 @@
+--- Page 1 ---
+Exercise 5
+Exercise 5-1 Reduction: 3-COLOR  k-
+COLOR for 
+1.Translator
+To transform an instance of 3-coloring  into an instance of -coloring , we
+perform the following steps in polynomial time:
+1. Add Auxiliary Vertices: Create  new vertices, .
+2. Form a Clique: Connect all vertices in  to each other so that they form a complete graph .
+3. Connect to Original Graph: Connect every vertex  to every vertex .
+Translator: 
+Lemma: Clique Coloring
+In any valid coloring of a graph, if a set of  vertices forms a clique (a complete subgraph ), each vertex
+in that set must be assigned a unique color. Therefore, a  subgraph requires at least  distinct colors.
+2. Forward Direction (, If  is 3-colorable, then  is -
+colorable. )
+ has a valid 3-coloring using the color set .
+By the lemma: We can color the  auxiliary vertices in  using a disjoint set of colors
+.
+In , every vertex  is connected to every vertex . Since the colors used for  and 
+ are completely disjoint, there are no conflicts between the original graph and the auxiliary vertices.
+The edges within  are satisfied by the 3-coloring, and the edges within the -clique are satisfied
+because each  has a unique color.
+Therefore,  is -colorable.
+≤  
+p
+k≥3
+⟨G⟩=⟨(V,E)⟩ k ⟨G⟩=′ ⟨(V,E)⟩′ ′
+k−3 V =′ V∪{v  ,v  ,…,v  }1 2 k−3
+V ∖′ V K  
+k−3
+u∈G v∈V∖V′
+f:⟨G⟩→⟨G⟩′
+m K  
+m
+K  
+m m
+⇒ G G′ k
+G {c  ,c  ,c  }1 2 3
+k−3 V∖V′
+{c  ,c  ,…,c  }4 5 k
+G′ v∈V u∈V∖V′ V V∖
+V′
+G V∖V′
+u  
+i
+G′ k
+--- Page 2 ---
+3. Backward Direction (, If  is -colorable, then  is 3-
+colorable. )
+ has a valid -coloring.
+By the Lemma: We can color the  auxiliary vertices in  using a disjoint set of colors
+.
+Since every vertex  is connected to every vertex , no vertex in  can use any color
+belonging to .
+This leaves only  colors available for the original vertices .
+Since the original edges  still exist between vertices in , and these vertices are forced to use only 3 colors,
+ must have a valid 3-coloring.
+Exercise 5-2: 5SOS is NP-hard
+To prove that 5SOS is NP-hard, we perform a polynomial-time reduction from the SUBSET SUM problem, which is
+known to be NP-complete.
+1. Translator
+To transform an instance of SUBSET SUM  into an instance of 5SOS , we
+perform the following steps in polynomial time:
+1. Scale the Elements: For each element  in the SUBSET SUM instance, define the new elements for 5SOS
+as .
+2. Define the Target : Set the target value .
+3. The Result: The 5SOS instance becomes .
+Translator: 
+2. Correctness
+There exists a subset  such that:
+⇐ G′ k G
+G′ k
+k−3 V∖V′
+{c  ,c  ,…,c  }4 5 k
+v∈V u∈V∖V′ V
+C  
+aux
+k−(k−3)=3 V
+E V
+G
+⟨a  ,…,a  ,t⟩1 m ⟨a  ,…,a  ,b⟩1′ m′
+a  
+i
+a  =i′ 5a  
+i
+b b=t
+⟨5a  ,5a  ,…,5a  ,t⟩1 2 m
+f:⟨a  ,…,a  ,t⟩→1 m ⟨a  ,…,a  ,b⟩1′ m′
+I⊆{1,…,m}
+ a  =
+i∈I
+∑i′ 5b ⟺  5a  =
+i∈I
+∑ i 5t ⟺  a  =
+i∈I
+∑i t
+--- Page 3 ---
+This shows that the 5SOS instance is a "YES" instance if and only if the SOS instance is a "YES" instance.
+Exercise 5-3:
+1. NP-membership
+3-Color is in NP because of the previous exercise sheet.
+2. 3-COLOR  3-SAT
+Because of the theorem and NP-Completeness of 3-SAT, this part can be omitted.
+To show 3-COLOR is in NP (and to relate it to SAT), we transform an instance of 3-coloring  into
+a 3-SAT formula .
+Let the variables be  where  and , representing that vertex  has color . The formula
+ is constructed as :
+1. At least one color per vertex:
+2. At most one color per vertex:
+3. Edge constraints:
+For every edge :
+Translator: 
+Correctness
+ is 3-colorable   is satisfiable.
+≤  
+p
+⟨G⟩=⟨(V,E)⟩
+ϕ
+C(v,c) v∈V c∈{1,2,3} v c
+ϕ ϕ= Constraints⋂
+ (C(v,1)∨
+v∈V
+⋂ C(v,2)∨C(v,3))
+  (¬C(v,c)∨
+v∈V
+⋂
+1≤c<c≤3′
+⋂ ¬C(v,c))′
+(u,v)∈E
+  (¬(C(u,c)∨
+(u,v)∈E
+⋂
+c=1
+⋂
+3
+C(v,c)))
+f:⟨G⟩→⟨ϕ⟩
+G ⇒ϕ
+--- Page 4 ---
+If  has a valid 3-coloring, we set  to TRUE if vertex  is assigned color , and FALSE otherwise.
+This assignment satisfies all clauses in .
+3: 3-SAT  3-COLOR
+We reduce from 3-SAT by constructing a graph  that simulates logical gates (NOT, OR) using specific gadgets.
+1. Color Definition
+Create a triangle with three vertices labeled . These act as the id for colors.
+2. NOT
+For each variable , create two vertices  and .
+Add an edge .
+Connect both  and  to the vertex .
+This forces  and  to be colored from , ensuring they always have opposite truth values.
+3. OR
+We construct a gadget to represent the OR operation. The gadget is 3-colorable if and only if at least one literal is
+colored . The construction is shown in the following diagram:
+4. AND
+The AND operation is represented by the 3-colorability of the entire graph . (By connecting the final
+output node of each  to both  and , we ensure that  is 3-colorable if and only if every clause gadget is
+simultaneously 3-colorable and  is colored .)
+Translator: 
+If  is satisfiable, we can construct a valid 3-coloring for  as follows:
+1. Binary Decomposition (Parsing):
+Each clause (e.g., ) is broken down into binary terms using nested structures like .
+We apply gadget rules from the most internal term(s) sequentially.
+2. Literal Assignment (NOT):
+For each variable , we assign colors  or  to the vertices  and  based on the NOT assignment.
+Output node is used for next conversion.
+3. Literal Assignment(OR)
+Starting from the innermost parentheses, we apply the OR-gadgets assignment. Output node is used for next
+conversion.
+G C(v,c) v c
+ϕ
+≤  
+p
+G
+{T,F,?}
+x  
+i x  
+i ¬x  
+i
+(x  ,¬x  )i i
+x  
+i ¬x  
+i ?
+x  
+i ¬x  
+i {T,F}
+T
+G=  G ⋃j=1m j
+G  
+2 F ? G
+G  
+2 T
+f:⟨ϕ⟩→⟨G⟩
+ϕ G
+l  ∨1 l  ∨2 l  
+3 ((l  ∨1 l  )∨2 l  )3
+x  
+i T F x  
+i ¬x  
+i
+--- Page 5 ---
+4. AND as Subgraph Satisfiability:
+The AND operation is handled by the requirement that all clause subgraphs must be simultaneously colorable.
+If every clause is satisfied, every corresponding subgraph can be colored without conflict.
+5. Forcing the Output (Constraint):
+The final output of each clause is forced to be  by connecting it to both  and . Since every clause has 
+ true literal, the output  is consistent with the entire gadget coloring.
+Since every assignment is 3-colorable,  is 3-colorable.
+Exercise 5-4:
+a) Initial Formulas F1 and F6
+F1 (Initial tape content at t=0):
+For input :
+F6 (Initial state and head position at t=0):
+b) Sequence of Configurations (Accepting Path)
+t State Head Tape Content (i=0 to 6) Transition Note
+0 0 0 0 1 0 1 _ _ Initial
+1 1 _ 0 1 0 1 _ _
+2 2 _ _ 1 0 1 _ _
+3 3 _ _ _ 0 1 _ _
+4 4 _ _ _ _ 1 _ _
+5 5 _ _ _ _ _ _ _
+6 5 _ _ _ _ _ 1 _
+t State
+Variable
+Head
+Variable Tape Content Variables (  to )
+0
+T F ? ≥
+1 T
+G
+x=00101
+F  =1 L(0,0,0)∧L(0,1,0)∧L(0,2,1)∧L(0,3,0)∧L(0,4,1)∧L(0,5,_)∧L(0,6,_)
+F  =6 S(0,s  )∧0 H(0,0)
+s  
+0
+s  
+0 s  ,0→0 s  ,_,R0
+s  
+0 s  ,0→0 s  ,_,R0
+s  
+2 s  ,1→0 s  ,_,R2
+s  
+3 s  ,0→2 s  ,_,R3
+s  
+4 s  ,1→3 s  ,_,R4
+s  
+1 s  ,_→4 s,1,01
+i=0 6
+S(0,s  )0 H(0,0) L(0,0,0),L(0,1,0),L(0,2,1),L(0,3,0),L(0,4,1),L(0,5,_),L(0,6,_)
+--- Page 6 ---
+t State
+Variable
+Head
+Variable Tape Content Variables (  to )
+1
+2
+3
+4
+5
+6
+c) Logical Implication for F7 (t=2, i=2, s=s0, a=1)
+Exercise 5-5:
+Transformation: 
+To justify the WLOG assumption, we transform an arbitrary TM  into 
+ which never moves left of its starting position.
+1. Alphabet ( )
+The tape is imagined as having two tracks, pairing cell  with cell .
+Each cell at index  in  stores the pair , where  is the content of the original cell  and  is
+the content of the original cell .
+2. States ( )
+The state space is expanded to track whether the original head was to the right or left of the starting position.
+The flag indicates the current "track" the machine is simulating.
+i=0 6
+S(1,s  )0 H(1,1) L(1,0,_),L(1,1,0),L(1,2,1),L(1,3,0),L(1,4,1),L(1,5,_),L(1,6,_)
+S(2,s  )0 H(2,2) L(2,0,_),L(2,1,_),L(2,2,1),L(2,3,0),L(2,4,1),L(2,5,_),L(2,6,_)
+S(3,s  )2 H(3,3) L(3,0,_),L(3,1,_),L(3,2,_),L(3,3,0),L(3,4,1),L(3,5,_),L(3,6,_)
+S(4,s  )3 H(4,4) L(4,0,_),L(4,1,_),L(4,2,_),L(4,3,_),L(4,4,1),L(4,5,_),L(4,6,_)
+S(5,s  )4 H(5,5) L(5,0,_),L(5,1,_),L(5,2,_),L(5,3,_),L(5,4,_),L(5,5,_),L(5,6,_)
+S(6,s  )1 H(6,5) L(6,0,_),L(6,1,_),L(6,2,_),L(6,3,_),L(6,4,_),L(6,5,1),L(6,6,_)
+(S(2,s  )∧0 H(2,2)∧L(2,2,1)) ⟹    
+(S(3,s  )∧H(3,3)∧L(3,2,_))0
+∨
+(S(3,s  )∧H(3,3)∧L(3,2,_))2
+M→M  
+left
+M=(Σ,S,f,s  ,s  )0 1 M  =left
+(Σ,S,f,s  ,s  )′ ′ ′ 0′ 1′
+Σ→Σ′
+i −i
+Σ=′ (Σ∪{_})×(Σ∪{_})
+i≥0 M  
+left (a,b) a i b
+−i
+S→S′
+S =′ (S×{WasRight,WasLeft})∪{s  ,s  }0′ 1′
+--- Page 7 ---
+3. Transition Function ()
+The transition function  is defined by branching at cell :
+Case: Cell 
+If state is ,  simulates  on the first component of .
+If state is ,  simulates  on the second component of , but reverses all move
+directions (Left becomes Right, Right becomes Left) to stay within .
+Case: Cell 
+If  dictates a move that would cross from index  to ,  changes the state from  to
+ and moves Right (back into  of the  tape).
+Conversely, if  moves from  to ,  changes the state from  to  and
+moves Left to the -th cell.
+if  does not move,  stays in the same state.
+4. Start State ( )
+: A new initial state that initializes the first cell as  and prepares the two-track format.
+5. Final State ( )
+: The unique final state. Any transition in  that would enter  is redirected to  in .
+Once  is reached,  is defined to stay in  without movement to satisfy the proof's stability requirements.
+f→f′
+f′ i=0
+i>0
+(s,WasRight)f′ f (a,b)
+(s,WasLeft)f′ f (a,b)
+i>0
+i=0
+f 0 −1f′ (s,WasRight)
+(s,WasLeft) i=1 M  
+left
+f −1 0f′ (s,WasLeft) (s,WasRight)
+0
+f f′
+s  →0 s  
+0′
+s  
+0′ (s  ,WasRight)0
+s  →1 s  
+1′
+s  
+1′ M s  
+1 s  
+1′ M  
+left
+s  
+1′ f′ s  
+1′

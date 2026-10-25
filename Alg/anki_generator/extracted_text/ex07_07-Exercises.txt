@@ -1,0 +1,18 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 7
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+7.1Implement the negamax algorithm in C23 for the game Connect Four.
+• Use achar board[6][7]to represent the board.
+• Implement all auxiliary functions mentioned in the lecture.
+• Write test cases for boards with only a few free cells left. Cover all outcomes: draw, loss, win.
+• Adapt the negamax algorithm from the lecture so that it returns both the best move and the score
+for it (use astruct).
+Hint:When testing with partially filled boards, ensure that the initialdepthpassed to the algorithm
+matches the number of free cells. Otherwise, a draw might incorrectly be evaluated as a loss (−43)
+becausedepthwon’t reach 0 when the board becomes full.
+T. Dose 1 SS2026

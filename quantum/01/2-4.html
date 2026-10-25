@@ -1,0 +1,89 @@
+<svg width="100%" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+
+<!-- Wire lines (horizontal) -->
+<line x1="40" y1="80"  x2="640" y2="80"  stroke="gray" stroke-width="1.2"/>
+<line x1="40" y1="140" x2="640" y2="140" stroke="gray" stroke-width="1.2"/>
+<line x1="40" y1="200" x2="640" y2="200" stroke="gray" stroke-width="1.2"/>
+<line x1="40" y1="260" x2="640" y2="260" stroke="gray" stroke-width="1.2"/>
+<line x1="40" y1="330" x2="640" y2="330" stroke="gray" stroke-width="1.2"/>
+<line x1="40" y1="390" x2="640" y2="390" stroke="gray" stroke-width="1.2"/>
+<line x1="40" y1="450" x2="640" y2="450" stroke="gray" stroke-width="1.2"/>
+
+<!-- Input labels -->
+<text font-size="14" x="30" y="80"  text-anchor="end" dominant-baseline="central">x1</text>
+<text font-size="14" x="30" y="140" text-anchor="end" dominant-baseline="central">x2</text>
+<text font-size="14" x="30" y="200" text-anchor="end" dominant-baseline="central">x3</text>
+<text font-size="14" x="30" y="260" text-anchor="end" dominant-baseline="central">x4</text>
+<text font-size="14" x="30" y="330" text-anchor="end" dominant-baseline="central">f1</text>
+<text font-size="14" x="30" y="390" text-anchor="end" dominant-baseline="central">f2</text>
+<text font-size="14" x="30" y="450" text-anchor="end" dominant-baseline="central">f3</text>
+
+<!-- Output labels -->
+<text font-size="14" x="650" y="80"  text-anchor="start" dominant-baseline="central">x1</text>
+<text font-size="14" x="650" y="140" text-anchor="start" dominant-baseline="central">x2</text>
+<text font-size="14" x="650" y="200" text-anchor="start" dominant-baseline="central">x3</text>
+<text font-size="14" x="650" y="260" text-anchor="start" dominant-baseline="central">x4</text>
+<text font-size="14" x="650" y="330" text-anchor="start" dominant-baseline="central">f1</text>
+<text font-size="14" x="650" y="390" text-anchor="start" dominant-baseline="central">f2</text>
+<text font-size="14" x="650" y="450" text-anchor="start" dominant-baseline="central">f3</text>
+
+<!-- GATE 1: TOF(x1,x2,x3,x4 → f1) -->
+<line x1="120" y1="80" x2="120" y2="330" stroke="black" stroke-width="1"/>
+<circle cx="120" cy="80"  r="6" fill="black"/>
+<circle cx="120" cy="140" r="6" fill="black"/>
+<circle cx="120" cy="200" r="6" fill="black"/>
+<circle cx="120" cy="260" r="6" fill="black"/>
+<circle cx="120" cy="330" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="108" y1="330" x2="132" y2="330" stroke="black" stroke-width="1.5"/>
+<line x1="120" y1="318" x2="120" y2="342" stroke="black" stroke-width="1.5"/>
+<text font-size="11" x="120" y="490" text-anchor="middle">x1x2x3x4</text>
+<text font-size="11" x="120" y="505" text-anchor="middle">->f1</text>
+
+<!-- GATE 2: TOF(x1 → f1, f3) -->
+<line x1="210" y1="80" x2="210" y2="450" stroke="black" stroke-width="1"/>
+<circle cx="210" cy="80" r="6" fill="black"/>
+<circle cx="210" cy="330" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="198" y1="330" x2="222" y2="330" stroke="black" stroke-width="1.5"/>
+<line x1="210" y1="318" x2="210" y2="342" stroke="black" stroke-width="1.5"/>
+<circle cx="210" cy="450" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="198" y1="450" x2="222" y2="450" stroke="black" stroke-width="1.5"/>
+<line x1="210" y1="438" x2="210" y2="462" stroke="black" stroke-width="1.5"/>
+<text font-size="11" x="210" y="490" text-anchor="middle">x1</text>
+<text font-size="11" x="210" y="505" text-anchor="middle">->f1,f3</text>
+
+<!-- GATE 3: TOF(x3,x4 → f1,f2,f3) -->
+<line x1="310" y1="200" x2="310" y2="450" stroke="black" stroke-width="1"/>
+<circle cx="310" cy="200" r="6" fill="black"/>
+<circle cx="310" cy="260" r="6" fill="black"/>
+<circle cx="310" cy="330" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="298" y1="330" x2="322" y2="330" stroke="black" stroke-width="1.5"/>
+<line x1="310" y1="318" x2="310" y2="342" stroke="black" stroke-width="1.5"/>
+<circle cx="310" cy="390" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="298" y1="390" x2="322" y2="390" stroke="black" stroke-width="1.5"/>
+<line x1="310" y1="378" x2="310" y2="402" stroke="black" stroke-width="1.5"/>
+<circle cx="310" cy="450" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="298" y1="450" x2="322" y2="450" stroke="black" stroke-width="1.5"/>
+<line x1="310" y1="438" x2="310" y2="462" stroke="black" stroke-width="1.5"/>
+<text font-size="11" x="310" y="490" text-anchor="middle">x3x4</text>
+<text font-size="11" x="310" y="505" text-anchor="middle">->f1,f2,f3</text>
+
+<!-- GATE 4: TOF(x̄1, x2, x3 → f2) -->
+<line x1="420" y1="80" x2="420" y2="390" stroke="black" stroke-width="1"/>
+<circle cx="420" cy="80"  r="7" fill="white" stroke="black" stroke-width="1.5"/>
+<circle cx="420" cy="140" r="6" fill="black"/>
+<circle cx="420" cy="200" r="6" fill="black"/>
+<circle cx="420" cy="390" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="408" y1="390" x2="432" y2="390" stroke="black" stroke-width="1.5"/>
+<line x1="420" y1="378" x2="420" y2="402" stroke="black" stroke-width="1.5"/>
+<text font-size="11" x="420" y="490" text-anchor="middle">x̄1x2x3</text>
+<text font-size="11" x="420" y="505" text-anchor="middle">->f2</text>
+
+<!-- GATE 5: TOF(x1, x̄2 → f2, f3) -->
+<line x1="530" y1="80" x2="530" y2="450" stroke="black" stroke-width="1"/>
+<circle cx="530" cy="80"  r="6" fill="black"/>
+<circle cx="530" cy="140" r="7" fill="white" stroke="black" stroke-width="1.5"/>
+<circle cx="530" cy="390" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="518" y1="390" x2="542" y2="390" stroke="black" stroke-width="1.5"/>
+<line x1="530" y1="378" x2="530" y2="402" stroke="black" stroke-width="1.5"/>
+<circle cx="530" cy="450" r="12" fill="none" stroke="black" stroke-width="1.5"/>
+<line x1="

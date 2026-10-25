@@ -1,0 +1,351 @@
+--- Page 1 ---
+(a) IS
+Every child has the exact score by induction
+Case (i): Window ( )
+To avoid any ambiguity, we track exactly how  negamax  at the root  handles the values returned by
+each child call  and updates its internal state.
+1. Initial Setup at Root 
+Root State:  alpha  = ,  beta  = ,  bestscore  = .
+ iterates through children  sequentially.
+2. Processing 
+Call:  negamax(C1, depth-1, -beta=-5, -alpha=5) 
+Inside :
+Evaluates leaves (results provided in prompt):  and .
+Returns .
+Back at Root :
+Receives  v  =  from .
+Calculates  score  = .
+ bestscore  updated:  max(-∞, -1)  = .
+ alpha  updated:  max(-5, -1)  = .
+Condition  alpha >= beta  ( ) is False. Proceed to .
+3. Processing 
+Call:  negamax(C2, depth-1, -beta=-5, -alpha=1)  (Note:  passed is ,  passed
+is )
+Inside :
+Evaluates leaves:  and .
+Returns .
+Back at Root :
+Receives  v  =  from .
+Calculates  score  = .
+α=−5,β=5
+N
+C  
+i
+N
+−5 5 −42
+N C  ,C  ,C  
+1 2 3
+C  
+1
+C  
+1
+−3 1
+max(−3,1)=1
+N
+1 C  
+1
+−v=−1
+−1
+−1
+−1>=5 C  
+2
+C  
+2
+α −old_betaβ
+−current_alpha
+C  
+2
+−1 0
+max(−1,0)=0
+N
+0 C  
+2
+−v=0
+--- Page 2 ---
+ bestscore  updated:  max(-1, 0)  = .
+ alpha  updated:  max(-1, 0)  = .
+Condition  alpha >= beta  ( ) is False. Proceed to .
+4. Processing 
+Call:  negamax(C3, depth-1, -beta=-5, -alpha=0) 
+Inside :
+Evaluates leaves:  and .
+Returns .
+Back at Root :
+Receives  v  =  from .
+Calculates  score  = .
+ bestscore  updated:  max(0, 4)  = .
+ alpha  updated:  max(0, 4)  = .
+Condition  alpha >= beta  ( ) is False. Loop ﬁnished.
+5. Conclusion
+Root  returns  bestscore  = .
+(ii): Window ( )
+In this scenario, the root  is forced into a narrow window where it expects the value to be less than
+0. We track the state at  precisely.
+1. Initial Setup at Root 
+Initial State:  alpha  = ,  beta  = ,  bestscore  = .
+ iterates through children .
+2. Processing 
+Call:  negamax(C1, depth-1, -beta=0, -alpha=5) 
+Inside : * Evaluates leaves  and .
+Returns  v = 1 .
+Back at Root :
+ score  = .
+ bestscore  =  max(-∞, -1)  = .
+0
+0
+0>=5 C  
+3
+C  
+3
+C  
+3
+−5 −4
+max(−5,−4)=−4
+N
+−4 C  
+3
+−v=−(−4)=4
+4
+4
+4>=5
+N 4
+α=−5,β=0
+N
+N
+N
+−5 0 −42
+N C  ,C  ,C  
+1 2 3
+C  
+1
+C  
+1 −3 1
+N
+−v=−1
+−1
+--- Page 3 ---
+ alpha  =  max(-5, -1)  = .
+Check Pruning: Is  alpha >= beta  ( )? False. Continue.
+3. Processing 
+Call:  negamax(C2, depth-1, -beta=0, -alpha=1) 
+Note: The new  alpha  ( ) was negated to become the new  beta  (1) for .
+Inside :
+Evaluates leaves  and .
+Returns  v = 0 .
+Back at Root :
+ score  = .
+ bestscore  =  max(-1, 0)  = .
+ alpha  =  max(-1, 0)  = .
+Check Pruning: Is  alpha >= beta  ( )? True
+4. Processing 
+Because , the  if alpha >= beta:  condition triggers.
+The algorithm performs an immediate return of  bestscore  ( ).
+ is never called. The search on  is aborted because the root  already has a move ( )
+that achieves a score ( ) equal to the current upper bound ( ). Any further search in 
+cannot improve the  bestscore  for the player at  because the opponent would already choose
+ to force the score to  (or worse for ).
+5. Conclusion
+Root  returns  bestscore  = .
+Window Returned Value ( ) Cutoﬀs Performed Classiﬁcation
+None EXACT ( )
+ pruned LOWER ( )
+ pruned UPPER ( )
+−1
+−1>=0
+C  
+2
+−1 C  
+2
+C  
+2
+−1 0
+N
+−v=0
+0
+0
+0>=0
+C  
+3
+0≥0
+0
+C  
+3 C  
+3 N C  
+2
+0 β=0 C  
+3
+N
+C  
+2 0 N
+N 0
+(α,β) v
+(−5,5) 4 v=S(N)
+(−5,0) 0 C  
+3 v≤S(N)
+(5,10) 5 C  ,C  ,C  
+1 2 3 v≥S(N)
+--- Page 4 ---
+       Root (N)
+      /    |    \
+    C1     C2     C3
+   /  \   /  \   /  \
+ -3    1 -1    0 -5   -4
+Part (b): Proof of Properties by Induction
+We use induction over  (= the number of empty cells).
+Base Case (c = 0): The board is full.  depth == 0  is checked, returning . By deﬁnition,
+. Since , all three cases (1: , 2: , 3: ) hold
+trivially.
+Induction Hypothesis (I.H.): Assume all three properties hold for all valid child nodes  (where
+ children exist).
+Induction Step (c > 0): If an immediate win is found,  and . All properties hold
+trivially. Assume no immediate win is found.
+Case 2: Exact (α < v < β)
+Requirement: Prove .
+1. Exploration: Since , the condition  alpha >= beta  was never met during the execution of
+the loop at node . Therefore, every child  was evaluated.
+2. Child Identiﬁcation: Let  be the  bestscore  calculated by . There exists at least one child
+ that returned a value  such that  is the result of .
+3. Window Application: When  was called, its window was . Because the loop
+ﬁnished with , it follows that at all times . Thus,  was called with
+.
+4. Applying I.H.: Since  is the exact result, the child  returned . By the I.H. (Case
+2 for the child), the child's exact score is . Therefore, .
+5. Bound Check: For any other child  that returned , we know . Because they
+did not fail low, . By the I.H. (Case 3), .
+6. Conclusion: .
+Case 3: Fail-High (v ≥ β)
+Requirement: Prove .
+c
+v=0
+S(N)=0 v=S(N) S(N)≤v S(N)=v S(N)≥v
+C  
+i
+k≥1
+v=c S(N)=c
+S(N)=v
+v<β
+N C  ,…,C  
+1 k
+v N
+C  
+best r  =best −v v N
+C  
+best [−β,−α  ]local
+v<β α  <local v C  
+best
+[−β,−(something less than v)]
+v C  
+best r  =best −v
+S(C  )=best r  =best −v −S(C  )=best v
+C  
+j r  =j −vj v  ≤j v
+r  >j −β S(C  )≥j r  =j −v  ⟹j −S(C  )≤j v  ≤j v
+S(N)=max(−S(C  ))=i i v
+S(N)≥v
+--- Page 5 ---
+1. Existence of Cutoﬀ: If the function returns , it means there was at least one child  that
+returned  such that .
+2. Window Analysis: The child  was called with the window . The return value 
+from the child satisﬁes  (because ).
+3. Applying I.H.: Since  (where  is the  parameter for the child's call), this is a "Fail-
+Low" case for the child. By the I.H. (Case 1 for the child), the child's exact score 
+.
+4. Minimax Deﬁnition: Since , and we have one child  where
+, it follows that .
+(c)
+We analyze the internal variable  (initialized to ) and returned value .
+(i) If the loop ﬁnishes without updating 
+1. State: The variable  remains . This implies that for all evaluated children , the negated
+returned score  never exceeded .
+2. Bound: Consequently, the ﬁnal  bestscore  .
+3. Property: According to Property (b)1 (Fail-Low), if , then .
+4. Conclusion: .
+(ii) If the loop updates  at least once but never prunes
+1. State: The variable  was increased from , but the condition  was never triggered.
+This means all  children were fully evaluated.
+2. Bound: The return value  reﬂects the true maximum of all child results: 
+.
+3. Property: Since , the search performed an exact evaluation. According to
+Property (b)2 (Exact), .
+4. Conclusion: .
+(iii) If the loop prunes
+1. State: The condition  was met during the execution. The function returned immediately
+with  (the current  bestscore ).
+2. Bound: Because the cutoﬀ occurred, .
+v≥β C  
+i
+r  =i −v v≥β
+C  
+i [−β,−α  ]local r  
+i
+r  ≤i −β v≥β ⟹−v≤−β
+r ≤i −β −β α
+S(C  )≤i r  =i
+−v
+S(N)=max  (−S(C  ))j j C  
+i
+−S(C  )≥i −(−v)=v S(N)≥v
+α α  
+in v=bestscore
+α
+α α  
+in C  
+i
+s  =i −negamax(C  ,…)i α  
+in
+v≤αin
+v≤α  
+in S(N)≤v
+v≥S(N)
+α
+α α  
+in α≥β  
+in
+k
+v v=
+max  (−S(C  ))1≤i≤k i
+α  <in v<β  
+in
+S(N)=v
+v=S(N)
+α≥β  
+in
+v=α
+v≥β  
+in
+--- Page 6 ---
+3. Property: According to Property (b)3 (Fail-High), if , then  is the condition
+for a Fail-High, which implies the actual minimax score  is at most  (i.e., ).
+4. Conclusion:  is incorrect phrasing; rather, the property proves that because it is a
+Fail-High, the value  returned is an upper bound such that .
+(e): Re-search Properties with LOWER Bound
+This proof demonstrates the consistency of Alpha-Beta results when reﬁning a search with a tighter
+window. Suppose a ﬁrst call returns a LOWER bound  (where ). We perform a second
+call  negamax(N, depth, v, beta_new)  where . We prove .
+Case Analysis
+The result of the second call  must fall into one of three logical outcomes:
+1. Fail-Low ( ): - By property (b)1, .
+Since the ﬁrst call established , we have .
+This implies . Thus,  holds.
+2. Exact ( ): - By deﬁnition of the interval, . Thus,  holds.
+3. Fail-High ( ): - Since , it follows that . Thus,  holds.
+Conclusion
+In all possible outcomes, .
+v≥β  
+in S(N)≥v
+S(N) v S(N)≤v
+v≤S(N)
+v S(N)≤v
+v S(N)≥v
+β  >new v v  ≥new v
+v  
+new
+v  ≤new v S(N)≤v  
+new
+S(N)≥v v≤S(N)≤v  ≤new v
+S(N)=v  =new v v  ≥new v
+v<v  <new β  
+new v  >new v v  ≥new v
+v  ≥new β  
+new β  >new v v  >new v v  ≥new v
+v  ≥new v

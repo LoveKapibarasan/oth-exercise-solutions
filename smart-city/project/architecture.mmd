@@ -1,0 +1,40 @@
+flowchart TB
+  subgraph CLIENT["Client layer"]
+    PWA["Citizen PWA\nMap · e-waste value calc"]
+    GOV["Gov dashboard\nKPIs · incentive mgmt"]
+  end
+
+  subgraph GATEWAY["API gateway"]
+    GW["REST/GraphQL · Auth JWT · Rate limit · Open data endpoint"]
+  end
+
+  subgraph SERVICES["Services"]
+    COL["Collection svc\nRegister pickup · Stop scheduling"]
+    ROU["Routing svc\nRL model inference · Route optimisation"]
+    NOT["Notification svc\nPush/SMS · Incentive rewards"]
+  end
+
+  subgraph DATA["Data layer"]
+    PG[("PostgreSQL\nUsers · pickups · routes · rewards")]
+    ES[("Elasticsearch\nFull-text · Geo queries · logs")]
+    RD[("Redis\nSession cache · Bus occupancy stream")]
+  end
+
+  subgraph EXTERNAL["External"]
+    BUS["RVV bus API\nGTFS-RT · occupancy"]
+    AI["AI training pipeline\nReward fn · RL update"]
+    REC["Recyclers API\nOutcome reporting"]
+  end
+
+  PWA --> GW
+  GOV --> GW
+  GW --> COL
+  GW --> ROU
+  GW --> NOT
+  COL <--> ROU
+  COL --> PG
+  ROU --> ES
+  NOT --> RD
+  PG -.->|data feed| BUS
+  ES -.->|training data| AI
+  RD -.->|outcomes| REC

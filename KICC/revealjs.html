@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>Cloud ML Shogi AI - Absolute Fire Transition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/black.min.css">
+
+    <style>
+        /* 画面全体を覆う炎エフェクト用のキャンバス */
+        #fire-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10; /* スライドの手前に配置 */
+            pointer-events: none; /* クリック操作を邪魔しない */
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        #fire-canvas.active {
+            opacity: 1;
+        }
+
+        /* 燃える文字の装飾 */
+        .burning-title {
+            font-size: 2.5em !important;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px #ff3300, 0 0 20px #ff6600, 0 0 30px #ffcc00;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 💡 画面全体を焼き尽くすためのエフェクト描画エリア -->
+    <canvas id="fire-canvas"></canvas>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Slide 1 -->
+            <section>
+                <h2>Lab Exercise 06</h2>
+                <h3 style="color: #42afff;">Human-like Shogi AI in Azure</h3>
+                <p><small>Takanori Nagashima</small></p>
+                <p style="font-size: 0.5em; color: #666;">矢印キー（→）で次のスライドへ（画面が燃えます）</p>
+            </section>
+
+            <!-- Slide 2 -->
+            <section data-background-color="#000000">
+                <h1 class="burning-title">Data Collection</h1>
+                <p style="color: #ff5500; font-weight: bold;">Scraping KIF Strings from Shogi Wars</p>
+            </section>
+
+            <!-- Slide 3 -->
+            <section>
+                <h3>How to Play - Select Engine</h3>
+                <p>Select <code style="color: #ffae34;">serverengine</code> from the list on Web UI.</p>
+                <img src="assets/how-to-play-1.png" alt="how-to-play-1" style="width: 50%; border: 2px solid #555;">
+            </section>
+
+            <!-- Slide 4 -->
+            <section>
+                <h2 class="burning-title">Start the Match!</h2>
+                <p>Experience tactical flexibility against the 1-kyu Furibisha model.</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        // Reveal.jsの初期化
+        Reveal.initialize({
+            transition: 'fade', // スライド自体の切り替えは滑らかに隠す
+            transitionSpeed: 'slow'
+        });
+
+        // 💡 画面を燃やすWebGL/2Dパーティクルエンジン
+        const canvas = document.getElementById('fire-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrame;
+        let isBurning = false;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // 炎の粒子クラス
+        class FireParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 50;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = -Math.random() * 12 - 5;
+                this.alpha = 1;
+                this.size = Math.random() * 40 + 20;
+                // 赤・オレンジ・黄色のランダム
+                const r = 255;
+                const g = Math.floor(Math.random() * 150);
+                const b = 0;
+                this.color = `rgba(${r},${g},${b},`;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= 0.015;
+                this.size *= 0.96;
+            }
+            draw() {
+                ctx.globalCompositeOperation = 'screen'; // 粒子が重なると白熱する効果
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + this.alpha + ')';
+                ctx.fill();
+            }
+        }
+
+        // 激しく燃え上がるアニメーションループ
+        function burnScreen() {
+            if (!isBurning) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1フレームごとに大量の炎を発生（画面全体の下部から）
+            for (let i = 0; i < 25; i++) {
+                particles.push(new FireParticle());
+            }
+
+            // 画面の中央からも炎を吹き出させる（焼き尽くす演出）
+            for (let i = 0; i < 15; i++) {
+                let p = new FireParticle();
+                p.y = Math.random() * canvas.height;
+                particles.push(p);
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].alpha <= 0 || particles[i].size <= 1) {
+                    particles.splice(i, 1);
+                }
+            }
+            animationFrame = requestAnimationFrame(burnScreen);
+        }
+
+        // 💡 スライドが切り替わる瞬間のイベントをキャッチ
+        Reveal.on('beforeslidechange', event => {
+            isBurning = true;
+            canvas.classList.add('active');
+            burnScreen();
+
+            // 1.2秒後に炎を消す（次のスライドが完全に見えるようになるタイミング）
+            setTimeout(() => {
+                isBurning = false;
+                canvas.classList.remove('active');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles = [];
+                cancelAnimationFrame(animationFrame);
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,581 @@
+\documentclass[12pt,a4paper]{report}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{indentfirst}
+\usepackage{amsthm} 
+\usepackage[toc]{glossaries}
+\usepackage{tcolorbox} 
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{booktabs}
+\makeglossaries
+% Page layout
+\geometry{
+    a4paper,
+    left=25mm,
+    right=25mm,
+    top=25mm,
+    bottom=25mm
+}
+
+% Line spacing
+\onehalfspacing
+
+% Cover page command
+\newcommand{\coverpage}[6]{
+    \begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    {\LARGE \textbf{Praktikumsbericht} \par}
+    \vspace{2cm}
+    {\Large #1 \par} % Student Name
+    \vspace{0.5cm}
+    {\Large Student ID: #2 \par}
+    \vspace{1cm}
+    {\Large Company: #3 \par}
+    {\Large Praktikumszeitraum: #4 \par}
+    \vspace{2cm}
+    {\Large Praktikumsbetreuer: #5 \par}
+    \vspace{0.5cm}
+    {\Large Unterschrift des Betreuers: #6 \par}
+    \vfill
+    {\large ICS-IP (2025/26) \par}
+    \end{titlepage}
+}
+
+
+\newglossaryentry{OCPP}{
+    name={OCPP},
+    description={Open Charge Point Protocol
+    }
+}
+
+\newglossaryentry{CSMS}{
+    name={CSMS},
+    description={
+        Charging Station Management System
+        }
+}
+
+\newglossaryentry{OCPI}{
+    name={OCPI},
+    description={Open Charge Point Interface
+    }
+}
+
+\newglossaryentry{OSCP}{
+    name={OSCP},
+    description={Open Smart Charge Protocol
+    }
+}
+\newglossaryentry{FleetRL}{
+    name={FleetRL},
+    description={„Fleet“ bezeichnet eine große Anzahl von gewerblich genutzten Fahrzeugen, wie sie beispielweise in Liefer oder Pflegediensten eingesetzt werden.
+     „RL“ steht für Reinforcement Learning (verstärkendes Lernen)
+    }
+}
+\newglossaryentry{OCA}{
+    name={OCA},
+    description={
+        Die Open Charge Alliance ist ein internationale gemeinnützige Organisation, die offene Standards(wie z.B. OCPP) entwicklt
+    , um die Interoperabilität von Ladeinfrastrukturen für Elektrofahrzeuge zu fördern
+    }
+}
+\newglossaryentry{CPO}{
+    name={CPO},
+    description={
+        Charge Point Operator (Ladestationsbetreiber). Ein Unternehmen, das Ladestationen für Elektrofahrzeuge betreibt, wartet und den Stromverkauf an die Nutzer verwaltet
+        },
+}
+\newglossaryentry{eMSP}{
+    name={eMSP},
+    description={e-Mobility Service Provider. Ein Anbieter, der Dienstleistungen rund um das Laden von Elektrofahrzeugen für Endkunden anbietet, z. B. über Ladekarten oder Apps}
+}
+
+\newglossaryentry{Dreischitenstruktur} {
+    name = {Dreischitenstruktur},
+    description={ 
+        umfasst die Komponenten Ladebox, EVSE (Ladegerät) und Connector. Ursprünglich war das Design darauf ausgelegt, dass eine Ladebox mehrere Connectoren besitzt. Dies ermöglichte eine Abstraktion der einzelnen Komponenten im Sinne eines DeviceModels
+    }
+}
+
+\newtheorem{definition}{Description}[section]
+\begin{document}
+
+% ===== COVER PAGE =====
+    \coverpage{Takanori Nagashima}{3485262}{AI-Charge Technologies}{01.08.2025 -- 14.12.2025}{Hans-Jörg Wiehoff }{}
+
+% ===== TABLE OF CONTENTS =====
+    \tableofcontents
+    \newpage
+
+% ===== INTRODUCTION =====
+    \chapter{Einführung}
+    Als Informatiker empfehle ich, auf Offline-Dokumentationen als Anforderungsquelle zu verzichten.
+
+    \begin{quote}
+        \textit{Bemerkung:} Der Punkt im Glossar stammt aus der Library und kann daher nicht manuell entfernt werden.
+    \end{quote}
+
+    \section{Einleitung}
+    Dies ist der Bericht über mein praktisches Studiensemester von \textbf{Takanori Nagashima}. 
+
+    Während meines Praktikums war ich primär im Bereich der Backend-Softwareentwicklung tätig. 
+    Darüber hinaus erstreckten sich meine Aufgaben auf die Frontend-Entwicklung sowie das Log- und Security-Management. 
+    Aufgrund dieses breiten Aufgabenspektrums entsprach meine Tätigkeit der Rolle eines \textbf{Full-Stack-Engineers}.
+
+    Das Praktikum umfasste im Wesentlichen zwei Hauptprojekte, die wiederum in verschiedene Teilprojekte unterteilt waren. 
+    Im folgenden Bericht werde ich zunächst die technischen Anforderungen erläutern, insbesondere in Bezug auf die verwendeten Protokolle sowie die eingesetzte Software und Hardware.
+
+    In \textbf{Kapitel 4} werde ich detailliert auf die zwei Hauptprojekte eingehen und meine konkreten Beiträge beschreiben. 
+    Das \textbf{letzte Kapitel} widmet sich meiner persönlichen Vision: der Gründung eines eigenen Unternehmens sowie meinen zukünftigen beruflichen Zielen.
+
+    \subsection*{Danksagung}
+        Bevor ich mit den technischen Details beginne, möchte ich meinen aufrichtigen Dank an \textbf{Hans-Jörg Wiehoff} und \textbf{Stephan Roess} aussprechen. 
+        Sie haben mir die Chance gegeben, an anspruchsvollen Projekten zu arbeiten und mich fachlich sowie persönlich signifikant weiterzuentwickeln.
+
+
+
+    \chapter{ Anforderungen }
+    
+    \section{ Protocols }
+    Im Bereich der Protokolle gibt es fünf zentrale Regeln für den Ladevorgang von Elektrofahrzeugen.
+    Dies sind \textbf{notwendig und hinreichend Regeln}, alles zu verstehen.
+    Diese Regeln sind stets verbindlich, und Programmer müssen ihnen folgen.
+    Die Kernaufgabe der Softwareentwicklung besteht in diesem Zusammenhang in der Implementierung bzw. 
+    \textbf{Übersetzung} dieser Protokolle in ausfürbaren Code.
+    
+    \subsection{ ISO 15118 }
+    Diese regelt den Kommunikationstandard zwischen EV(Elektorofaherzeugen) und CS(Ladestationen).    
+    \texttt{ISO 15118-20(2022)} ist die neueste Version von \texttt{ISO 15118}.
+    \texttt{EVerest} ist eines der Open-Source-Implementiereung für diesen Standard.
+    \cite{ISO15118}
+
+    \subsection{ \texorpdfstring{\gls{OCPP}}{OCPP} }
+    Es ist ein offener Kommunikationsstandard zwischen einer Ladestation 
+    und dem CSMS(dazugehörigen Managementsystem).
+    Während \texttt{OCPP 1.6} in der Industrie noch weit verbreitet ist, stellt \texttt{OCPP 2.0.1} 
+    die aktuelle Hauptversion dar, gefolgt von der neuesten Version \texttt{OCPP 2.1}. Der Standard wird von der \gls{OCA} spezifiziert \cite{OCA}.
+    Im Rahmen des Projekts haben wir hauptsächlich mit der Version 
+    \texttt{OCPP 2.0.1} gearbeitet. 
+    Als Referenzimplementierung kam dabei \texttt{CitrineOS-core} zum Einsatz.
+
+    \subsection{ \texorpdfstring{\gls{OCPI}}{OCPI} } 
+    Das \gls{OCPI}-Protokoll ermöglicht das Roaming zwischen verschiedenen Ladepunktbetreibern (\gls{CPO}s) 
+    und Mobilitätsdienstleistern (\gls{eMSP}s). 
+    Es dient dazu, den Datenaustausch über Netzwerkgrenzen hinweg zu standardisieren,
+     sodass Nutzer an Stationen verschiedener Anbieter laden können. 
+     Wie auch \gls{OCPP} wird dieser Standard von der \gls{OCA} gepflegt.
+    Für die Implementierung steht unter anderem \texttt{CitrineOS-OCPI} zur Verfügung. 
+    Im Rahmen des aktuellen Projektes wurde dieses Protokoll jedoch noch nicht eingesetzt. 
+    Die Integration und Evaluierung von \gls{OCPI} ist als zukünftige Aufgabe für die Erweiterung des Systems vorgesehen.
+
+
+    \subsection{ \texorpdfstring{\gls{OSCP}}{OSCP} }
+    Das \gls{OSCP} ist ein offenes Kommunikationsprotokoll, 
+    das den Austausch von Informationen über die verfügbare Kapazität des Stromnetzes 
+    zwischen einem Netzbetreiber oder einem Energiemanagementsystem
+    und dem \gls{CSMS} ermöglicht. 
+    Es dient primär der Vorhersage und Planung der Netzlast, um Überlastungen zu vermeiden.
+    
+
+
+\section{Technische Anforderungen und Systemarchitektur}
+
+\subsubsection{\texorpdfstring{\gls{FleetRL}}{FleetRL}}
+\texttt{FleetRL} ist eine spezialisierte Software zur Optimierung von Ladestrategien für Fahrzeugflotten mittels bestärkendem Lernen (\textit{Reinforcement Learning}), die ursprünglich im Rahmen einer Masterarbeit entwickelt wurde \cite{FleetRL}.
+
+Die technischen Kernmerkmale umfassen:
+\begin{itemize}
+    \item \textbf{Technologie-Stack:} Implementierung in Python 3.10. Die Software nutzt das \textit{Gymnasium}-Framework (ehemals OpenAI Gym) und ist vollständig kompatibel mit \textit{stable-baselines3} auf \textit{PyTorch}-Basis.
+    \item \textbf{Methodik:} Als primärer Algorithmus wird \textit{PPO} (Proximal Policy Optimization) eingesetzt. Das System ermöglicht vergleichende Analysen zwischen KI-basierten Strategien, linearer Optimierung und Referenzstrategien wie „Dumb Charging“.
+    \item \textbf{Lizenzierung:} Veröffentlichung unter der \textit{GPL-3.0-Lizenz}, was die Open-Source-Weiterentwicklung unter gleichen Bedingungen sicherstellt.
+    \item \textbf{Datenmanagement:} Der Datenimport erfolgt über das CSV-Format, während die Ergebnisevaluation und Visualisierung mittels \textit{Matplotlib} realisiert wird.
+    \item \textbf{Deployment:} Die Bereitstellung erfolgt als Quellcode inklusive \textit{Jupyter Notebook}-Demos. Eine Paketierung via \textit{pip} ist derzeit noch nicht realisiert.
+\end{itemize}
+
+
+
+\subsubsection{CitrineOS}
+\texttt{CitrineOS} ist ein umfassendes Open-Source-Ökosystem für das Management von Ladeinfrastrukturen. Die Entwicklung wird durch eine aktive Community auf \textit{GitHub} vorangetrieben \cite{CitrineOS}.
+
+\subsubsection{CitrineOS Core}
+\texttt{CitrineOS Core} fungiert als zentrales Managementsystem (\gls{CSMS}) und stellt die Kommunikation zu den Ladepunkten sicher. Es unterstützt die Protokolle \gls{OCPP} 1.6 sowie 2.0.1.
+
+Die technischen Spezifikationen des Core-Moduls sind:
+\begin{itemize}
+    \item \textbf{Programmiersprache:} TypeScript.
+    \item \textbf{Software-Qualität:} Alle Module sind durch automatisierte Tests mit \textit{Jest} abgesichert. Zur Laufzeit-Validierung wird zunehmend \textit{Zod} eingesetzt, um eine hohe Datentypsicherheit zu gewährleisten.
+    \item \textbf{Architektur:} Das System basiert auf einer \textbf{Monorepo-Struktur} mit einer sequenziellen Abhängigkeitskette der Teilprojekte (Base, Data, Utils, Modules, Server). Zudem wird die \textit{Barrel}-Architektur zur effizienten Modulverwaltung genutzt.
+    \item \textbf{Datenhaltung:} Die Persistenzschicht wird durch das ORM-Framework \textit{Sequelize} abstrahiert.
+    \item \textbf{Lizenzierung:} Veröffentlichung unter der \textit{Apache License 2.0} inklusive standardisierter \textit{SPDX}-Header.
+\end{itemize}
+
+\subsubsection{CitrineOS OCPI}
+Dieses Modul realisiert die \gls{OCPI}-Schnittstelle zur Vernetzung verschiedener Marktteilnehmer. Aufgrund von Versionsinkompatibilitäten mit der aktuellen Core-Instanz befand sich dieses Modul im Rahmen des Berichtszeitraums in der Evaluierungsphase und war noch nicht produktiv einsetzbar.
+
+\subsubsection{CitrineOS Operator UI}
+Die \texttt{Operator UI} stellt das administrative Dashboard für den \gls{CPO} dar.
+\begin{itemize}
+    \item \textbf{Frontend-Stack:} Entwicklung mit \textit{TSX} auf Basis des \textit{Refine}-Frameworks.
+    \item \textbf{Datenabfrage:} Effiziente Kommunikation via \textit{GraphQL} über eine \textit{Hasura}-Instanz zur direkten Datenbankanbindung.
+    \item \textbf{Identitätsmanagement:} Nahtlose Integration von \textit{Keycloak} zur Absicherung der Authentifizierungs- und Autorisierungsprozesse.
+\end{itemize}
+
+
+
+\subsubsection{CitrineOS Payment}
+Dieses Modul ist für die Abwicklung monetärer Transaktionen zuständig:
+\begin{itemize}
+    \item \textbf{Backend:} Realisiert mit \textit{Python}, \textit{FastAPI} und \textit{SQLAlchemy}.
+    \item \textbf{Frontend:} Implementiert in \textit{React} (JSX).
+    \item \textbf{Integration:} Anbindung des \textit{Stripe}-Zahlungsdienstleisters. Das Modul befindet sich derzeit in einem frühen Entwicklungsstadium (Early Stage).
+\end{itemize}
+
+\subsubsection{EVerest}
+\texttt{EVerest} (ein Projekt der \textit{LF Energy}) bietet einen modularen Software-Stack für die lokale Steuerung der Ladestation.
+\begin{itemize}
+    \item \textbf{Kerntechnologie:} Primäre Entwicklung in \textit{C++}. Der \textit{EVerest Dependency Manager} (EDM) erlaubt zudem die Einbindung von Modulen in Python oder JavaScript.
+    \item \textbf{Protokollunterstützung:} Vollständige Abdeckung von \gls{OCPP} und \textit{ISO 15118} zur Kommunikation zwischen Fahrzeug und Infrastruktur.
+    \item \textbf{Containerisierung:} Das Deployment erfolgt standardmäßig über \textit{Docker}, um konsistente Laufzeitumgebungen über verschiedene Hardware-Plattformen hinweg zu garantieren.
+\end{itemize}
+
+
+
+% ===== COMPANY & ROLE =====
+\chapter{Unternehmens- und Rollenübersicht}    
+
+\section{Unternehmensvorstellung}
+Die \textbf{AI-Charge Technologies} spezialisiert sich auf die KI-gestützte Optimierung von Ladevorgängen für Elektrofahrzeuge. Das Kernziel des Unternehmens ist die Entwicklung intelligenter Ladestrategien, um die Netzeffizienz zu steigern und die Betriebskosten für Flottenbetreiber zu minimieren.
+
+\section{Struktur und Verantwortlichkeiten}
+Das Kernteam am Standort Regensburg besteht aus dem CEO, einem Software-Ingenieur sowie einem Maschinenbau-Ingenieur. In diesem agilen Umfeld umfasste mein primärer Verantwortungsbereich die \textbf{Backend-Entwicklung} sowie die Implementierung zentraler Server-Komponenten zur Steuerung der Ladeinfrastruktur.
+
+Der operative Standort befindet sich im Innovationszentrum \textit{TechBase} in Regensburg (2. Obergeschoss, Raum 050), in unmittelbarer Nähe zur OTH Regensburg. Darüber hinaus unterhält das Unternehmen eine weitere Präsenz in Nürnberg.
+
+\section{Arbeitszeiten}
+Meine reguläre Arbeitszeit erstreckte sich von Montag bis Freitag, jeweils von 09:00 bis 17:00 Uhr. In kritischen Projektphasen wurde die Arbeitszeit flexibel angepasst, was vereinzelt auch Einsätze am Wochenende einschloss. Die tägliche Struktur wurde durch eine Mittagspause sowie kurze Regenerationsphasen am Ende jeder Stunde ergänzt, um eine konstante Konzentrationsfähigkeit zu gewährleisten.
+
+\section{Arbeitsumgebung und methodischer Ansatz}
+Die Relevanz einer ergonomischen und technisch angemessenen Arbeitsumgebung ist für die softwaretechnische Produktivität von entscheidender Bedeutung. In der Vorlesung \textit{Computerarchitektur} wurden die theoretischen Standards für Hauptspeicher-Architekturen und Systemkomponenten vermittelt. Die Anwendung dieses Wissens bei der Auswahl und Konfiguration der Hardware unterstreicht die Notwendigkeit, Werkzeuge einzusetzen, die den Anforderungen moderner Container-Technologien (wie Docker) gerecht werden.
+\subsubsection{Hardware-Umgebung}
+
+Zu Beginn meiner Arbeit wurde ein Laptop verwendet. Im weiteren Verlauf erfolgte der Umstieg auf ein dediziertes Desktop-System. Die folgende Tabelle fasst die Hardware-Spezifikationen zusammen:
+
+\begin{table}[ht]
+    \centering
+    \caption{Übersicht der verwendeten Hardware-Umgebung}
+    \begin{tabular}{llll}
+        \hline
+        Komponente & Phase 1 (Anfang) & Phase 2 (Mitte) & Aktuell \\ \hline
+        Modell & HP ProBook 650 G4 & Mini-ITX PC & Mini-ITX PC \\
+        CPU & Intel i5-8152U & Ryzen 5 8500G & Ryzen 5 8500G \\
+        RAM & 8 GB & 16 GB & 16 GB \\
+        Speicher & 256 GB SSD & 256 GB + 128 GB SSD & 256 GB + 128 GB SSD \\
+        GPU & keine (iGPU) & keine (iGPU) & keine (iGPU) \\
+        OS & Windows 11 & Arch Linux & Ubuntu \\ \hline
+    \end{tabular}
+\end{table}
+
+Derzeit wird das System unter Ubuntu betrieben, wobei auf eine dedizierte Grafikkarte (GPU) verzichtet wurde.
+
+\begin{quote}
+Da Docker häufig nutzt wird, ist ausreichend Arbeitsspeicher besonders wichtig.
+Aufgrund der hohen Belastung für Schltern, Finger und Augen halte ich es für notwendig, Tastatur, Monitor und die Stärke der Brille entsprechend anzupassen.
+\end{quote}    
+
+\subsubsection{ Software-Umgebung }
+\textbf{ IDE }
+In der Anfangszeit habe ich \texttt{IntelliJ} verwende, in der mittleren Phase \texttt{NeoVim}, und aktuell nutze ich \texttt{VSCode}.
+In Zukunft werde ich möglicherweise \texttt{Zed} nutzen.
+
+\textbf{ Browser }
+In der Anfangszeit habe ich \texttt{Qutebrowser} genutzt, aber derzeit verwende ich aus Gründen der Stabilität \texttt{Firefox}.
+
+\textbf{ Terminal }
+In der Anfangszeit habe ich \texttt{Alacritty + Zsh} genutzt, aber derzeit verwende ich \texttt{GNOME Terminal + Bash}.
+
+\textbf{ AI Tools }
+Ich habe Claude, Ollama, ChatGPT, Copilot, Gemini und Perplexity AI parallel genutzt. 
+Aktuell plane ich die Einführung von Claude Code und die vertiefte Nutzung von Ollama.
+    
+
+\section{Arbeitszeit und eigene Arbeitsregeln}
+    Meine Arbeitszeiten waren flexibel gestaltet, jedoch habe ich mir selbst feste Regeln auferlegt, um die Konzentration und Effizienz während der Softwareentwicklung hochzuhalten:
+
+    \begin{itemize}
+        \item \textbf{Strukturierte Pausenzeiten:} Ich habe das Prinzip verfolgt, jeweils von der 55. Minute bis zur vollen Stunde (00) eine kurze Pause einzulegen.
+        \item \textbf{Reflexionsphasen:} Diese Zeit nutzte ich Distanz zum aktuellen Problem zu gewinnen und die nächsten Schritte sowie die Gesamtarchitektur des Codes zu überdenken.
+    \end{itemize}
+
+
+    \section{Regeln für den Einsatz von KI-Tools}
+    Im Rahmen meiner Tätigkeit habe ich KI-gestützte Werkzeuge nach folgenden selbst auferlegten Regeln genutzt,
+    um eine effiziente und qualitativ hochwertige Entwicklung zu gewährleisten:
+
+    \begin{itemize} 
+        \item \textbf{Wissensübernahme und Caching-Prinzip:} Von der KI generierte Syntax-Beispiele oder Lösungsvorschläge wurden strukturiert als Markdown-Notizen in Mkdocs zwischengespeichert. Dies diente dem Aufbau einer eigenen Wissensdatenbank und verhinderte eine wiederholte Abfrage identischer Probleme. 
+        \item \textbf{Verifizierung durch offizielle Dokumentation:} Jede von der KI vorgeschlagene Lösung wurde zwingend mit den offiziellen technischen Dokumentationen abgeglichen und validiert. 
+        \item \textbf{Theoretisches Verständnis der LLMs:} Als Informatiker ist es essenziell, nicht nur die Anwendung zu beherrschen, sondern auch die zugrunde liegenden Mechanismen der Large Language Models (LLMs) zu verstehen. Dazu gehört die Berücksichtigung von Parametern wie der \textit{Temperature}, um die Präzision der Ergebnisse fachlich korrekt einschätzen zu können. 
+        \item \textbf{Iterative Optimierung (Prompt Engineering):} Die Interaktion mit der KI wurde als aktiver Prozess verstanden. Durch gezieltes Nachhaken und Verfeinern der Prompts wurde stets versucht, die qualitativ bestmögliche Lösung aus dem Modell zu extrahieren. 
+        \item \textbf{Vier-Augen-Prinzip (Double Check):} Die KI wurde gezielt zur Identifizierung von Flüchtigkeitsfehlern (z. B. Tippfehler in Variablennamen) genutzt, welche für das menschliche Auge oft schwer zu finden sind. Die KI diente hierbei als wertvolle „Zweitmeinung“. 
+    \end{itemize}
+
+\chapter{Activities and Projects}
+
+\section{Project 1}
+
+\subsection{August -- Oktober: Einarbeitungs- und Analysephase (ca. zwei Monate)} 
+Zu Beginn des Projekts lag der Fokus auf der Evaluation der zukünftig einzusetzenden Softwarekomponenten. 
+Ich habe die grundlegende Funktionsweise analysiert sowie potenzielle Schwachstellen und Herausforderungen bei folgenden Systemen identifiziert: 
+\texttt{CitrineOS-Core}, \texttt{OCPI}, \texttt{Payment-Module}, \texttt{Operator-UI}, \texttt{FleetRL} und \texttt{EVerest}.
+
+\subsubsection{Konkrete Aufgaben und Umsetzung} 
+In diesem Zeitraum lag ein besonderer Schwerpunkt auf der Wartung und Aktualisierung veralteter Projektkomponenten (Legacy-Code). Meine Tätigkeiten umfassten insbesondere: 
+
+\begin{itemize}
+    \item \textbf{Evaluierung verschiedener Open-Source-Projekte:} Ich habe mehrere Open-Source-Projekte auf ihre Kompatibilität und Nutzbarkeit für unsere Anforderungen hin geprüft.
+    \item \textbf{Aktualisierung veralteter Repositories:} Ich habe die Projekte \texttt{Citrine Payment} und \texttt{FleetRL} umfassend aktualisiert. Beide Projekte waren über zwei Jahre lang nicht mehr gewartet worden. Dies beinhaltete das Update von Abhängigkeiten (Dependencies) sowie die Anpassung des Codes an aktuelle Sicherheitsstandards und Python/TypeScript-Versionen.
+\end{itemize}
+
+
+\subsection{Oktober -- Dezember: Implementierung und Deployment (ca. zwei Monate)}
+In diesem Zeitraum erhielt das Team zwei neue Ladepunkte (Connectors/EVSE). 
+Meine Aufgabe bestand darin, diese in die Produktionsumgebung zu integrieren und in Betrieb zu nehmen.
+
+Zusätzlich übernahm ich Ende Oktober eine neue Kernaufgabe:
+ Die Inbetriebnahme und den Betrieb der \textit{Payment-Applikation} 
+ unter Verwendung der aktuellsten Version von \texttt{CitrineOS-Core}.
+
+\subsubsection{Konkrete Aufgaben und Umsetzung} 
+Ein wesentlicher Teil meiner Arbeit in diesem Zeitraum bestand im \textit{Patching} 
+und der Fehlerbehebung (Bugfixing) innerhalb des Systems. Obwohl \texttt{CitrineOS Core} 
+und das \textit{Payment-Modul} eine funktionale Abdeckung von über 98\,\% aufwiesen,
+ stellte die Identifizierung und Korrektur der verbleibenden 2\,\% eine besondere Herausforderung dar. 
+ Diese Fehler traten oft nur unter spezifischen Randbedingungen auf und erforderten eine tiefgehende Analyse.
+
+Im Folgenden werden die identifizierten Probleme sowie die entsprechenden Lösungsansätze erläutert:
+
+    \subsection{Probleme innerhalb von CitrineOS Core} 
+    \subsubsection{Architektonische Herausforderungen} 
+    Eine wesentliche Herausforderung bestand darin,
+     dass die Architektur von \texttt{CitrineOS} ursprünglich nicht für den Betrieb von Ladestationen mit mehreren Ladepunkten (Connectors) ausgelegt war.
+    Dies führte zu folgenden Problemen: \begin{itemize} 
+        \item \textbf{Unique-Constraint-Verletzungen:} Während der Betrieb unter \gls{OCPP} 1.6 fehlerfrei verlief, kam es unter \gls{OCPP} 2.0.1 bei der Verwendung von zwei Connectoren zu Konflikten mit \textit{Unique Constraints} in der Datenbank. 
+        \item \textbf{Unvollständige Dreischichtenstruktur:} Die für \gls{OCPP} 2.0.1 spezifizierte Dreischichtenstruktur war im Kern von \texttt{CitrineOS} noch nicht vollständig abgebildet, da sich der Standard insgesamt noch in der Implementierungsphase befindet. 
+        \item \textbf{Datenbank-Denormalisierung:} Ein kritisches Hindernis stellte die flache Struktur (Denormalisierung) der \textit{Authorization}-Datenbank dar. Diese Architektur verhinderte eine korrekte Interaktion mit verbundenen Komponenten wie \texttt{EVerest} oder \gls{OCPI}-Schnittstellen, da die erforderlichen relationalen Verknüpfungen fehlten. 
+    \end{itemize}
+
+\subsubsection{Implementierung der RFID-Autorisierung}
+
+Eine wesentliche Sicherheitslücke im ursprünglichen System war die fehlende Implementierung der RFID-Autorisierung. Die Ladestation akzeptierte bisher jede unbekannte RFID-Karte und startete den Ladevorgang ohne Validierung. 
+
+Ich habe diese Funktionalität gemäß der \gls{OCPP} 2.0.1 Spezifikation implementiert. Dabei wurden folgende Schritte umgesetzt:
+\begin{itemize}
+    \item \textbf{Validierungsprozess:} Integration eines Abgleichs der RFID-UID mit der zentralen Datenbank zur Autorisierungsprüfung.
+    \item \textbf{Protokoll-Konformität:} Sicherstellung, dass die Kommunikation zwischen der Ladestation (Alfen-Wallbox) und dem Backend strikt den Vorgaben von OCPP 2.0.1 folgt.
+\end{itemize}
+
+Die folgende Abbildung zeigt die im Projekt verwendeten Ladestationen vom Typ Alfen, welche über zwei Connectoren verfügen:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assets/CS.jpeg}
+    \caption{Die im Projekt eingesetzten Alfen-Ladestationen (Dual-Connector-System)}
+    \label{fig:alfen_station}
+\end{figure}
+
+
+    \subsubsection{Herausforderungen und Optimierung des Payment-Moduls} Obwohl die \textit{Payment}-Applikation weitestgehend fehlerfrei lief, wies die Implementierung in Bezug auf die Software-Architektur noch Optimierungspotenzial auf.
+
+    Ein zentrales Problem war der Registrierungsprozess von Autorisierungsschlüsseln: 
+    \begin{itemize} 
+        \item \textbf{Problemanalyse:} Die Applikation versuchte, Autorisierungsschlüssel direkt in der Datenbank zu registrieren. Dies schlug jedoch fehl, da die oben genannte Denormalisierung (Datenbankflachung) die erforderlichen relationalen Verknüpfungen verhinderte. 
+        \item \textbf{Lösungsansatz via Directus:} Um dieses Problem zu beheben, habe ich einen alternativen Weg implementiert. Anstatt die Registrierung direkt auf Datenbankebene zu erzwingen, wurde der Prozess über \textit{Directus} entkoppelt. Über diese Schnittstelle konnten die Autorisierungsdaten korrekt verwaltet und für das System verfügbar gemacht werden. 
+    \end{itemize}
+
+    \subsubsection{Optimierung der Benutzeroberfläche (UI/UX)} 
+    Zusätzlich zur Backend-Entwicklung habe ich mehrere Verbesserungen an der Benutzeroberfläche implementiert,
+     um die Benutzerfreundlichkeit und die Markenpräsenz zu steigern: 
+     \begin{itemize} 
+        \item \textbf{Splash-Screen und Branding:} Um das Erscheinungsbild des Unternehmens zu stärken, habe ich einen \textit{Splash-Screen} mit Logo-Animationen implementiert. Dies wertet die Applikation visuell auf und sorgt für einen professionellen ersten Eindruck beim Starten. 
+        \item \textbf{In-App QR-Code-Scanner:} Zuvor mussten Benutzer die Applikation verlassen, um einen QR-Code mit einer externen App zu scannen. Ich habe einen integrierten QR-Code-Scanner direkt in die Applikation implementiert. Dies erhöht die Benutzerbindung (\textit{Retention}), da der Prozess nun nahtlos innerhalb der App abläuft. 
+        \item \textbf{Performance-Optimierung:} Da das UI ursprünglich eine zu hohe Anzahl an API-Anfragen an den \texttt{CitrineOS-Core} sendete, was zu Performance-Einbußen führte, habe ich die API-Aufrufe optimiert und ein effizienteres Datenmanagement eingeführt. 
+    \end{itemize}
+
+\subsubsection{Visualisierung der Payment-Applikation}
+
+Die folgende Abbildung zeigt die Benutzeroberfläche der von mir optimierten \textit{Payment}-Applikation. 
+Während der Entwicklung wurde die Anwendung primär in einer lokalen Umgebung getestet und anschließend für die Produktionsumgebung vorbereitet.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/payment.png}
+    \caption{Benutzeroberfläche der Payment-Applikation}
+    \label{fig:payment_app}
+\end{figure}
+
+\noindent
+Die Anwendung ist unter folgenden URLs erreichbar:
+\begin{itemize}
+    \item \textbf{Development:} \url{https://pays-dev.ai-charge.com} (Entwicklungsumgebung)
+    \item \textbf{Production:} \url{https://pays.ai-charge.com}
+\end{itemize}
+
+    \subsubsection{Methodische Schwierigkeiten und Lernkurve} Eine wesentliche Hürde zu Beginn des Praktikums war der Mangel an tiefergehenden Kenntnissen in den Bereichen \textit{Git}, \textit{Docker} und \textit{TypeScript}. Die Einarbeitungszeit in diese Technologien nahm anfangs einen erheblichen Teil der Projektzeit in Anspruch. Dabei wurde deutlich, dass die akademischen Vorkenntnisse für die Anforderungen einer produktiven Arbeitsumgebung zunächst nicht ausreichten.
+
+    Die folgende Tabelle verdeutlicht meine methodische Weiterentwicklung während des Projekts:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.5} % Erhöht den Zeilenabstand für bessere Lesbarkeit
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Bereich} & \textbf{Vor dem Praktikum} & \textbf{Nach dem Praktikum} \\ \hline
+Docker & Grundbefehle (up / down) & Cache-Management, optimierte Images \\ \hline
+Git & Einfaches Merge & Rebase, Cherry-pick, Coding-Standards \\ \hline
+TypeScript & Grundlegende Syntax & Laufzeit-Validierung mit Zod \\ \hline
+Monitoring & console.log / print & Grafana, Portainer, Log-Management \\ \hline
+\end{tabular}
+\caption{Vergleich der methodischen Kenntnisse}
+\end{table}
+
+\subsection{ Januar -- heute: Optimierung und Systemstabilität } 
+Da \texttt{CitrineOS} nun stabil in der Produktionsumgebung läuft,
+ habe ich mich darauf konzentriert, die Arbeitsumgebung und die Systemzuverlässigkeit zu verbessern.
+    Mein Aufgabenbereich umfasst derzeit: 
+    \begin{itemize} 
+        \item \textbf{Fehlerbehebung (Bugfixing):} Ich identifiziere und behebe täglich auftretende Probleme in der Produktionsumgebung, wie beispielsweise Autorisierungsfehler oder Kommunikationsstörungen. 
+        \item \textbf{Monitoring und Log-Management:} Zur besseren Fehlerdiagnose habe ich verbesserte Log-Management-Systeme eingeführt, die eine schnellere Analyse von Systemereignissen ermöglichen. 
+        \item \textbf{Sicherheitsoptimierung:} Ein weiterer Fokus liegt auf dem \textit{Security Enhancement}, um die Integrität der Kommunikation und der Daten zu gewährleisten. 
+        \item \textbf{Infrastruktur-Optimierung:} Um die Effizienz zu steigern, habe ich die VPN-Kommunikation zwischen den AWS-Instanzen und der lokalen Entwicklungsumgebung optimiert. 
+        \item \textbf{Experimente in lokalen Umgebung } Experimente in einer geklonten lokalen Umgebung durchzuführen, bevor sie in die Cloud übertragen werden. 
+        \item usw.
+    \end{itemize}
+
+\subsubsection{Infrastruktur-Monitoring und Automatisierung}
+
+In dieser Phase konnte ich meine Kompetenzen signifikant steigern und ein tiefgreifendes Verständnis für die Gesamtsystemarchitektur entwickeln. 
+Eine wesentliche Erkenntnis war dabei, dass \textit{Logging} und \textit{Monitoring} keine bloßen Hilfsmittel, sondern essenzielle \textbf{Assets} für die Softwareentwicklung und den Systembetrieb darstellen. 
+
+Zuvor stützte ich mich primär auf einfache Konsolenausgaben (\texttt{console.log} oder \texttt{print}). Im Rahmen der Professionalisierung der Infrastruktur habe ich jedoch folgende Systeme eingeführt und verwaltet:
+
+\begin{itemize}
+    \item \textbf{Grafana (Node Exporter):} Visualisierung von Systemmetriken zur Überwachung der Serverperformance.
+    \item \textbf{Portainer.io:} Management der Docker-Container-Infrastruktur.
+    \item \textbf{Minio:} S3-kompatibler Objektspeicher für die Datenverwaltung.
+\end{itemize}
+
+Um die Prozesse weiter zu optimieren, habe ich automatisierte Workflows erstellt, die eine konsistente Überwachung gewährleisten.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/grafana.png}
+    \caption{Dashboard des Grafana Node Exporters zur Systemüberwachung}
+    \label{fig:grafana_dashboard}
+\end{figure}
+
+\noindent
+Die Instanzen sind unter folgenden URLs erreichbar:
+\begin{itemize}
+    \item \textbf{Grafana:} \url{https://log.lovekapibarasan.org}
+    \item \textbf{Portainer:} \url{https://docker.lovekapibarasan.org}
+    \item \textbf{Minio:} \url{https://minio.lovekapibarasan.org}
+\end{itemize}
+    
+\begin{itemize}
+    \item \textbf{Daten-Pipeline und Speicherung:} Die Log-Daten werden mittels \textit{Grafana Alloy} von den AWS-Instanzen transportiert und in \textit{Grafana Mimir} aggregiert. Als Speicherlösung dient \textit{MinIO}, ein S3-kompatibler Objekt-Speicher, der eine skalierbare und langfristige Archivierung der Logs ermöglicht.
+    \item \textbf{Analyse und Monitoring:} Über das Grafana Web-UI können alle Log-Daten zentral analysiert und visualisiert werden. Zudem wurden Alarm-Regeln (\textit{Alerting}) eingerichtet, um bei Systemfehlern proaktiv benachrichtigt zu werden.
+    \item \textbf{Ausblick – KI-Integration:} In einem nächsten Schritt ist die Anbindung an das \textit{Model Context Protocol} (MCP) und einen LLM-Server geplant. Ziel ist es, technische Log-Daten automatisch in ein menschenlesbares Format (\textit{human readable format}) zu übersetzen, um die Fehlerdiagnose weiter zu beschleunigen.
+\end{itemize}
+
+\subsubsection{Erweiterung des CitrineOS Operator UI}
+
+Ein weiterer Schwerpunkt meiner aktuellen Tätigkeit liegt in der Weiterentwicklung des \textit{CitrineOS Operator UI}.
+Dieses dient als zentrale Schnittstelle zur Steuerung der Ladesteuerungssysteme.
+
+Derzeit arbeite ich an der Lösung technischer Konflikte zwischen \textit{Hasura GraphQL} im \textit{CitrineOS-Core} 
+und der eigenständigen \textit{Hasura}-Instanz. 
+Dabei liegt die Herausforderung insbesondere in der Synchronisation der GraphQL-Schemas und der Behebung von Namensraum-Konflikten innerhalb der Datenbank-Abfragen. 
+Ziel ist es, eine konsistente Datenabfrage über die gesamte Systemarchitektur hinweg sicherzustellen.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/op_ui.png}
+    \caption{Benutzeroberfläche des CitrineOS Operator UI zur Verwaltung der Ladepunkte}
+    \label{fig:operator_ui}
+\end{figure}
+
+
+\section{Projekte 2}
+\subsection{Ausblick: Fortführung als Werkstudent}
+
+Im kommenden Semester werde ich meine Tätigkeit als Werkstudent fortsetzen. Dabei liegt der Fokus auf einem der zentralen Themen des Projekts: Die Optimierung von Ladeplänen mittels \textit{FleetRL}.
+
+Da ich im Rahmen des Praktikums bereits die Funktionsfähigkeit von \textit{FleetRL} verifizieren konnte, plane ich im nächsten Schritt den Aufbau einer robusten \textit{REST-Architektur}. Hierfür beabsichtige ich, das Framework \textit{Actix-web} in \textbf{Rust} einzusetzen,
+ um eine hohe Performance und Typsicherheit zu gewährleisten.
+
+Aus praktischer Sicht liegt ein besonderer Schwerpunkt auf der Implementierung strikter Validierungsregeln. 
+Dies umfasst unter anderem sicherheitskritische Anforderungen wie zeitbasierte Ladevorgaben (z. B. garantierte Vollladung bis zu einem definierten Zeitpunkt), um einen zuverlässigen und sicheren Betrieb der Fahrzeugflotte zu ermöglichen.
+
+
+
+\chapter{Zukünftige Perspektiven}
+
+Basierend auf den im Praktikum gesammelten Erfahrungen habe ich meine Ziele für das kommende Semester und meine weitere berufliche Laufbahn klar definiert.
+
+\section{Akademische und fachliche Weiterentwicklung}
+Im nächsten Semester beabsichtige ich, meine Kenntnisse in folgenden Bereichen gezielt zu vertiefen:
+\begin{itemize}
+    \item \textbf{Mobile Entwicklung mit Flutter:} Aufbauend auf meinen Erfahrungen im Frontend möchte ich plattformübergreifende Applikationen entwickeln.
+    \item \textbf{Hardwarenahe Entwicklung:} Um ein tieferes Verständnis für die Steuerung der Ladestationen (EVSE) zu erlangen, werde ich mich intensiver mit hardwarenaher Programmierung in \textit{C} und \textit{Assembly} befassen.
+\end{itemize}
+
+\section{Eigene Projekte und Veröffentlichungen}
+\textbf{Infolgedessen} habe ich aus den täglichen Experimenten mit \textit{CitrineOS Core} eigene Applikationen entwickelt, um die zugrunde liegende Architektur noch besser zu verstehen. 
+
+Dazu gehören insbesondere:
+\begin{itemize}
+    \item \textbf{Full-Stack-Applikation mit tRPC:} Eine TypeScript-Anwendung, die auf den Prinzipien der Typsicherheit und effizienten API-Kommunikation basiert, ähnlich wie die von mir optimierten Systeme im Praktikum.
+    \item \textbf{Shogi-Applikation (Japanisches Schach):} Ich entwickle derzeit eine Shogi-Anwendung, die ich im nächsten Semester veröffentlichen werde. Hierbei wende ich die erlernten Methoden zur Skalierbarkeit und Nutzerführung an.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{./seminar/assets/picture.png}
+    \caption{Visualisierung meiner aktuellen Software-Projekte}
+    \label{fig:shogi_project}
+\end{figure}
+
+Mein langfristiges Ziel bleibt die Gründung eines eigenen Unternehmens, wobei die während dieses Praktikums erworbenen Kompetenzen im Bereich der Elektromobilität und Infrastruktur eine fundamentale Basis bilden.
+
+   
+% ===== 
+\printglossaries
+
+\newpage
+
+\section*{Abschlusserklärung und Unterschrift}
+\vfill % Schiebt die Unterschrift nach unten
+
+\begin{flushleft}
+    Regensburg, den \today \\ % Automatisches Datum
+    \vspace{1cm}
+    \includegraphics[width=0.4\textwidth]{assets/signiture.jpg} \\ % Pfad korrigiert (assets/...)
+    \rule{6cm}{0.5pt} \\ % Eine Linie für die Unterschrift
+    \textbf{Hans-Jörg Wiehoff}
+\end{flushleft}
+
+\bibliographystyle{IEEEtran}  % IEEE style
+\bibliography{references}     % references.bib
+
+\end{document}

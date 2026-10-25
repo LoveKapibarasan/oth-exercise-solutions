@@ -1,0 +1,10 @@
+flowchart TD
+    A[Wissens] -->|Cache| B(Fakten, Meinungen)
+    B --> |count 3| E{Das prozedurale Gedächtnis}
+    B -->|Sort, Upsert, Delete| B
+    E -->|Verlangen| F[Werkzeug]
+    F --> |Combination| F
+    F --> |recursive| E
+    E --> |Einsicht| G[Template]
+    G --> |Unknown| G
+    H[Kunstwerk]

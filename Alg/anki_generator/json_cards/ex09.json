@@ -1,0 +1,22 @@
+[
+  {
+    "sheet": "Exercise 9.1",
+    "question": "What is Static Move Ordering in a Connect Four solver, and what is the optimal column exploration order?",
+    "answer": "Static Move Ordering defines a fixed order in which columns are evaluated in the search tree. \n\n* **Optimal Order:** `3, 2, 4, 1, 5, 0, 6` (exploring from the center outward).\n* **Why:** In Connect Four, the middle columns (especially column 3) have the highest number of potential winning lines (vertical, horizontal, and diagonal). Placing pieces near the center maximizes winning potential and increases the likelihood of finding strong moves early in the search, which triggers alpha-beta cutoffs much faster."
+  },
+  {
+    "sheet": "Exercise 9.2",
+    "question": "How can board symmetry be utilized to optimize a Connect Four solver?",
+    "answer": "* **Symmetry Checks:** A Connect Four board is symmetric horizontally. If a position is symmetric (i.e., the board looks the same when mirrored), we only need to search half of the columns (`0, 1, 2, 3`) for the current move since the other columns (`4, 5, 6`) will lead to identical mirrored positions.\n* **Incremental Mirroring:** Rather than computing the mirrored board from scratch at every search node (which is slow), we can incrementally maintain the mirrored boards for both players as we make and unmake moves during the recursion."
+  },
+  {
+    "sheet": "Exercise 9.3 (Modulo 8)",
+    "question": "In a Row-Major Bitboard representation where each row takes 8 bits (7 columns + 1 sentinel bit), how do you extract the column index of a winning move using C23?",
+    "answer": "We can locate the first set bit using `stdc_trailing_zeros` (from C23 `<stdbit.h>`) and perform a modulo 8 operation:\n\n```c\n#include <stdbit.h>\n\n// winning_moves is a bitboard showing where a player can win\nint column = stdc_trailing_zeros(winning_moves) % 8;\n```\n\n**Explanation:** \nIn a row-major layout, row $r$ starts at bit $8r$. A bit in column $c$ has index $8r + c$. Performing modulo 8 removes the row multiplier ($8r$), leaving the exact column index $c$ ($0 \\le c \\le 6$)."
+  },
+  {
+    "sheet": "Exercise 9.3 (Threat Detection)",
+    "question": "What is Threat Detection in a game solver and how is it integrated into Negamax?",
+    "answer": "Threat Detection checks if either player has an immediate one-move win before running the full search.\n\n* **Integration:**\n  1. If the current player has an immediate winning move, take it immediately (cut off search and return win).\n  2. If the opponent has a winning threat (meaning they would win on their next turn), the current player is forced to block it. We only generate and search the blocking move(s), pruning all other branches.\n* **Benefit:** It prevents the solver from wasting nodes searching deep paths when the game can be decided or forced immediately, saving up to 50%+ of searched nodes."
+  }
+]

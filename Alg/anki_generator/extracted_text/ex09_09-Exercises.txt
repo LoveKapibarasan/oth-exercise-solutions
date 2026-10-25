@@ -1,0 +1,30 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 9
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+9.1Static Move Ordering
+a) Change your move generation to explore columns in the following order: 3, 2, 4, 1, 5, 0, 6.
+b) Measure and report the performance impact (number of visited nodes) using the benchmark
+position from the previous exercises.
+Please work on a branch named091 firstnamefor this exercise (branched from the updatedmaster).
+9.2Symmetry
+a) Implement a bitwise function to horizontally mirror a bitboard (this function is needed when
+negamax is called for a position other than the initial position).
+b) Update your solver tomaintainthe mirrored boards for both players incrementally during the
+recursion, rather than calling the mirror function at every node.
+c) Integrate the symmetry check to explore only columns 0, 1, 2, and 3 in symmetric positions.
+Please work on a branch named092 firstnamefor this exercise.
+9.3Threat Detection
+a) Implement a bitwise threat detection to test if the current player or the opponent has a direct
+winning move.
+b) Integrate this into your solver: immediately take a winning move if available, or generate only a
+blocking move if the opponent threatens to win.
+Hint: T o extract the exact column index from a bitboard of valid winning moves, you can use thestdc trailing zeros
+function (available in C23 via<stdbit.h>) modulo 8.
+c) Measure and report how many nodes you save on the benchmark position.
+Please work on a branch named093 firstnamefor this exercise.
+T. Dose 1 SS2026

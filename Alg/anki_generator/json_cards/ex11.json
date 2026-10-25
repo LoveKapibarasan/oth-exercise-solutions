@@ -1,0 +1,22 @@
+[
+  {
+    "sheet": "Exercise 11.1 a)",
+    "question": "What is Zobrist Hashing and how is it used to incrementally hash board states in Connect Four?",
+    "answer": "Zobrist Hashing is a method to hash board positions into a single integer (e.g., 64-bit).\n\n* **Initialization:** Generate a table of random 64-bit integers `zobrist_table[p][c][r]` for each combination of player $p \\in \\{0, 1\\}$, column $c$, and row $r$.\n* **Incremental Updates:** Instead of hashing the whole board from scratch, the board hash is maintained using the XOR operator: \n  $$\\text{hash}_{\\text{new}} = \\text{hash}_{\\text{old}} \\oplus \\text{zobrist}\\_\\text{table}[p][c][r]$$\n  when a piece is placed or removed (since XORing the same random number twice reverses the operation)."
+  },
+  {
+    "sheet": "Exercise 11.1 b) (Bitfields)",
+    "question": "Provide a memory-efficient C struct layout using bitfields to pack a Transposition Table (TT) entry into exactly 16 bytes (128 bits) in Connect Four.",
+    "answer": "```c\n#pragma pack(push, 1)\nstruct tt_entry {\n    // 1st 64-bit word\n    uint64_t board_current  : 48; // Current player's bitboard (48 bits needed for 6x7)\n    int64_t  value          : 7;  // Score (-42 to 42)\n    uint64_t flag           : 2;  // EXACT (0), LOWER (1), UPPER (2) bounds\n    uint64_t best_move      : 3;  // Best column (0-6, or 7 if none)\n    uint64_t initialized    : 1;  // Is this entry occupied?\n    uint64_t pad1           : 3;  // Padding\n\n    // 2nd 64-bit word\n    uint64_t board_opponent : 48; // Opponent's bitboard (48 bits)\n    uint64_t pad2           : 16; // Padding to align to 16 bytes\n};\n#pragma pack(pop)\n```"
+  },
+  {
+    "sheet": "Exercise 11.1 b) (Pruning)",
+    "question": "How are Transposition Table (TT) entries used to prune or narrow the search window in Negamax search?",
+    "answer": "When a board position matches a Zobrist hash index in the TT and the full boards verify, we check its stored score $v$ and bound flag:\n\n* **EXACT Bound:** If the stored flag is `EXACT`, we can return $v$ immediately.\n* **LOWER Bound (Fail-High):** If flag is `LOWER` (meaning actual score $S(N) \\ge v$), we can narrow the search window by setting $\\alpha = \\max(\\alpha, v)$. If $\\alpha \\ge \\beta$, we prune and return $v$.\n* **UPPER Bound (Fail-Low):** If flag is `UPPER` (meaning actual score $S(N) \\le v$), we can narrow the search window by setting $\\beta = \\min(\\beta, v)$. If $\\alpha \\ge \\beta$, we prune and return $v$.\n* **Move Ordering:** If we don't prune, we search the stored `best_move` first."
+  },
+  {
+    "sheet": "Exercise 11.1 d)",
+    "question": "Why does a very large Transposition Table (e.g. 16 GB) sometimes run slower than a smaller one (e.g. 1 GB) in a Connect Four solver, even when RAM is plentiful and no OS swapping occurs?",
+    "answer": "* **Memory Wall and Cache Misses:** CPU registers and L1/L2/L3 caches are extremely fast (sub-nanosecond to few nanoseconds), while main memory (DRAM) is slow (50-100 ns). A smaller TT (e.g., 16 MB or 256 MB) fits better into L3 caches, leading to high cache hit rates.\n* **TLB Misses:** Virtual memory uses page tables, and the CPU caches these translations in the Translation Lookaside Buffer (TLB). Accessing a 16 GB table randomly causes frequent TLB misses, forcing the CPU to perform slow page table walks.\n* **Cache Line Thrashing:** Random access across a massive memory space invalidates CPU cache lines constantly, causing the CPU to stall waiting for DRAM."
+  }
+]

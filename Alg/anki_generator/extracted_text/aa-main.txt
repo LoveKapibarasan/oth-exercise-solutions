@@ -1,0 +1,2404 @@
+--- Page 1 ---
+A dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithmsA dvanced A lgorithms
+Lecture Slides
+Prof. Dr. Titus Dose
+July 1, 2026
+--- Page 2 ---
+Outline
+1. NP-Completeness
+2. Engineering Game AI
+3. Algorithmic Number Theory and Cryptography
+2/150 Prof. Dr. Titus Dose|Advanced Algorithms|
+--- Page 3 ---
+Chapter I
+NP-Completeness
+1 Basics
+2 Polynomial Time and Exponential Time
+3 The Class NP
+4 NP-Complete Problems
+--- Page 4 ---
+Table of Contents
+1 Basics
+2 Polynomial Time and Exponential Time
+3 The Class NP
+4 NP-Complete Problems
+4/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Basics
+--- Page 5 ---
+Agenda & Learning Objectives
+Basics of Complexity Analysis
+Subject Competence
+▶ Recallthe formal definition of running time and worst-case complexity.
+▶ Understandhow running time depends on the length of the input encoding.
+▶ Explainthe encoding of complex data structures (lists, graphs) as natural
+numbers.
+▶ Recognizewhy complexity theory primarily studies decision problems.
+5/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Basics
+--- Page 6 ---
+Recall. . .
+Let an algorithmbe given andIdenote the set of all instances.
+As in AFL and AD,t  ortime : the functionI→ℕthat maps each instancex∈Ito the
+number of computation steps thatexecutes onx.
+Definition 1.1 (Reminder)
+Lett∶ℕ→ℕbe total.
+1.runs in timetif and only if for every instancex,on inputxexecutes at most
+t(|x|)steps, where|x|is the length of the encoding ofx(worst-case running time).
+2. runs in time O(t) if and only if there exists somet ′ ∈ O(t) so that  runs in time
+t′.
+Remark 1.2
+To avoid confusion with the absolute value, we may also write𝓁(x)instead of|x|.
+6/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Basics
+--- Page 7 ---
+Input Lengths and Encodings
+We measure running times depending on the length of the input. The length of a natural
+number is the length of its binary representation.
+Lists of Natural NumbersA list of natural numbers can be encoded by one natural
+number (which will define the length of lists of natural numbers). Letn ≥ 0andx 1,…, xn
+be natural numbers with the following binary representations.
+bin(x1)=a 1,1a1,2⋯a 1,r1
+bin(x2)=a 2,1a2,2⋯a 2,r2
+⋮
+bin(xn)=a n,1an,2⋯a n,rn
+7/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Basics
+--- Page 8 ---
+Input Lengths and Encodings II
+The encoding of the list(x1,…, xn) is denoted by ⟨x1,…, xn⟩ and defined to be the natural
+number with binary representation
+1 0a 1,1 a1,1 a1,2 a1,2⋯a 1,r1 a1,r1 1 0
+a2,1 a2,1 a2,2 a2,2⋯a 2,r2 a2,r2 1 0
+⋮
+an,1 an,1 an,2 an,2⋯a n,rn an,rn 1 0.
+Examples:⟨⟩=bin −1(10)=2
+⟨2⟩=bin −1(10110010)=178
+⟨5,3,2⟩=bin −1(1011001110111110110010)=2944946.
+Thus, we can encode graphs, matrices, . . . as natural numbers. Therefore, we
+only need to study problems over (tuples of) natural numbers.
+8/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Basics
+--- Page 9 ---
+Decision Problems Are (Often) Sufficient
+We focus on decision problems. Let us e.g. consider TSP: GivenNplaces and an
+N × N-matrix (cost matrix)AwithA [i][j] specifying the cost to drive from placeito place
+j, we want to find “a short round trip” going through all places and returning to the start.
+Optimization Vari-
+ant optTSP
+Input: cost matrix
+Output: a shortest round trip
+Evaluation Variant evalTSP
+Input: cost matrix
+Output: the cost of a shortest round trip
+Decision Variant decTSP
+Input: cost matrix,k∈ℕ
+Output: yes (no) if there is a (no) round trip with cost≤k
+We can solve evalTSP and optTSP withO(n) questions to decTSP. So “efficient”
+algorithms for decTSP lead to “efficient” algorithms for evalTSP and optTSP.
+WHY???
+9/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Basics
+--- Page 10 ---
+Equivalence of TSP Variants
+Property 1.3
+If there is an algorithm that solves decTSP in timet, then there are algorithms solving
+evalTSP and optTSP in timeO(t ′)fort ′(n)=n⋅t(n).
+Proof.
+10/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Basics
+--- Page 11 ---
+Table of Contents
+1 Basics
+2 Polynomial Time and Exponential Time
+3 The Class NP
+4 NP-Complete Problems
+11/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 12 ---
+Agenda & Learning Objectives
+The Classes P and FP
+Subject Competence
+▶ Understandthe definitions of the complexity classes FP, P, andEXP.
+▶ Explainwhy P and FP are considered the classes of efficiently solvable or
+computable problems.
+▶ Provefor simple problems or functions whether they are in P or FP.
+12/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 13 ---
+Polynomial Time and Exponential Time
+Comparing Computational Models
+How do our computational models differ in terms of running time?
+Theorem 1.4 (Simulation Running Times)
+For the computation models WHILE, RAM, and TM, simulations with the following running
+times are known:
+RAM
+TM
+O(t)O(t  ) 3
+WHILE
+O(t)
+
+𝛼
+⟶ means: If the functionfcan be computed in the model  in timetfor some
+functiont ∶ℕ→ℕ witht(n)≥ n, then it can also be computed in the model  in time𝛼.
+13/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 14 ---
+Defining Polynomial and Exponential Time
+Observation 1.5
+Iftis a polynomial, so ist 3.
+Definition 1.6 (Polynomial and Exponential Time)
+LetMbe an algorithm andfa function.
+∙ Mcomputesfinpolynomial timeif there is a polynomialp(n)= ∑m
+i=0 aini with
+m,a 0,a 1,…,a m ∈ℕso thatMcomputesfin timep.
+∙ Mcomputesfinexponential timeif there is a polynomialp(n)= ∑m
+i=0 aini with
+m,a 0,…,a m ∈ℕso thatMcomputesfin time2 p.
+Remark:We can restrict ourselves in the definition to polynomials of the form
+p(n)=n k+kwithk∈ℕ.
+14/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 15 ---
+Equivalence Across Models
+Property 1.7 (Independence of Polynomial Time)
+Letf∶ℕ n →ℕ m. The following statements are equivalent:
+1.fis computed by a While program in polynomial time.
+2.fis computed by a RAM in polynomial time.
+3.fis computed by a TM in polynomial time.
+Property 1.8 (Independence of Exponential Time)
+Letf∶ℕ n →ℕ m. The following statements are equivalent:
+1.fis computed by a While program in exponential time.
+2.fis computed by a RAM in exponential time.
+3.fis computed by a TM in exponential time.
+⇒Polynomial time and exponential time areindependentof the computation model.
+15/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 16 ---
+Important Complexity Classes
+Definition 1.9 (FP, P, and EXP)
+FP∶={f∣f∶ℕ n →ℕ m is a total function computable in polynomial time}
+P∶={A∣A⊆ℕ n is a set decidable in polynomial time}
+EXP∶={A∣A⊆ℕ n is a set decidable in exponential time}
+Note: For a setA⊆ℕ n, it holds:
+A∈P⇔c A ∈FP,
+(wherec A is the characteristic function ofA, i.e.,c A(x)=1ifx∈Aandc A(x)=0else)
+16/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 17 ---
+Terminology & Efficiency
+▶ Problem= set
+▶ Solve problem A= decide set A = computation ofc A
+▶ Complexity class= class of functions or sets defined by a given maximal
+computational complexity
+The Boundary of Efficiency
+We consider FP and P as the classes ofefficientlycomputable functions andeffi-
+cientlysolvable problems, respectively.
+Question: Why is polynomial time a reasonable limit of feasibility?
+17/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 18 ---
+Is Polynomial Time a Reasonable Limit?
+Pros
+▶ For problems that can be solved in polynomial time, the running time often
+grows only moderately, so that even larger inputs can still be solved in a
+reasonable time.
+▶ For problems that cannot be solved in polynomial time, the running time grows
+so fast that even small inputs cannot be solved in a reasonable time (this is
+largely independent of technological progress).
+▶ Experience shows that algorithms with a high polynomial running time can often
+be improved. For “most” problems in P (or FP), algorithms with running time
+O(n3)can be found.
+18/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 19 ---
+Is Polynomial Time a Reasonable Limit?
+Cons
+▶ There are algorithms with exponential worst-case running time, but very low
+average-case running time (e.g., graph coloring can be solved in average-case
+running time O(1)).
+▶ If the running time is only restricted by a polynomial of high degree, a
+polynomial time algorithm is also not feasible.
+▶ If the running time is restricted byO(c n)for a smallc, an exponential time
+algorithm for instances of medium size is feasible (e.g., Clique can be solved in
+timeO(1.19 n)).
+19/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 20 ---
+Impact of Technological Progress
+Comparing Polynomial and Exponential Growth
+Basis: Computer with 10 billion operations per second
+Input lengthn 20 40 60 80
+Growth Ops
+Polynomial n 10−9 s 10−9 s 10−8 s 10−8 s
+n3 10−6 s 10−5 s 10−5 s 10−4 s
+n6 10−2 s 1s 5s 26s
+n9 1min 7h 12days 155days
+Exponential 2n 10−2 s 2min 4years 106 years
+20/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 21 ---
+Impact of Technological Progress
+Comparing Polynomial and Exponential Growth II
+Variant of Moore’s law:Doubling of computation power every 18 months. I.e. annual
+increase by a factor of 1.6.
+Question: In how many years will a computer solve the problem on a day? (today’s
+computer: approx.10 15 ops/day)
+Input lengthn 100 1000 10000 100000
+Polynomial n6 0 16 46 76
+n9 16 61 110 150
+Exponential 2n 77 1400 15000 150000
+21/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 22 ---
+Basic Properties
+Property 1.10 (Basic Arithmetic)
+sum, md, prod, div∈FP.
+Property 1.11 (Length of Function Values)
+Iff∈FP, then there exists a polynomialpsuch that:
+▶ fis computable in timepand
+▶ |f(x)|≤p(|x|).
+Proof.Iff ∈FP , there is a TM that computesfin timen k+ k. The function value cannot
+be longer than the input length plus the number of computation cycles. Therefore,
+|f(x)|≤p(|x|)wherep(n)∶=n+(n k+k).
+22/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 23 ---
+Closure Properties
+Theorem 1.12 (Closure properties of P and FP)
+Forf,g∶ℕ→ℕandA,B⊆ℕ n it holds:
+1.f,g∈FP⟹f+g,f−g,f⋅g,f∶g,f◦g∈FP
+2.A,B∈P⟹A∪B,A∩B, A=(ℕ n⧵A)∈P
+Proof.
+23/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 24 ---
+Graph Theory Basics
+Many important problems in P come from graph theory.
+Definition 1.13 (Graphs)
+∙ Adirected graphis a pairG=(V,E), whereVis a set andE⊆V×V.
+∙ Aundirected graphis a pairG=(V,E), whereVis a set and
+E⊆{{v 1,v 2}∣v 1,v 2 ∈Vandv 1≠v 2}.
+24/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 25 ---
+Examples of Graphs
+Example 1.14 (Drawings Graph)
+1
+2
+3
+4
+5
+6
+DirectedG=(V,E)
+1
+2
+3
+4
+5
+6 UndirectedG ′ =(V ′,E′)
+25/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 26 ---
+Encoding of Graphs
+Definition 1.15 (Adjacency Matrix)
+A graphG=(V,E)is given by itsadjacency matrix:
+⎛
+⎜
+⎜
+⎝
+e1,1 ⋯e 1,n
+⋮ ⋱ ⋮
+en,1 ⋯e n,n
+⎞
+⎟
+⎟
+⎠
+withe i,j ∶=
+{
+1,if(i,j)∈Eor{i,j}∈E
+0,otherwise
+For inputs and outputs in algorithms, we encodeGby the following natural number:
+⟨G⟩∶=⟨⟨e 1,1,…,e 1,n⟩,…,⟨e n,1,…,e n,n⟩⟩
+26/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 27 ---
+Examples from Mathematics
+Example 1.16 (Polynomials and Exponentials)
+∙ Polynomials:Ifp(x)∶= ∑m
+i=0 aixi is a polynomial, thenp∈FP.
+∙ Exponentials:exp∉FP. Inputs of lengthncan lead to function values with length
+≥2 n/2. Hence,exp∉FP by Property 1.11.
+∙ {(x,y,z)∣x,y,z∈ℕwithx y =z}∈P.
+Example 1.17 (Prime Numbers)
+ℙ={x∣xis prime}∈P (Agrawal, Kayal, Saxena 2002).
+It is unknown whether the following function is in FP:f (x)∶= largest prime factor ofx.
+RSA security is based on the hopef∉FP.
+27/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 28 ---
+Example from Text Processing and Graphs
+Example 1.18 (Palindromes & Pattern Recognition)
+∙ PAL={w∈{1,2} ∗ ∣w is symmetric}is decidable in polynomial time.
+∙ PR={(m,t)∣m,t∈Σ ∗ and∃x,ywitht=xmy}is decidable in polynomial time.
+28/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 29 ---
+Examples from Graph Theory
+Example 1.19 (2-Coloring)
+k−Color∶={⟨G⟩∣Ghas k-coloring}.
+2-Color∈P. Fork≥3it is unknown whether k-Color∈P.
+GraphG3-coloring ofG
+29/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 30 ---
+Examples from Graph Theory II
+Example 1.20 (Connectivity)
+Con∶={⟨G⟩∣Gis connected}∈P.
+connected not connected
+30/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 31 ---
+Examples from Graph Theory III
+Example 1.21 (Eulerian Cycle)
+AEulerian cyclecontains each edge exactly once.
+EC∶={⟨G⟩∣G has an Eulerian cycle}∈P.
+ 
+2
+3
+4
+7
+1
+9
+8
+10
+11
+6 5
+31/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 32 ---
+Historical Context: Königsberg
+Example 1.22 (The Seven Bridges of Königsberg (Euler, 1736))
+Is there a route through Königsberg that crosses each of the city’s seven bridges exactly
+once?
+Theorem:Ghas an Eulerian cycle ⇔ Gconnected and each node has an even number of
+edges. The theorem implies: EC∈P.
+32/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 33 ---
+Open Problem
+Example 1.23 (Sum of Square Roots (SSR))
+SSR∶={⟨a 1,…,a n,k⟩∣ ∑n
+i=1
+√ai ≤k}.
+This problem occurs when computing theperimeterof a polygon with integer coordi-
+nates.
+It is not known whether SSR lies in P.
+33/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › Polynomial Time and Exponential Time
+--- Page 34 ---
+Table of Contents
+1 Basics
+2 Polynomial Time and Exponential Time
+3 The Class NP
+4 NP-Complete Problems
+34/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 35 ---
+Agenda & Learning Objectives
+The Class NP
+Subject Competence
+▶ Understandthe class NP and be able to define it mathematically exactly.
+▶ Knowthe P-NP problem and the consequences of its solution.
+▶ Provethe membership of problems in NP.
+▶ Understandhow the class NP can be characterized with the help of
+non-deterministic While programs, TMs, and RAMs.
+▶ Knowthe problems TSP, BP, DC, HC, CLIQUE, and SOS.
+▶ Understandand be able to sketch the proofs for P⊆NP and NP⊆EXP.
+35/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 36 ---
+Motivation
+Hard Problems in Practice
+In many important areas problems arise of which it is not known whether they can be
+solved efficiently.
+▶ Information technology: optimization of load distribution on servers
+▶ Finance: portfolio optimization
+▶ Production engineering: optimization of flexible production systems
+▶ Biology and Chemistry: prediction of protein folding
+▶ Automotive engineering: performance and consumption optimization
+▶ Logistics: route optimization
+▶ Optimization of timetables
+▶ Energy industry: optimization of power grids
+▶ Traffic planning: optimization of traffic guidance systems
+36/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 37 ---
+Travelling Salesperson Problem (TSP)
+Example 1.24 (Travelling Salesperson Problem (TSP))
+Given:locations1,…,m, distance tableK, natural numberb
+Question:Is there a round trip through all places with total distance≤b?
+The distance table can also be displayed as a graph with
+edge weights.
+If two locations are not connected by an edge, their
+distance corresponds to the shortest path over drawn
+edges.
+5
+10
+3
+7
+7
+15
+4
+8
+11
+5
+9
+3
+2
+4
+1
+7
+5
+8
+12 8
+7
+10
+38
+5
+8
+3
+5
+7
+37/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 38 ---
+Travelling Salesperson Problem (TSP) II
+A round trip through all locations with length98.
+5
+7
+15
+4 5
+2
+1
+7
+5
+8
+10
+38
+5
+8
+5
+Formal definition of TSP as subset ofℕ:
+Definition 1.25 (TSP)
+TSP∶=
+⎧⎪⎪⎪
+⎨⎪⎪⎪⎩
+⟨m,K,b⟩
+|||||||
+m,b∈ℕ,K∈ℕ m×m,∃s 1,…,s m with{s 1,…,s m}={1,2,…,m}
+and ∑
+m−1
+i=1 K(s i,s i+1)+K(s m,s 1)
+⏟⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏟⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏟
+costs of round trips 1,…,sm
+≤b
+⎫⎪⎪⎪
+⎬⎪⎪⎪⎭
+Notation:K(i,j)=entry in lineiand columnjof the matrixK.
+38/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 39 ---
+Bin Packing (BP)
+Example 1.26 (Bin Packing)
+Given:mgoods with weightsa 1,…,a m,
+kcontainers with maximum permissible weightb
+Question:Can the goods be distributed to the con-
+tainers?
+Formal definition of the bin packing problem as subset ofℕ:
+Definition 1.27 (Bin Packing)
+BP∶=
+{
+⟨k,b,a 1,…,a m⟩
+|||||
+∃total functionf∶{1,…,m}→{1,…,k},
+so that∀j∈{1,…,k}, ∑
+iwithf(i)=j
+ai ≤b
+}
+39/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 40 ---
+Bin Packing (BP) II
+Alternative view: Load balancing on servers (Workload Assignment)
+container→server
+goods→jobs
+weight→workload
+40/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 41 ---
+Disc Cover (DC)
+Rescue service response time in Bavaria: 12 minutes maximum
+travel time to any emergency location located on a road.
+Example 1.28 (Disc Cover)
+Given:finite setP ⊆ℕ×ℕ of locations, radius of action,r ∈ℕ
+and numberb∈ℕof rescue stations to be built.
+Question:Canbstations be placed so that all locations have a
+distance of≤rto the next station?
+Formal definition of the disc cover problem as subset ofℕ:
+Definition 1.29 (Disc Cover)
+DC∶=
+{
+⟨P,r,b⟩
+||||
+P⊆ℕ×ℕfinite,r,b∈ℕand∃C⊆ℕ×ℕ
+with|C|≤band∀p∈P∃c∈C,distance(p,c)≤r
+}
+41/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 42 ---
+Hamiltonian Cycle Problem (HC)
+Example 1.30 (Hamiltonian Cycle)
+Given:nrelatives who are partially at odds with each other.
+Question:Can they all be placed at a round table so that
+quarreling people do not sit next to each other?
+Description with an undirected graph:
+▶ Nodes correspond to the persons.
+▶ Edges connect non-quarreling relatives.
+▶ We are looking for a closed path that contains each node exactly once.
+42/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 43 ---
+Hamiltonian Cycle Problem (HC) II
+GraphGHamiltonian cycle inG
+Formal definition of the Hamiltonian cycle problem as subset ofℕ:
+Definition 1.31 (Hamiltonian Cycle)
+HC∶=
+{
+⟨G⟩
+||||
+Gis an undirected graph with a Hamiltonian cycle, i.e.,
+with a closed path that contains each node exactly once
+}
+43/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 44 ---
+Clique Problem
+Example 1.32 (Clique)
+Given:npeople
+Question:are therekpeople that know each other?
+Description with an undirected graph:
+▶ Nodes correspond to people.
+▶ {u,v}∈Emeans “uandvknow each other”.
+▶ We are looking forknodes so that an edge connects each two nodes.
+44/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 45 ---
+Clique Problem II
+undirected graphGwith clique of size4
+Formal definition of the clique problem as subset ofℕ:
+Definition 1.33 (CLIQUE)
+CLIQUE∶=
+⎧⎪⎪
+⎨⎪⎪⎩
+⟨G,k⟩
+||||||
+G = (V, E) is an undirected graph and ∃C ⊆ Vwith
+|C|=kand∀u,v∈Cwithu≠v⟹{u,v}∈E⏟⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏟⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏟
+everyone knows everyone
+⎫⎪⎪
+⎬⎪⎪⎭
+45/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 46 ---
+Common Properties of these Problems
+We do not know any algorithms with polynomial running times for the problems
+mentioned.
+However, the problems have important similarities:
+1. Question about theexistence of certain solutions.
+2. Solutions areshort(|potential solution|≤p(|input|)).
+3. Solutions areeasily verifiable(in polynomial time).
+▶ ⟨m,K,b⟩∈TSP⇔∃round trip with total costs≤b
+▶ ⟨k,b,a 1,…,a m⟩∈BP⇔∃distribution of goods to containers
+▶ ⟨P,r,b⟩∈DC⇔∃placement of thebstations
+▶ ⟨G⟩∈HC⇔∃table placement without quarrel
+▶ ⟨G,k⟩∈CLIQUE⇔∃kpeople who know each other
+46/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 47 ---
+Definition of the Class NP
+Idea for a definition:
+NP = Set of decision problems that ask for the existence of solutions, where the solutions
+▶ have polynomial sizes and
+▶ can be checked in polynomial time.
+Definition 1.34 (NP = non-deterministic polynomial time)
+NP∶=
+⎧⎪⎪
+⎨⎪⎪⎩
+A
+||||||
+A⊆ℕ n and there is a polynomialpand a setB∈P so that∀x∈ℕ n:
+x∈A⇔∃y(|y|≤p(|x|)∧ (x,y)∈B)⏟⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏟⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏟
+y is valid solution for x
+⎫⎪⎪
+⎬⎪⎪⎭
+One of the most embarrassing mistakes in theoretical computer science is:
+Wrong:“NP = problems not decidable in polynomial time”
+(This is wrong simply because P⊆NP).
+47/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 48 ---
+Problems in NP
+Property 1.35
+BP,TSP,DC,HC,CLIQUE∈NP.
+Proof.
+48/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 49 ---
+P vs NP
+Theorem 1.36
+P⊆NP.
+Proof.LetA ∈P . Choose the polynomialp (n)∶= nand the setB ∶={( x, x)∣ x ∈ A}. Then
+B∈P and
+x∈A⇔(x,x)∈B⇔∃z(|z|≤p(|x|)∧(x,z)∈B).
+This means thatAfulfills the requirements from Definition 1.34, i.e.,A∈NP.
+49/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 50 ---
+The P-NP Problem
+Does P equal NP?
+▶ The most important unsolved problem in theoretical computer science.
+▶ $1,000,000 prize money from the Clay Mathematics Institute (P-NP problem is one of
+the 7 Millennium Problems).
+▶ Conjecture: P≠NP
+▶ P=NP is equivalent to the statement TSP∈P.
+▶ Solution with practically no currently known proof method possible
+(relativizing/natural/algebrizing proofs).
+▶ Consequences of solving the P-NP problem:
+⋄P=NP⇔TSP, BP, DC, HC, CLIQUE, and many other optimization problems can be
+solved efficiently.
+⋄P=NP⟹Public key cryptosystems are insecure.
+50/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 51 ---
+The Impact of P = NP
+The equality of P and NP would have the following consequence:
+If a problemAhas easily verifiable solutions (i.e.,A ∈NP ), the problem itself can be easily
+solved (i.e.,A∈P).
+If P=NP, then the world would be a profoundly different place than
+we usually assume it to be.
+There would be no special value in “creative leaps, ” no fundamental
+gap between solving a problem and recognizing the solution once it’s
+found.
+Everyone who could appreciate a symphony would be Mozart. Ev-
+eryone who could follow a step-by-step argument would be Gauss.
+Everyone who could recognize a good investment strategy would be
+Warren Buffett. Scott Aaronson
+51/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 52 ---
+Closure Properties of NP
+Theorem 1.37
+It holds forA,B⊆ℕ n:
+A,B∈NP⟹A∪B,A∩B∈NP
+Proof.Exercise.
+Open problem:DoesA∈NP⟹ A∈NP hold?
+Conjecture:no
+52/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 53 ---
+Relationship between NP and EXP
+NP problems can be solved by running through and checking all potential solutions. This
+leads to an exponential computing time, since the length of solutions is polynomially
+bound in the input length.
+Theorem 1.38
+NP⊆EXP.
+The proof is left as exercise.
+Open problem:Does NP=EXP hold?
+Conjecture: NP≠EXP
+From Theorems 1.36 and 1.38 we obtain P⊆NP⊆EXP.
+We now prove P≠EXP, i.e., at least one of the two inclusions is proper. For the proof we
+use the following lemma.
+53/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 54 ---
+Gödel Numbering and Time Bounds
+Lemma 1.39
+LetM 0, M1,… be the Gödel numbering of RAMs. For eachA ⊆ℕ withA ∈P there exists a
+j∈ℕsuch thatM j computes the functionc A in timet(n)=n |j|+|j|.
+Proof.LetA⊆ℕwithA∈P.
+M=RAM which computesc A in timen i+iwithi∈ℕ.
+M′ =RAMMwithi+1attached STOP instructions.
+Due toj∶=⟨M ′⟩it holds|j|=|⟨M ′⟩|>i.
+Mj =M ′ works likeM.
+Mj thus computesc A in timen i+i<n |j|+|j|.
+54/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 55 ---
+P is not EXP
+Theorem 1.40
+P≠EXP.
+Proof Idea:RAMMon inputjsimulates |j||j|+| j| steps of the computationM j(j) and behaves in exactly the
+opposite way.
+▶ L(M)∈EXP is straightforward to see.
+▶ AssumeL(M)∈P: according to Lemma 1.39 there existsj∈ℕwithL(M)=L(M j)andM j(j)stops after
+|j||j|+|j|steps.
+▶ M(j)simulatesM j(j)completely and behaves in the opposite way, thereforej∈L(M)⇔j∉L(M j), in
+contradiction toL(M)=L(M j).
+Proof.
+55/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 56 ---
+Implications
+Corollary 1.41
+One of the inclusionsP⊆NP⊆EXPis proper.
+56/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 57 ---
+Determinism vs. Non-Determinism
+We already know the difference between deterministic and non-deterministic finite
+automata. Both terms can also be applied to general algorithms and machines.
+Conventional algorithms workdeterministically. In contrast,non-deterministic
+algorithms and machines have a special form of parallelism:1
+▶ Work can be divided among parallel computation paths.
+▶ The input is accepted if at least one computation path accepts (i.e., result 1); otherwise,
+the input is rejected.
+1The idea behind “non-deterministic” is that computation paths can be split for the purpose of parallelizing
+work and thusit is not specifiedwhich branch of the computation is to be pursued from this point.
+57/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 58 ---
+Non-Determinism for Turing Machines
+Several rules for one situation:
+sa→s ′
+1a′
+1D1
+sa→s ′
+2a′
+2D2
+⋮
+sa→s ′
+ka′
+kDk
+Imagination
+The current computation path splits intokparallel computation paths, whereby the
+instructionsa→s ′
+i a′
+i Di is executed on thei-th computation path.
+This means that allkpossible continuations of the computation are executed simul-
+taneously.
+58/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 59 ---
+Non-Determinism for RAMs
+Multiple RAM instructions with the same line number:
+5b 1
+5b 2
+⋮
+5b k
+Imagination
+If the instruction counter is 5, the current computation path splits intokparallel
+computation paths, whereby the RAM instructionb i is executed on thei-th compu-
+tation path.
+This means that allkpossible continuations of the computation are executed simul-
+taneously.
+59/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 60 ---
+Non-Determinism for While Programs
+New type of statement block:
+Ifa 1,…,a k are variables andb 1,…,b k are expressions, the following is a statement block:
+1a 1 =b 1 |a 2 =b 2 |…|a k =b k
+Imagination
+The current computation path splits intokparallel computation paths, whereby the
+instructiona i =b i is executed on thei-th computation path.
+This means that allkpossible continuations of the computation are executed simul-
+taneously.
+60/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 61 ---
+Example
+1deff ( x ) :
+2bl = binlength ( x )
+3divisor = 1
+4p = 1
+5foriin range(0 , bl ) :
+6divisor = divisor | divisor = divisor + p
+7p = ( p + p )
+8if( divisor >= xordivisor < 2orx % divisor != 0) :
+9divisor = 0
+10returndivisor
+Each computation path either returns 0 or a non-trivial divisor ofxand runs inO(n)(provided that an
+efficient deterministic implementation ofbinlengthis used).
+Finding a non-trivial divisor of an integer is a complex task. E.g., the RSA cryptosystem becomes insecure if
+an “efficient” (polynomial-time) algorithm for this problem is found.
+61/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 62 ---
+Acceptance of Non-Deterministic Algorithms
+Definition 1.42 (Acceptance of non-det. algorithms)
+LetMbe a non-deterministic algorithm.
+∙ Macceptsx⇔there is a computation path ofMon inputxthat computes 1.
+∙ Theset accepted byMisL(M)∶={x∣Macceptsx}.
+Remark 1.43 (Acceptance vs. decidability)
+Acceptance of problems is a strictly weaker property than decidability. There is a TMM
+(even a deterministic one) withL(M)= K′
+0 ∶={bin( x)∣ x ∈ℕand Mx halts on input x}:
+one can e.g. use the TM that on inputx ∈{ 0, 1}∗ simulates the RAMM bin−1(x) on input
+bin−1(x)and returns 1 in case the simulation stops. Nonetheless,K ′
+0 is undecidable.
+62/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 63 ---
+Benefit of Non-Determinism
+▶ Of course, there are no machines that can multiply during their work and thus
+gain more computation power.
+▶ Non-deterministic machine models are nevertheless useful, as they can be used
+to precisely describe certain language classes, which has led to remarkable
+insights on these classes.
+63/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 64 ---
+The Name NP
+NPcomes fromnondeterministicpolynomial time.
+All problems in NP are accepted by non-deterministic TMs/RAMs/While programs in
+polynomial time. Proceed as follows:
+▶ Work is divided into many parallel computation paths.
+▶ Each computation path checks exactly one potential solution.
+▶ The input is accepted if at least one computation path finds a solution; otherwise,
+the input is rejected.
+64/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 65 ---
+Partial Sum Problem (SOS)
+The following problem is also in NP.
+Definition 1.44 (Partial sum problem, sum of subset)
+SOS∶=
+{
+⟨a1,…,a m,b⟩
+||||
+m, a1,…, am, b∈ℕ and there exists anI ⊆{ 1,…, m} with
+∑i∈I ai =b
+}
+65/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 66 ---
+A Non-deterministic Progrom for SOS
+Example 1.45 (Non-deterministic Python program for SOS)
+1defsos (a , b ) : # a = [ a1 ,... , am ]
+2s = 0
+3foriin range(0 ,len( a ) ) : # form all partial sums of the
+4s = s | s = s + a [ i ] # numbers a1 ,... , am in parallel
+5ifs == b :
+6return1
+7else:
+8return0
+O(n) algorithm since each computation path has running timeO(m) (assuming addition is
+possible in constant time).
+66/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 67 ---
+Computation Tree
+Computation tree on input(1,5,3,4):
+s=0 
+s=0 
+s=0 
+s=0 
+0 
+s=3 
+0 
+s=5 
+s=5 
+0 
+s=8 
+0 
+s=1 
+s=1 
+s=1 
+0 
+s=4 
+1 
+s=6 
+s=6 
+0 
+s=9 
+0 
+i=0 
+ 
+ 
+i=1 
+ 
+ 
+i=2 
+ 
+ 
+i=3 
+67/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 68 ---
+Time-Bounded Acceptance
+We now define the time-bounded acceptance.
+Definition 1.46 (Acceptance in time t)
+Lett ∶ℕ→ℕ be total andMa non-deterministic algorithm.Maccepts the setAin
+timet⇔
+1.L(M)=Aand
+2. the computation time of each computation path ofMon inputxis≤t(|x|).
+For example, each computation path in the Python program from Example 1.45 has the
+running timeO(n), wherenis the length of the input. The program therefore accepts the
+set SOS in timeO(n).
+68/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 69 ---
+Characterizations of NP
+Theorem 1.47
+LetA⊆ℕ n. The following statements are equivalent:
+1.A∈NP.
+2.Ais accepted by a RAM in polynomial time.
+3.Ais accepted by a TM in polynomial time.
+4.Ais accepted by a While program in polynomial time.
+Proof Idea:
+▶ “2⇔3⇔4”: Simulations like in the deterministic case.
+▶ “1⇒4”: Non-deterministic While program guesses solutionz.
+▶ “2⇒1”: Solutionzdescribes the computation path (i.e., the sequence of instructions on the path).
+69/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 70 ---
+Proof for1⟹4.LetA∈NP, i.e., there exists a polynomialpand aB∈P with
+x∈A⇔∃z(|z|≤p(|x|)∧(x,z)∈B).
+The following non-det. While program testsx∈Ain polynomial time by testing the
+right-hand side of the above equivalence.
+1defA(x):
+2z=0
+3foriin range(1,p(|x|)+1): # create non-det. all
+4z=(z+z) | z=((z+z)+1) # z with |z| <= p(|x|)
+5returnB(x,z)
+6
+7defB(x,z): # polynomial time decision algo for B
+8...
+70/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 71 ---
+Proof for2⟹1.
+∙ LetMbe a non-det. RAM that acceptsAin timep.
+∙ r∶=max. number of instructions with the same number
+∙ Each computation path ofMcan be described bys 1,s 2,…,s t ∈{1,…,r}: in cyclei, the
+si-th possible instruction is executed.
+∙ B∶={(x,z)∣z=⟨s 1,…,s t⟩is a computation path ofMon inputxwith result1}
+∙ ThenB∈P (simulateMonxalong the computation pathz).
+This gives us:
+x∈A⇔∃ zwithz =⟨ s1,…, st⟩,t ≤ p(|x|),s 1,…, st ∈{ 1,…, r} andz
+is a computational path fromMtoxwith result1
+⇔∃z (|z|≤2⋅(r+1)⋅p(|x|)+2⏟⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏟⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏞⏟
+list encoding ofp(|x|)numbers of lengthr
+∧(x,z)∈B )
+Thus,A∈NP.
+71/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 72 ---
+Verbally Formulated Algorithms
+Remark 1.48
+In accordance with the Church-Turing thesis, verbally formulated, non-deterministic
+polynomial-time algorithms can also be used instead of non-deterministic polynomial-
+time While programs.
+Therefore, we can extend Theorem 1.47 and also use verbally formulated, non-
+deterministic polynomial-time algorithms as proof of the membership in NP.
+72/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 73 ---
+An Example
+Example 1.49 (Non-deterministic polynomial-time algorithm for BP)
+We show BP∈NP by specifying a non-deterministic polynomial time algorithm.
+73/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › The Class NP
+--- Page 74 ---
+Table of Contents
+1 Basics
+2 Polynomial Time and Exponential Time
+3 The Class NP
+4 NP-Complete Problems
+74/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 75 ---
+Agenda & Learning Objectives
+NP-Completeness
+Subject Competence
+▶ Understandthe terms polynomial-time reducibility and NP-completeness and
+be able to define them with mathematical precision.
+▶ Knowthe properties of NP-complete sets, in particular the possibility of
+transferring NP-completeness from one problem to another.
+▶ Knowthe problems SAT, CLIQUE, KNAPSACK, and PARTITION.
+▶ Be able to reduceKNAPSACK to SOS in polynomial time.
+▶ Understandthe NP-completeness proof of SAT.
+▶ Be able to transferthe NP-completeness of SAT to other problems (e.g., 3-SAT,
+CLIQUE).
+75/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 76 ---
+Algorithmic Complexity
+We want to compare the algorithmic complexity of problems. But when is one problem
+harder than another?
+Which is easier: multiplication or Fourier transformation?
+▶ Without technical aids, multiplication is easier for us.
+▶ The fastest known algorithm for Fourier transformation has a runtime of
+O(n⋅logn).
+▶ Until 2019, no multiplication algorithms with such a running time were known.
+▶ Then Harvey and van der Hoeven developed a multiplication algorithm with
+running timeO(n⋅logn).
+If one were to measure the difficulty of problems using the running time of the fastest
+known algorithm, then, depending on the state of research, problem A would be more
+difficult than B and another time B more difficult than A.
+76/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 77 ---
+Polynomial Time Reducibility
+The familiar concept of reducibility leads to a better idea: We say “difficulty of A≤
+difficulty of B” , if A isefficientlyreducible to B.
+In this case, we can use any algorithm for B to construct a similarly fast algorithm for A.
+This means that at any point in time, A will be solvable not less efficiently than B.
+Definition 1.50 (Polynomial-time reducibility)
+LetA⊆ℕ m andB⊆ℕ n.
+∙ A is polynomial-time reducible to B:
+A≤ p B⇔∃f∈FP withf∶ℕ m →ℕ n and∀x∈ℕ m [x∈A⇔f(x)∈B]
+∙ A and B are polynomial-time equivalent:
+A≡ p B⇔A≤ p BandB≤ p A
+The following holds:A≤ p B⇔∃f∈FP withf∶ℕ m →ℕ n andc A =c B◦f.
+77/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 78 ---
+Karp Reducibility and KNAPSACK
+The idea of translating a problem A into a problem B in
+polynomial time goes back to Richard Karp (1972) and is
+therefore also calledKarp reducibility.
+Definition 1.51 (Knapsack problem)
+KNAPSACK∶=
+{
+⟨g1,…,g m,v 1,…,v m,G,V⟩
+||||
+gi,v i,G,V∈ℕand∃I⊆{1,…,m}
+with ∑i∈I gi ≤Gand ∑i∈I vi ≥V
+}
+Interpretation:Givenmobjects with weightsg i and monetary valuesv i, is it possible to
+pack a knapsack with a maximum loadGwith the items in such a way that the overall
+monetary value of the items is≥V?
+78/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 79 ---
+Comparing KNAPSACK and SOS
+Theorem 1.52
+SOS≤ p KNAPSACK.
+Proof.
+79/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 80 ---
+Properties of Polynomial-Time Reducibility
+Property 1.53
+For problemsA,B, andCit holds:
+1.A≤ p A(≤ p is reflexive)
+2.(A≤ p B∧B≤ p C)⟹A≤ p C(≤ p is transitive)
+3.A≤ p B⟹ A≤ p B
+Proof.Exercise.
+80/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 81 ---
+Relationship to Complexity Classes
+The intuitive idea that≤ p reflects the difficulty of problems is justified for P and NP:
+Theorem 1.54
+1.A≤ p B∧B∈P⟹A∈P.
+2.A≤ p B∧B∈NP⟹A∈NP.
+Proof Idea:First simulate the reduction and then the decision algorithm ofB.
+Proof.
+81/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 82 ---
+The Simplest Problems in NP
+The sets in P are the simplest sets (with respect to≤ p).
+Theorem 1.55
+1.A∈P,B, B≠∅⟹A≤ p B.
+2.A,B∈P,A, A,B, B≠∅⟹A≡ p B.
+Proof Idea:The reduction solves the problem A and maps to fixed elements fromBor B.
+Proof.
+⇒the simplest problems in NP are the sets in P.
+82/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 83 ---
+NP-Completeness
+What are the most difficult problems in NP? Do they even exist?
+Definition 1.56 (NP-Completeness)
+A problemBis calledNP-hard⇔∀A∈NP∶A≤ p B.
+Moreover,Bis calledNP-complete⇔Bis NP-hard andB∈NP.
+There are NP-complete problems, and we will get to know concrete examples later. In fact,
+many practically relevant decision problems are NP-complete.
+83/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 84 ---
+List of NP-Complete Problems
+List with ca. 10% of all known NP-complete problems:
+1. 0-1 Integer programming 
+2. 2-dimensional consecutive 
+sets 
+3. 3-Satisfiability 
+4. 3-dimensional matching 
+5. 3-matroid intersection 
+6. 3-partition 
+7. Achromatic number 
+8. Acyclic partition 
+9. Adaptive Block-size 
+Compression 
+10. Additional key 
+11. Algebraic equations over 
+GF[2] 
+12. Alternating maximum 
+weighted matching 
+13. Annihilation 
+14. Balanced complete bipartite 
+subgraph 
+15. Bandwidth 
+16. Battleship 
+17. Berth Allocation Problem 
+(BAP) 
+18. Biconnectivity augmentation 
+19. Bin packing 
+20. Bipartite subgraph 
+21. Boolean conjunctive query 
+22. Bottleneck traveling salesman 
+23. Bounded component 
+spanning forest 
+24. Bounded diameter spanning 
+tree 
+25. Bounded post 
+correspondence problem 
+26. Boyce-Codd normal form 
+violation 
+27. Cable Trench Problem 
+28. Capacitated spanning tree 
+29. Capacity assignment 
+30. Chinese postman for mixed 
+graphs 
+31. Clickomania (SameGame) 
+32. Clique 
+33. Clustering 
+34. Code generation for parallel 
+assignments 
+35. Code generation on a one-
+register machine 
+36. Code generation with address 
+expressions 
+37. Code generation with unfixed 
+variable locations 
+38. Code generation with 
+unlimited registers 
+39. Comparative containment 
+40. Comparative divisibility 
+41. Comparative vector 
+inequalities 
+42. Conjunctive query foldability 
+43. Conjunctive satisfiability with 
+functions and inequalities 
+44. Consecutive block 
+minimization 
+45. Consecutive ones matrix 
+augmentation 
+46. Consecutive ones matrix 
+partition 
+47. Consecutive ones submatrix 
+48. Consecutive sets 
+49. Consistency of database 
+frequency tables 
+50. Constrained triangulation 
+51. Context-free programmed 
+language membership 
+52. Continuous multiple choice 
+knapsack 
+53. Cosine product integration 
+54. Cost-parametric linear 
+programming 
+55. Covering by cliques 
+56. Covering by complete 
+bipartite subgraphs 
+57. Covering for linear grammars 
+58. Cross Sums 
+59. Crossword puzzle 
+construction 
+60. Cubic subgraph 
+61. Cyclic ordering 
+62. Deadlock avoidance 
+63. Decision tree 
+64. Decoding of linear codes 
+65. Degree-bounded connected 
+subgraph 
+66. Degree-constrained spanning 
+tree 
+67. Digraph D-morphism 
+68. Directed Hamiltonian circuit 
+69. Directed bandwidth 
+70. Directed elimination ordering 
+71. Directed optimal linear 
+arrangement 
+72. Directed two-commodity 
+integral flow 
+73. Disjoint connecting paths 
+74. Domatic number 
+75. Dominating set 
+76. Dynamic storage allocation 
+77. Edge embedding on a grid 
+78. Edge-subgraph 
+79. Elimination degree sequence 
+80. Ensemble computation 
+81. Equilibrium point 
+82. Etol grammar non-emptiness 
+83. Etol language membership 
+84. Euclidean traveling salesman 
+85. Exact cover 
+86. Expected component sum 
+87. Expected retrieval cost 
+88. Exponential expression 
+divisibility 
+89. External macro data 
+compression 
+90. Fault detection in directed 
+graphs 
+91. Fault detection in logic 
+circuits 
+92. Fault detection with test 
+points 
+93. Feasible basis extension 
+94. Feasible register assignment 
+95. Feedback arc set 
+96. Feedback vertex set 
+97. Finite function generation 
+98. First order subsumption 
+99. Flow-shop scheduling 
+100. FreeCell 
+101. Generalized assignment 
+problem 
+102. Generalized satisfiability 
+103. Geometric Steiner tree 
+104. Geometric capacitated 
+spanning tree 
+105. Geometric connected 
+dominating set 
+106. Graph Grundy numbering 
+107. Graph contractability 
+108. Graph homomorphism 
+109. Graph k-colorability 
+110. Graph partitioning 
+111. Grouping by swapping 
+112. Grundy number 
+113. Hamiltonian circuit 
+114. Hamiltonian completion 
+115. Hamiltonian path 
+116. Hitting set 
+117. Hitting string 
+118. Independent set 
+119. Induced connected subgraph 
+with property Pi 
+120. Induced path 
+121. Induced subgraph with 
+property Pi 
+122. Inequivalence of finite 
+memory programs 
+123. Inequivalence of loop 
+programs without nesting 
+124. Inequivalence of programs 
+with arrays 
+125. Inequivalence of programs 
+with assignments 
+126. Inequivalence of simple 
+functions 
+127. Instant Insanity 
+128. Integer expression 
+membership 
+129. Integer knapsack 
+130. Integral flow with bundles 
+131. Integral flow with 
+homologous arcs 
+132. Integral flow with multipliers 
+133. Internal macro data 
+compression 
+134. Intersection graph basis 
+135. Intersection graph for 
+segments on a grid 
+136. Intersection pattern 
+137. Interval graph completion 
+138. Isomorphic spanning tree 
+139. Job-shop scheduling 
+140. K most vital arcs 
+141. K-closure 
+142. K-relevancy 
+143. Kernel 
+144. Knapsack 
+145. Kth best spanning tree 
+146. Kth largest m-tuple 
+147. Kth largest subset 
+148. Kth shortest path 
+149. LITS 
+150. Largest common subgraph 
+151. Light Up 
+152. Longest circuit 
+153. Longest common 
+subsequence problem 
+154. Longest path 
+155. Mastermind 
+156. Masyu 
+157. Matrix cover 
+158. Matrix domination 
+159. Max weight cut 
+160. Maximum 3-Satisfiability 
+161. Maximum fixed-length 
+disjoint paths 
+162. Maximum leaf spanning tree 
+163. Maximum length-bounded 
+disjoint paths 
+164. Maximum likelihood ranking 
+165. Maximum subgraph matching 
+166. Median partition 
+167. Metric dimension 
+168. Metric k-center 
+169. Metric traveling salesman 
+170. Microcode bit optimization 
+171. Min-max multicenter 
+172. Min-sum multicenter 
+173. Minesweeper Consistency 
+Problem 
+174. Minimal addition chain 
+175. Minimal grammar-based 
+compression 
+176. Minimizing dummy activities 
+in PERT networks 
+177. Minimum Touching 
+Tree/Minimum Length 
+Corridor 
+178. Minimum axiom set 
+179. Minimum broadcast time 
+180. Minimum cardinality key 
+181. Minimum cut into bounded 
+sets 
+182. Minimum cut linear 
+arrangement 
+183. Minimum degree spanning 
+tree 
+184. Minimum disjunctive normal 
+form 
+185. Minimum edge-cost flow 
+186. Minimum equivalent digraph 
+187. Minimum inferred finite state 
+automaton 
+188. Minimum inferred regular 
+expression 
+189. Minimum k-connected 
+subgraph 
+190. Minimum k-cut 
+191. Minimum maximal matching 
+192. Minimum sum of squares 
+193. Minimum test set 
+194. Minimum weight and/or 
+graph solution 
+195. Minimum weight solution to 
+linear equations 
+196. Minimum weight 
+triangulation for a set of 
+points in the plane 
+197. Modal logic S 5-Satisfiability 
+198. Monochromatic triangle 
+199. Monotone-3SAT 
+200. Multiple choice branching 
+201. Multiple choice matching 
+202. Multiple copy file allocation 
+203. Multiprocessor scheduling 
+204. Multiway Cut 
+205. Negation-free logic 
+206. Nesetril-Rödl dimension 
+207. Network reliability 
+208. Network survivability 
+209. No-wait flow-shop scheduling 
+210. Non-LR(K) context-free 
+grammar 
+211. Non-containment for free B-
+schemes 
+212. Non-divisibility of a product 
+polynomial 
+213. Non-freedom for loop-free 
+program schemes 
+214. Non-liveness of free choice 
+Petri nets 
+215. Non-tautology 
+216. Non-trivial greatest common 
+divisor 
+217. Not-all-equal 3SAT 
+218. Number of roots for a product 
+polynomial 
+219. Numerical 3-dimensional 
+matching 
+220. Numerical matching with 
+target sums 
+221. Nurikabe 
+222. One-in-three 3SAT 
+223. Open hemisphere 
+224. Open-shop scheduling 
+225. Optimal linear arrangement 
+226. Optimal vector quantization 
+codebook 
+227. Optimum communication 
+spanning tree 
+228. Oriented diameter 
+229. Paint by numbers (Nonogram) 
+230. Partial feedback edge set 
+231. Partially ordered knapsack 
+232. Partition into Hamiltonian 
+subgraphs 
+233. Partition into cliques 
+234. Partition into forests 
+235. Partition into isomorphic 
+subgraphs 
+236. Partition into perfect 
+matchings 
+237. Partition into triangles 
+238. Partition 
+239. Path constrained network 
+flow 
+240. Path distinguishers 
+241. Path graph completion 
+242. Path with forbidden pairs 
+243. Periodic solution recurrence 
+relation 
+244. Permanent evaluation 
+245. Permutation generation 
+246. Planar subgraph 
+247. Planar-3SAT 
+248. Precedence constrained 
+scheduling 
+249. Preemptive scheduling 
+250. Prime attribute name 
+251. Prize Collecting Traveling 
+Salesman 
+252. Production planning 
+253. Programs with formally 
+recursive procedures 
+254. Pruned trie space 
+minimization 
+255. Quadratic assignment 
+problem 
+256. Quadratic congruences 
+257. Quadratic diophantine 
+equations 
+258. Quadratic programming 
+259. Quasi-real-time language 
+membership 
+260. Quasi-realtime automaton 
+acceptance 
+261. Rabin games 
+262. Randomization test for 
+matched pairs 
+263. Reachability for 1-
+conservative Petri nets 
+264. Rectilinear picture 
+compression 
+265. Reduction of incompletely 
+specified automata 
+266. Register sufficiency for loops 
+267. Register sufficiency 
+268. Regular expression 
+substitution 
+269. Regular grammar 
+inequivalence 
+270. Resource constrained 
+scheduling 
+271. Reynolds covering for 
+context-free grammars 
+272. Root of modulus 1 
+273. Rooted tree arrangement 
+274. Rooted tree storage 
+assignment 
+275. Rural Postman 
+276. Safety of database 
+transaction systems 
+277. Safety of file protection 
+systems 
+278. Satisfiability 
+279. Scheduling to minimize 
+weighted completion time 
+280. Scheduling with individual 
+deadlines 
+281. Second order instantiation 
+282. Sequencing to minimize Tardy 
+tasks 
+283. Sequencing to minimize Tardy 
+weight 
+284. Sequencing to minimize 
+maximum cumulative cost 
+285. Sequencing to minimize 
+weighted completion time 
+286. Sequencing to minimize 
+weighted tardiness 
+287. Sequencing with deadlines 
+and set-up times 
+288. Sequencing with release 
+times and deadlines 
+289. Serializability of database 
+histories 
+290. Set basis 
+291. Set cover 
+292. Set packing 
+293. Set splitting 
+294. Shapley-Shubik voting power 
+295. Shortest common 
+supersequence 
+296. Shortest common superstring 
+297. Shortest path in general 
+networks 
+298. Shortest total path length 
+spanning tree 
+299. Shortest weight-constrained 
+path 
+300. Sift 
+301. Simply deviated disjunction 
+302. Simultaneous divisibility of 
+linear polynomials 
+303. Simultaneous incongruences 
+304. Slither Link 
+305. Sparse approximation 
+306. Sparse matrix compression 
+307. Square-tiling 
+308. Stacker-crane 
+309. Staff scheduling 
+310. Steiner tree 
+311. String-to-string correction 
+312. Strong connectivity 
+augmentation 
+313. Strong inequivalence for 
+monadic recursion 
+314. Strong inequivalence of Ianov 
+schemes 
+315. Structural inequivalence for 
+linear grammars 
+316. Subgraph isomorphism 
+317. Subset product 
+318. Subset sum 
+319. Sudoku 
+320. Tableau equivalence 
+321. Testing whether a tree may 
+be represented as Euclidean 
+minimum spanning tree 
+322. Tetris 
+323. Threshold number 
+324. Time constrained traveling 
+salesman feasibility 
+325. Timetable design 
+326. Transitive subgraph 
+327. Traveling salesman polytope 
+non-adjacency 
+328. Traveling salesman problem 
+329. Tree transducer language 
+membership 
+330. Truth-functionally complete 
+connectives 
+331. Two-processor flow-shop with 
+bounded buffer 
+332. Two-stage maximum weight 
+stochastic matching 
+333. Two-way finite state 
+automaton non-emptiness 
+334. Uncapacitated Facility 
+Location 
+335. Undirected flow with lower 
+bounds 
+336. Undirected two-commodity 
+integral flow 
+337. Uniconnected subgraph 
+338. Unification for finitely 
+presented algebras 
+339. Unification with commutative 
+operators 
+340. Unit disk graph recognition 
+341. Unsplittable multicommodity 
+flow 
+342. Variable partition truth 
+assignment 
+343. Vehicle routing problem 
+344. Verbal arithmetic 
+345. Vertex cover 
+346. Weighted diameter 
+84/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 85 ---
+Properties of NP-Complete Sets
+Theorem 1.57 (Properties of NP-complete sets)
+For NP-complete setsA,Bthe following holds:
+1.A≡ p B
+2.A∈P⇔P=NP
+3.IfC∈NPwithB≤ p C, thenCis NP-complete.
+Proof.
+▶ Point 1shows: all NP-complete problems are reformulations of the same problem.
+▶ Point 3shows a way to prove sets to be NP-complete. However, this requires a problem
+B already known to be NP-complete.
+85/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 86 ---
+Starting the Journey to a First NP-Complete Problem
+Definition 1.58 (Boolean Formula)
+BC Ifxis a variable, 0, or 1, thenxis a Boolean formula over{¬,∧,∨}.
+IS IfF,G,Hare Boolean formulas over{¬,∧,∨}, so are¬F,(G∧H), and(G∨H).
+Every Boolean formulaGover{¬,∧,∨}with variablesx 1,…,x n describes a total function
+G∶{0,1} n →{0,1}. (where¬,∧and∨have the verbal meaning).
+Example:IfGdenotes the Boolean formula(x∧¬y)∨(¬x∧y), thenGdescribes the
+following function{0,1}×{0,1}→{0,1}:
+G(x,y)∶=
+⎧⎪⎪⎪⎪⎪
+⎨⎪⎪⎪⎪⎪⎩
+0ifx=0andy=0
+1ifx=0andy=1
+1ifx=1andy=0
+0ifx=1andy=1
+86/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 87 ---
+The SAT Problem
+Definition 1.59 (Satisfiability Problem, SAT)
+A Boolean formulaGover {¬,∧,∨} with variablesx 1,…, xn issatisfiable ⇔∃ a1,…, an ∈
+{0,1}withG(a 1,…,a n)=1.
+SAT∶={⟨F⟩∣F is a Boolean formula over{¬,∧,∨}and satisfiable}
+Examples (omitting redundant brackets):
+▶ ((x∧¬y)∨(¬x∧y))∧x∧yisnotsatisfiable.
+▶ (x∨¬y)∧(¬x∨y)∧(¬x∨z)∧(¬y∨¬z)is satisfiable (e.g.,x=y=z=0).
+87/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 88 ---
+Historical Context: Cook, Karp, Levin
+Stephen Cook proved the NP-completeness of SAT in 1971. It was
+the first problem for which NP-completeness was shown.
+In 1972, Richard Karp extended the statement to 21 combinatorial
+and graph-theoretic problems such as HC, CLIQUE, and
+KNAPSACK.
+In 1973, Leonid Levin independently developed a theory of
+NP-completeness in the Soviet Union, parallel to the work of
+Stephen Cook and Richard Karp.
+Theorem 1.60 (Cook-Levin Theorem)
+SATisNP-complete.
+88/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 89 ---
+Proof Idea: Cook-Levin Theorem
+Proof Idea:
+▶ Membership in NP is rather easy.
+▶ Hardness: we take an arbitrary problemA∈NP and showA≤ p SAT.
+▶ LetM=(Σ,S,f,s 0,s 1)be a non-deterministic 1-TM that acceptsAin timep(polynomial) .
+▶ The reduction must map an inputxto a satisfiable Boolean formulaF x if and only ifMacceptsx.
+▶ In order to construct such anF x, we use three groups of variables with the following interpretations:
+⋄S(t,s)for allt∈{0,…,p(|x|)}ands∈S: Aftertsteps,Mis instates.
+⋄H(t,i)for alli,t∈{0,…,p(|x|)}: Aftertsteps, thehead points at thei-th cell.
+⋄ L(t, i, a) for alli, t ∈{ 0,…, p(|x|)} anda ∈Σ : Aftertsteps, theletterais on thei-th cell.
+▶ Using these variables we buildF x such that it describes the start situation, the general working
+mechanism of TMs, and the specific rules ofM.
+89/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 90 ---
+Proof: SAT is in NP
+The following non-deterministic polynomial time algorithm proves SAT∈NP (when given an encoded
+Boolean formulaFas input).
+1Let Var be an emptylist
+2for alloccurrences of variables x of F :
+3add = 0 | add = 1
+4ifxnot inVarandadd = 1:
+5add x to Var
+6foreach occurrence of a variable xinF :
+7replace itwith(1ifxinVarand0else)
+8while¬a , ( a∧b ) ,or( a∨b )fora , b∈{0,1}occur :
+9replace¬0with1 ,¬1with0
+10replace ( a∧b )with1ifa = b = 1and0else
+11replace ( a∨b )with0ifa = b = 0and1else
+12returnthe formula obtained
+By Definition 1.58, the algorithm returns 0 or 1. Moreover, it returns 1 if and only ifFis satisfiable.
+90/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 91 ---
+Proof: SAT is NP-hard (Part 1)
+LetA∈NP. We showA≤ p SAT.
+There exists a non-deterministic TMM =(Σ, S, f, s0, s1) withL(M)= Aand a polynomialp
+such thatMacceptsAin timep.
+Without loss of generality, we may assume (exercise):
+▶ Mnever enters a cell to the left of the first input symbol.
+▶ Ifx ∈ A, then there exists an accepting computation path such that after at mostp(|x|)
+steps,Mis in states 1, the head points to cell 0, cell 0 contains 1, and all other cells are
+empty.
+▶ Ifx∉A, no computation path stops.
+▶ Mhas the instructions 11→ s11O(thus, in our formula we can extend accepting paths
+such that they are of length preciselyp(|x|)).
+91/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 92 ---
+Proof: SAT is NP-hard (Part 2)
+Letx∈Σ ∗. We writen=|x|.
+We will now describe a Boolean FormulaF x whose encoding is in SAT if and only ifM
+acceptsx. Later we will argue that the functionx ↦⟨ Fx⟩ is polynomial-time computable.
+The following groups of Boolean variables are used:
+▶ S(t,s)for allt∈{0,…,p(n)}ands∈S: Aftertsteps,Mis in states.
+▶ H(t,i)for alli,t∈{0,…,p(n)}: Aftertsteps, the head points at thei-th cell.
+▶ L(t,i,a)for alli,t∈{0,…,p(n)}anda∈Σ: Aftertsteps, the letterais on thei-th cell.
+92/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 93 ---
+Proof: SAT is NP-hard (Part 3)
+We now express with formulas:
+1. At the beginning, the tape containsx=x 0…x n−1 in the cells0,…,n−1and all other
+cells are empty.
+2. At each point in time,Mis in exactly one state.
+3. At each point in time, the head points at exactly one cell.
+4. At each point in time, in each cell there is exactly one letter.
+5. If the head does not point at thei-th cell aftertsteps, thei-th cell still contains the
+same letter aftert+1steps.
+6. At the beginning,Mis in states 0 and the head at cell 0.
+7. For each ofM’s rules (s, a)→( s′, b, D), ifMis in statesaftertsteps, the head points at
+thei-th cell, and this cell containsa, then aftert+1stepsMis in states ′, the head
+points at celli(ifD=O), ati+1(ifD=R), and ati−1(ifD=L), and thei-th cell
+containsb. (Careful: there can be multiple rules with the same left-hand side)
+8. At the end,Mis in states 1 (i.e.,Maccepts).
+93/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 94 ---
+Proof: SAT is NP-hard (Part 4)
+1. At the beginning, the tape containsx=x 0…x n−1 in the cells0,…,n−1and all other
+cells are empty.
+n−1
+⋀
+i=0
+L(0,i,x i)∧
+p(n)
+⋀
+i=n
+L(0,i,Δ)
+2. At each point in time,Mis in exactly one state.
+p(n)
+⋀
+t=0
+(⋁
+s∈S
+S(t,s)∧ ⋀
+s,s′∈S,s≠s′
+(¬S(t,s)∨¬S(t,s ′)))
+3. At each point in time, the head points at exactly one cell.
+p(n)
+⋀
+t=0
+(
+p(n)
+⋁
+i=0
+H(t,i)∧ ⋀
+i,j∈{0,…,p(n)},i≠j
+(¬H(t,i)∨¬H(t,j) ))
+94/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 95 ---
+Proof: SAT is NP-hard (Part 5)
+4. At each point in time, in each cell there is exactly one letter.
+p(n)
+⋀
+t=0
+p(n)
+⋀
+i=0
+(⋁
+a∈Σ
+L(t,i,a)∧ ⋀
+a,a′∈Σ,a≠a′
+(¬L(t,i,a)∨¬L(t,i,a ′)))
+5. If the head does not point at thei-th cell aftertsteps, thei-th cell still contains the
+same letter aftert+1steps.
+p(n)
+⋀
+i=0
+p(n)−1
+⋁
+t=0
+(H(t,i)∨ (⋁
+a∈Σ
+L(t,i,a)∧L(t+1,i,a) ))
+6. At the beginning,Mis in states 0 and the head at cell 0.
+S(0,s 0)∧H(0,0)
+95/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 96 ---
+Proof: SAT is NP-hard (Part 6)
+7. For each ofM’s rules (s, a)→( s′, b, D), ifMis in statesaftertsteps, the head points at
+thei-th cell, and this cell containsa, then aftert+1stepsMis in states ′, the head
+points at celli ′ (depending onD), and thei-th cell containsb.
+p(n)−1
+⋀
+t=0
+p(n)
+⋀
+i=0
+⋀
+s∈S,a∈Σ
+((S(t,s)∧H(t,i)∧L(t,i,a) )
+→ ⋁
+(s,a)→(s′,b,D)
+(S(t+1,s ′)∧H(t+1,i ′)∧L(t+1,i,b) )),
+wherei ′ =i/i ′ =i−1/i ′ =i+1ifD=O/D=L/D=R. 2
+8. At the end,Mis in states 1 (i.e.,Maccepts).
+S(p(n),s 1)
+2Assume variables likeH(t,p(n)+1)simply evaluate to false, as the head cannot reach this cell inp(n)
+steps.
+96/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 97 ---
+Proof: SAT is NP-hard (Part 7)
+We denote the 8 formulas we have constructed byF1,…, F8 and defineF x asF 1∧ F2∧⋯∧ F8.
+It can be proven thatx∈A⇔⟨F x⟩∈SAT.
+Now it remains to argue thatx↦⟨F x⟩is polynomial-time computable:
+Creating the formulaF 1 in polynomial-time is straightforward. The formulaF 6 is a
+constant (i.e., is independent of the input). The formulasF 2, F3, F4, F5, F7, F8 only depend on
+the input length. The input-dependent part in creating these formulas consists of copying
+hard-coded formulas and adapting indices of the variables.
+97/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 98 ---
+Further NP-Complete Problems
+Definition 1.61 (Quadratic Diophantine equations)
+QDE∶={(a,b,c)∈ℕ 3 ∣∃x,y∈ℕ[ax 2+by=c]}.
+Definition 1.62 (PARTITION)
+PARTITION∶={⟨a 1,…,a m⟩∣a i ∈ℕ,∃I⊆{1,…,m}with ∑i∈I ai = ∑i∉I ai}
+Theorem 1.63
+The following problems areNP-complete:
+TSP, CLIQUE, BP, DC, HC, SOS, KNAPSACK, QDE, PARTITION, and k-Color fork≥3.
+98/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 99 ---
+The 3-SAT Problem
+Definition 1.64 (3-SAT)
+For a variablexwe callxand¬xliterals.
+A Boolean formulaFis in3-CNF(3-conjunctive normal form) if it is of the formC 1∧
+C2∧⋯∧C k and eachC i is of the forml 1,(l 1∨l 2), or(l 1∨l 2∨l 3)for literalsl 1,l 2,l 3.
+3-SAT∶={⟨F⟩∈SAT∣Fis in 3-CNF}
+Theorem 1.65
+3-SATis NP-complete.
+Proof.
+99/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 100 ---
+Reduction from 3-SAT to CLIQUE
+Theorem 1.66
+CLIQUEis NP-complete.
+We already know CLIQUE∈NP. We show 3-SAT≤ p CLIQUE.
+Proof.
+Summary of Reductions:
+EveryA∈NP
+≤p
+⟶SAT
+≤p
+⟶3-SAT
+≤p
+⟶CLIQUE
+100/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 101 ---
+Dealing with NP-Complete Problems
+We have seen that NP-complete problems can only be solved in polynomial time ifP=NP .
+On the other hand, these problems often arise in practical contexts.
+What options are there for handling NP-complete problems?
+▶ Approximation algorithms: polynomial-time algorithms with a provable error
+bound; only applicable to optimization problems
+▶ Heuristics: try to generate good solutions fast with rules of thumb; suitable for
+decision and optimization problems
+▶ Exact algorithms: use exponential-time algorithms, but try to keep exponential
+part as low as possible, e.g.,O(1.19 n)-algorithm for CLIQUE
+101/150 Prof. Dr. Titus Dose|Advanced Algorithms|NP-Completeness › NP-Complete Problems
+--- Page 102 ---
+Chapter II
+Engineering Game AIs
+--- Page 103 ---
+Engineering Game AIs for Connect Four
+Blackboard Session
+This chapter is developed entirely on the blackboard.
+103/150 Prof. Dr. Titus Dose|Advanced Algorithms|Engineering Game AIs ›
+--- Page 104 ---
+Chapter III
+Algorithmic Number Theory and Cryptography
+1 Appetizer
+2 Basic Terminology
+3 Historical Symmetric Cryptosystems
+4 Asymmetric Cryptosystems
+--- Page 105 ---
+Table of Contents
+1 Appetizer
+2 Basic Terminology
+3 Historical Symmetric Cryptosystems
+4 Asymmetric Cryptosystems
+105/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Appetizer
+--- Page 106 ---
+A First Algorithm
+To give you a taste, let’s start with a simple number-theoretic algorithm. . .
+Problem 3.1
+Given: two natural numbersa,b,a≥bandb≠0.
+Question 1: Determine the greatest common divisorgcd(a, b) ofaandb, i.e., the greatest
+natural numberdso that there are naturalsx,ywithx⋅d=aandy⋅d=b.
+Question 2: Find integersx,yso thatgcd(a,b)=x⋅a+y⋅b.
+Example 3.2
+BOARD
+Definition 3.3
+Fora,b∈ℕwithb≠0, we defineadivb=⌊ a
+b⌋.
+106/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Appetizer
+--- Page 107 ---
+Towards Our First Number-Theoretic Algorithm
+Lemma 3.4
+Ifa,b∈ℕanda≥b>0. Thengcd(a,b)=gcd(b,a−b).
+Proof.“≥” holds as each common divisor ofbanda − bis also a divisor ofb +( a− b)= a.
+“≤” holds as each common divisor ofaandbis also a divisor ofa−b.
+Lemma 3.5
+Ifa,b∈ℕ + anda≥b. Thengcd(a,b)=gcd(b,amodb).
+Ifgcd(a, b)= x⋅ b+ y⋅( amod b) forx, y ∈ℤ , thengcd(a, b)= y⋅ a+( x− y⋅( a div b))⋅ b.
+Proof.The first statement follows by Lemma 3.4 as(amodb)is obtained by iteratively
+subtractingbfroma. Asa=(adivb)⋅b+(amodb), we get
+gcd(a, b)= x⋅ b+ y⋅( amod b)= x⋅ b+ y⋅( a−( a div b)⋅ b)= y⋅ a+( x− y⋅( a div b))⋅ b.
+107/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Appetizer
+--- Page 108 ---
+The Extended Euclidean Algorithm
+Algorithm and Efficiency
+This immediately gives us the extended Euclidean algorithm. The following is an
+implementation in Python.
+1defextended_euclid(a, b): # works for naturals a >= b not both 0
+2ifb == 0:returna, 1, 0
+3gcd, x, y = extended_euclid(b, a % b)
+4returngcd, y, x - y * (a // b)
+How high is the recursion tree?
+The larger of the two parameters is halved after two recursive calls:
+▶ Ifb≤ a
+2, then the larger parameter is already halved in the next recursive call.
+▶ Ifb≥ a
+2, then the new smaller parameter isamodb=a−(adivb)⏟⏞⏞⏞⏞⏞⏞⏞⏟⏞⏞⏞⏞⏞⏞⏞⏟
+=1
+⋅b=a−b≤ a
+2 and
+becomes the larger parameter in the next call.
+Thus, the number of recursive calls is at most2⋅log(a).
+108/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Appetizer
+--- Page 109 ---
+The Euclidean Algorithm
+Summary
+We obtain from our previous considerations:
+Theorem 3.6
+The following statements hold for the extended Euclidean algorithm:
+1.It executes linearly many arithmetic operations with operands less than or equal to the
+input.
+2.On input(a,b)with0≤b<a, it returns the gcd ofaandband integersxandywith
+gcd(a,b)=x⋅a+y⋅b.
+109/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Appetizer
+--- Page 110 ---
+Table of Contents
+1 Appetizer
+2 Basic Terminology
+3 Historical Symmetric Cryptosystems
+4 Asymmetric Cryptosystems
+110/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Basic Terminology
+--- Page 111 ---
+Probabilistic Algorithms
+A probabilistic algorithm can be thought of as a non-deterministic algorithm that
+randomly decides at each branch which path of computation to follow.
+Definition 3.7 (Probabilistic Algorithm)
+1. Aprobabilistic algorithmis a non-deterministic algorithm for which:
+1.1 every non-deterministic branch generates exactly two computation paths.
+1.2 a computation pathrwithnnon-deterministic branches is realized with probability
+P(r)= 1/2n.
+2. A probabilistic algorithmM yields output y on input x with probability:
+P(M(x)=y)∶= ∑
+r: computation path ofM
+onxwith outputy
+P(r)
+111/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Basic Terminology
+--- Page 112 ---
+Probabilistic Algorithms
+Definition 3.8 (Unsuccessful Paths and Running Time)
+1. Acomputation path is unsuccessfulif it yields the output⊥.
+2. Thesuccess probabilityof a probabilistic algorithmMon inputxis defined as
+1−P(M(x)=⊥).
+3. A probabilistic algorithmM runs in timet∶ℕ→ℕ, ifMonly has computation
+paths of length≤t(|x|)on inputx.
+112/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Basic Terminology
+--- Page 113 ---
+Cryptosystems
+Cryptographic methods (cryptosystems) are intended to ensure that certain information
+can only be read by authorized persons.
+Requirements for Cryptosystems
+1. Conversion from plaintext to ciphertext
+(Encryption)
+2. Conversion from ciphertext to the original plaintext
+(Decryption)
+3. Unauthorized persons cannot decrypt ciphertext
+(Security)
+In the following definition of the termcryptosystemwe only require points 1 and 2.
+113/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Basic Terminology
+--- Page 114 ---
+Definition 3.9 (Cryptosystem)
+ACryptosystemis a quadruple(Σ,,,), such that:
+1.Σis a non-empty, finite set (Alphabet)
+2.is a prob. polynomial-time algorithm with success prob.≥ 1/2,
+(1n)generates key pairs(e,d)for plaintexts of length≤n
+(Key generator)
+3.is a prob. polynomial-time algorithm with success prob.≥ 1/2,
+(e,m)encrypts the plaintextmwith the keye
+(Encryption algorithm)
+4.is a deterministic polynomial-time algorithm,
+(d,c)decrypts the ciphertextcwith the keyd
+(Decryption algorithm)
+5. for alln≥1, all key pairs(e,d)generated by(1 n), allm∈Σ ≤n and all ciphertextsc
+generated by(e,m)it holds that(d,c)=m.
+114/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Basic Terminology
+--- Page 115 ---
+Remarks on Key Pairs
+Remark 3.10
+For a key pair(e,d)we callepublic keyanddprivate key.
+∙ Symmetric Cryptosystems:
+◦The private key can be efficiently calculated from the public key.
+◦Therefore, both keys (public and private) must be kept secret.
+◦Sender and receiver both need the secret key.
+∙ Asymmetric (Public-Key) Cryptosystems:
+◦The private key (hopefully) cannot be efficiently calculated from the public key.
+◦The sender only needs the public key for encryption.
+◦The receiver keeps the private key completely secret for decryption.
+∙ Since it is unknown whether P=NP, there is no formal proof foranycryptosystem
+that deriving the private key from the public key is computationally hard.
+115/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Basic Terminology
+--- Page 116 ---
+Table of Contents
+1 Appetizer
+2 Basic Terminology
+3 Historical Symmetric Cryptosystems
+4 Asymmetric Cryptosystems
+116/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 117 ---
+Agenda & Learning Objectives
+Outlook
+▶ We treat the following classical methods:
+⋄Caesar cipher
+⋄Substitution cipher
+⋄Vigenère cipher
+⋄(Autokey encryption)
+⋄(Vernam cipher)
+⋄(Enigma)
+▶ (Afterwards we get to know the AES method as an example of a modern, widely used
+cryptosystem.)
+117/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 118 ---
+Caesar Cipher
+Julius Caesar used the following method to encrypt messages for the Roman army:
+Alphabet is identified withℤ 26 ={0,…,25}and each letter is replaced by the third next
+one.
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+⇓
+D E F G H I J K L M N O P Q R S T U V W X Y Z A B C
+Example: KLEOPATRA⇒NOHRSDWUD
+If arbitrary shifts of the alphabet are allowed, this is called a shift cipher.
+118/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 119 ---
+Caesar Cipher – Definition as Cryptosystem
+Definition 3.11 (Caesar cipher, Shift cipher)
+Caesar∶=(Σ,,,)with
+∙ Σ=ℤ 26
+∙ (1n)yields uniformly distributed random element from{(e,e)|e∈Σ}
+∙ (e,m 1⋯m n)=c 1⋯c n, wherec i =m i+emod 26
+∙ (e,c 1⋯c n)=m 1⋯m n, wherem i =c i−emod 26
+Remark 3.12
+1. The shift cipher is easy to break, as it only has 26 keys. Even in Caesar’s times its
+security did not rely on the secrecy of the key, but on the secrecy of the method.
+2. Caesar’s successor Augustus used a similar method: Each letter was replaced by the
+successor and the last letter by AA.
+119/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 120 ---
+Substitution Cipher
+Idea: similar to Caesar cipher, difference: use arbitrary permutation of the alphabet
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+⇓
+E K Y V X N B I H U M Z D G W J F L T R O Q C P A S
+Definition 3.13 (Substitution cipher)
+Substitution∶=(Σ,,,)withΣ=ℤ 26
+∙ (1n)yields uniformly distributed random element from
+{(𝜋,𝜋)|𝜋∶ℤ 26→ℤ 26 is bijective}
+∙ (𝜋,m 1⋯m n)=𝜋(m 1)⋯𝜋(m n)
+∙ (𝜋,c 1⋯c n)=𝜋 −1(c1)⋯𝜋 −1(cn)
+120/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 121 ---
+Cryptanalysis of the Substitution Cipher
+Remark 3.14
+1. Slightly more secure than Caesar cipher, since 26! permutations exist. Therefore a
+brute-force attack is not possible.
+2. Vulnerable to statistical analyses. Frequency of German letters: E=15%, N=9%,…,
+Q=0.014%, X=0.013%. This very quickly yields the assignment of the letters.
+121/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 122 ---
+Vigenère Cipher
+Named after Blaise de Vigenère, French diplomat.
+Idea: similar to the Caesar cipher, only that now blocks ofkletters are encrypted using a
+password.
+DASISTGEHEIM: (03,00,18,08,18,19,06,04,07,04,08,12)
++ +
+PASSWORDPASS: (15,00,18,18,22,14,17,03,15,00,18,18)
+⇓ ⇓
+SAKAOHXHWEAE: (18,00,10,00,14,07,23,07,22,04,00,04)
+We define the Vigenère cipher for a fixed password lengthk.
+122/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 123 ---
+Vigenère Cipher – Definition as Quadruple
+Definition 3.15 (Vigenère cipher, 16. Century)
+Vigenèrek ∶=(Σ,,,)withΣ=ℤ 26
+∙ (1n)yields uniformly distributed random element from{(e,e)|e∈Σ k}
+∙ (e 0⋯e k−1,m 0⋯m n−1)=c 0⋯c n−1, wherec i =m i+e imodk mod 26
+∙ (e0⋯e k−1,c 0⋯c n−1)=m 0⋯m n−1, wherem i =c i−e imodk mod 26
+123/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 124 ---
+Remarks on Vigenère Cipher
+Remark 3.16
+1. The Caesar cipher and the shift cipher are special cases of the Vigenère cipher.
+2. The Vigenère cipher is, compared to the substitution cipher, somewhat less vulnerable
+to frequency analyses. With good passwords little vulnerable to brute-force attacks.
+3. Passwords that are too simple allow dictionary attacks.
+4. Identical plaintext parts result in identical ciphertext parts, if the distance is a
+multiple of the password length. This provides clues about the password lengthk.
+5. Ifkis known, one considers everyk-th letter in the plaintext. The probabilities of
+these letters provide probabilities for the corresponding letter of the key.
+6. Vigenère cipher broken in 1854 by Charles Babbage.
+124/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Historical Symmetric Cryptosystems
+--- Page 125 ---
+Table of Contents
+1 Appetizer
+2 Basic Terminology
+3 Historical Symmetric Cryptosystems
+4 Asymmetric Cryptosystems
+125/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 126 ---
+Agenda & Learning Objectives
+Outlook
+▶ We treat the RSA cryptosystem and show its correctness. Furthermore, we consider
+algorithmic aspects and learn how the components of the method (e.g. inverting mod n)
+can be implemented efficiently.
+126/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 127 ---
+Key Exchange Problem
+Main problem of the previous methods is the key exchange.
+Key exchange problem
+Situation:
+▶ Alice and Bob want to exchange information over an insecure channel
+▶ a symmetric method (AES) is to be used for this
+Question: How can A and B agree on a secret key
+if they can only communicate over the insecure channel?
+Since the beginnings of cryptography, the key exchange problem was considered
+unsolvable.
+In 1976 Whitfield Diffie and Martin Hellman caused a surprise: Publication of the first key
+exchange protocol.
+127/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 128 ---
+The RSA Cryptosystem
+▶ In 1977 Ronald Rivest, Adi Shamir and Leonard Adleman published with RSA the first
+public-key cryptosystem, which —as a side effect— solves the key exchange as well.
+▶ In 1985 Taher Elgamal developed a public-key cryptosystem based on the idea of the
+Diffie-Hellman key exchange.
+General operation of public-key cryptosystems
+▶ Each participant possesses a key pair: (public key e, private key d).
+▶ The public key is written to a public directory, the private key remains secret.
+▶ If Alice wants to send an encrypted message to Bob, she uses Bob’s public key to
+encrypt the message. (no shared key, no communication with Bob)
+128/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 129 ---
+Algebraic Foundations – Groups
+Definition 3.17
+Agroupis a pair(G,⋅), such that:
+∙ Gis a set and⋅∶G×G→Gis a total mapping
+∙ ∀a,b,c∈G[(a⋅b)⋅c=a⋅(b⋅c)](Associativity)
+∙ ∃!e∈G∀a∈G[a⋅e=e⋅a=a](Neutral element)
+∙ ∀a∈G∃!b∈G[a⋅b=b⋅a=e](Inverse elements)
+The group is calledcommutativeorAbelian, if additionally: ∀a, b ∈ G[a⋅ b = b⋅ a]
+(Commutativity)
+129/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 130 ---
+Algebraic Foundations – Euler’s Totient Function
+Definition 3.18
+Forn≥1, we define:
+∙ ℤ∗
+n ∶={i∈ℕ|1≤i≤nandgcd(i,n)=1}
+∙ 𝜑(n)∶=|ℤ ∗
+n|(Euler’s𝜑-function)
+Theorem 3.19
+Letn≥2. If we choose⋅as multiplication modulon, then(ℤ ∗
+n,⋅)is a group.
+It is called themultiplicative group of order𝝋(n)or thegroup of units ofℤ n.
+Proof omitted.
+130/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 131 ---
+Algebraic Foundations – Properties of Euler’s Totient Function
+Theorem 3.20
+Letm,n≥2.
+1.Ifgcd(m,n)=1, then𝜑(m⋅n)=𝜑(m)⋅𝜑(n).
+2.Ifpis prime, then𝜑(p)=p−1and𝜑(p k)=p k−p k−1 fork≥1.
+3.Fork≥5, it holds that𝜑(k)≥k/(6lnlnk).
+Proof omitted.
+131/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 132 ---
+Algebraic Foundations – Distribution of Primes
+Theorem 3.21 (Chebyshev’s Bounds)
+Let𝜋(N) denote the number of primes in{2,…, N}. For sufficiently largeN, the following
+bounds hold:
+0.9 N
+lnN ≤𝜋(N)≤1.2 N
+lnN .
+Proof omitted.
+132/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 133 ---
+Algebraic Foundations – Fermat’s Little Theorem and CRT
+Theorem 3.22 (Fermat’s Little Theorem)
+Ifpis prime anda∈ℤ ∗
+p, thena p−1 ≡1modp.
+Proof omitted.
+Theorem 3.23 (Chinese Remainder Theorem)
+Letm 1,…, mk ∈ℕ⧵{ 0, 1} be pairwise coprime,m = ∏k
+i=1 mi, anda 1,…, ak ∈ℕ . Then
+there exists a uniquex∈{0,…,m−1}with:
+∀1≤i≤k x≡a i modm i
+(More precisely:x = ∑k
+i=1 ai⋅ qi⋅ q−1
+i mod m, whereq i ∶= m/mi andq −1
+i is the inverse of
+qi ∈ℤ ∗
+mi.)
+Proof omitted.
+133/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 134 ---
+The RSA Protocol
+LetΣ={0,1}and chooser≥message length.
+We setl∶= ⌈(r+1)/2 ⌉, it determines the size of the primes used.
+Alice wants to send Bob a messagemwith0≤m≤2 r+1 −2.
+1. Bob does the following:
+◦randomly chooses distinct primesp,q∈{2 l,…,2 l+1−1}
+◦setsn∶=pq, so that𝜑(n)=(p−1)(q−1)
+◦chooses randome∈{2,…,𝜑(n)−1}withgcd(e,𝜑(n))=1
+◦computesd∶=e −1 mod𝜑(n)
+◦Bob’s public key is(n,e), his private key is(n,d)
+◦publishes public key(n,e)
+2. Alice does the following:
+◦encryptsm∈{0,…,2 r+1 −2}asc∶=m e modn
+◦sendscto Bob
+3. Bob decrypts the message byc d modn
+134/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 135 ---
+Open Questions
+1. Why does Bob get the messagemby computingc d modn?
+2. How does Bob efficiently find primes? How can he efficiently determine
+whether a number is a prime?
+3. How does Bob efficiently find the numbere?
+4. How does Bob efficiently find the numberd?
+5. How canm e modnandc d modnbe efficiently computed? After all the
+functionx↦2 x is not polynomial-time computable. . .
+135/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 136 ---
+Correctness of RSA
+We show that Bob can decrypt the encoded message.
+Theorem 3.24 (Correctness of RSA)
+Letp, qbe distinct primes andn ∶= pq. Let1 < e < 𝜑(n) with gcd(e,𝜑( n)) = 1and
+1<d<𝜑(n)withe⋅d≡1mod𝜑(n). Then for allm∈{0,…,n−1}it holds that
+m=(m e)d modn.
+Proof.
+Example 3.25 (RSA Protocol)
+BOARD
+136/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 137 ---
+RSA as Quadruple
+Definition 3.26 (RSA Cryptosystem)
+RSA∶=(Σ,,,)withΣ={0,1}
+∙ (1r)is the following probabilistic computation:
+1.l∶= ⌈(r+1)/2 ⌉= ⌊(r+2)/2 ⌋
+2. uniformly distributed random choice of distinct primesp,q∈{2 l,…,2 l+1−1}
+3. uniformly distributed random choice of an exponente∈{2,…,(p−1)(q−1)−1}with
+gcd(e,(p−1)(q−1))=1
+4.d∶=e −1 mod(p−1)(q−1)
+5. return((pq,e),(pq,d))
+∙ ((n,e),m)∶=m e modnform∈Σ ≤r ={0,…,2 r+1 −2}
+∙ ((n,d),c)∶=c d modnforc∈{0,…,n−1}
+137/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 138 ---
+Efficiency of the RSA Protocol
+Choice of the primes p and q
+We first consider the problem during key generation of choosing uniformly distributed
+primesp,q∈{2 l,…,2 l+1−1}:
+Algorithm 3.27
+1. choose uniformly distributed randomp,q∈{2 l,…,2 l+1−1};
+ifp∉ℙorq∉ℙ, then stop unsuccessfully
+2. ifp=q, then stop unsuccessfully
+3. return(p,q)
+In the above algorithm, the primality test is possible in deterministic polynomial time
+(Agrawal, Kayal, Saxena 2002).
+138/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 139 ---
+Efficiency of the RSA Protocol
+Choice of the primes p and q II
+According to Chebyshev’s Bounds (Theorem 3.21), the number of primes in{2,…,N}for
+largeNlies between0.9 N
+lnN and1.2 N
+lnN .
+Thus for sufficiently largelthe number of primes in{2 l,…,2 l+1−1}is at least:
+0.9 2l+1
+ln2 l+1 −1.2 2l
+ln2 l = 1.8⋅2 l
+(l+1)ln2 − 1.2⋅2 l
+l⋅ln2
+≥ 2l
+ln2 (
+1.8
+1.1⋅l − 1.2
+l )
+= 2l
+l ⋅ 1.8−1.1⋅1.2
+1.1⋅ln2 ≥ 2l
+2l
+This means: success probability of step 1 of Algorithm 3.27 is≥ 1/4l2.
+139/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 140 ---
+Efficiency of the RSA Protocol
+Choice of the primes p and q III
+With4l 2k-fold repetition of step 1 of Algorithm3.27, the success probability for this step is
+1− (1− 1
+4l2)
+4l2k
+≥1− 1
+2k for sufficiently largel,
+becauselim n→∞(1− 1/n)n =e −1≤ 1/2.
+140/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 141 ---
+Efficiency of the RSA Protocol
+Choice of the primes p and q IV
+Fork = land4l 2k-fold repetition of line 1, the success probability of the entire algorithm
+is at least
+1− (
+1
+2k
+⏟⏟⏟
+Error prob.
+Line 1
++ 1
+2l
+⏟⏟⏟
+Error prob.
+Line 2
+)≥1− 1
+2k−1.
+Remark 3.28
+The deterministic primality test with a runtime of (n6) is not practical. Therefore,
+one frequently uses in practice the Miller-Rabin primality test. This is a probabilistic
+polynomial-time algorithm with:
+1. Ifx∈ℙ, then MillerRabin(x) yields the value 1 with prob.=1.
+2. Ifx∉ℙ, then MillerRabin(x) yields the value 1 with prob.≤ 1/2.
+Withk-fold repetition of the test, one obtains the probabilities1and ≤ 1/2k respectively.
+141/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 142 ---
+Efficiency of Key Generation
+Choice of the exponent e
+Uniformly distributed random choice of ane∈{2,…,(p−1)(q−1)−1}with
+gcd(e,(p−1)(q−1))=1:
+Algorithm 3.29
+1. choose uniformly distributed randome∈{2,(p−1)(q−1)−1}
+2. ifgcd(e,(p−1)(q−1))≠1, then stop unsuccessfully
+3. returne.
+We compute the greatest common divisor with the Euclidean algorithm.
+142/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 143 ---
+Efficiency of Key Generation
+Choice of the exponent e II
+The number ofe∈{2,(p−1)(q−1)−1}withgcd(e,(p−1)(q−1))=1is according to
+Definition 3.18 and Theorem 3.20.3 exactly
+𝜑((p−1)(q−1))−1≥ (p−1)(q−1)
+6lnln((p−1)(q−1)) −1≥ (p−1)(q−1)
+(logl) .
+The success probability withk⋅(logl)-fold repetition is then at least1−2 −k (same
+argument as on page 140).
+143/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 144 ---
+Efficiency of Key Generation
+Computation of the private key d
+The computation ofd∶=e −1 mod(p−1)(q−1)runs via the extended Euclidean
+algorithm.
+According to Theorem 3.6 it efficiently yieldsx,y∈ℤwith
+gcd((p−1)(q−1),e)=x(p−1)(q−1)+ye.
+Withd∶=ymod(p−1)(q−1)we obtain the sought value.
+Due togcd((p−1)(q−1),e)=1it holds thaty⋅e=1−x(p−1)(q−1)and thus
+d⋅e≡y⋅e≡1mod(p−1)(q−1).
+144/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 145 ---
+Encryption and Decryption
+Modular exponentiation
+Interim Conclusion
+We have convinced ourselves that the key generator of RSA is a probabilistic
+polynomial-time algorithm.
+Now consider the efficient computation ofm e modn.
+The naive algorithm has a runtime ofe ⋅| n|∈( 2|n||n|). This is an exponential
+runtime bound, since the length of the input((n, e), m) lies between |n| and3 |n|.
+145/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 146 ---
+Encryption and Decryption
+Modular exponentiation II
+For anefficientexponentiation we proceed as follows:
+Square and Multiply
+▶ lete t⋯e 0 be the binary representation ofe
+▶ it holdsm e =m et 2t+et−1 2t−1+⋯+e020
+=m e020
+⋅m e121
+⋯m et 2t
+▶ becausem 2i+1
+=( m2i
+)2 the(mei2i
+mod n) can be computed in polynomial time in
+the input length
+▶ with the above equation one overall obtains a polynomial-time algorithm
+Example 3.30 (square and multiply)
+BOARD
+146/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 147 ---
+Conclusion
+RSA is a Cryptosystem
+Corollary 3.31
+RSA is a cryptosystem.
+Proof.
+∙ Key generatoris a prob. polynomial-time algorithm, since the choice of primesp,q,
+the choice of the exponenteand the computation of the private keydare possible
+efficiently
+∙ andare polynomial-time algorithms, due to efficient, modular exponentiation
+∙ from Theorem 3.24 it follows ((n, d),(( n, e), m))= mfor allm ∈Σ ≤r and all key pairs
+((n,e),(n,d))generated by(1 r)
+147/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 148 ---
+On the Security of RSA
+Theorem 3.32
+If factorization is possible in polynomial time, then RSA can be broken in polynomial time.
+Proof.The attacker does the following:
+1. reads public key(n,e), factorsn=pqand thus knows𝜑(n)=(p−1)(q−1)
+2. computes private keyd=e −1 mod(p−1)(q−1)
+It is not known whether the converse of the theorem holds.
+Conjecture: Factorization and breaking RSA are not NP-hard.
+Quantum computers can factorize in polynomial time and thus break RSA.
+148/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 149 ---
+Weaknesses of Plain RSA
+Plain RSA (also called Textbook RSA) has severe weaknesses:
+∙ Determinisic encryption: Identical plaintexts result in identical ciphertexts.
+(Therefore Plain-RSA does not have perfect security! Imagine we know the
+answer will be “yes” or “no”)
+∙ Ifmis very small, thenm e<nmight hold. Thenc=m e modn=m e and
+one can easily computemover the integers by taking thee-th root!
+∙ If the samemis sent tok ≥ erecipients with differentn i but the samee,m
+can be computed efficiently (computem e inℕvia Chinese remainder
+theorem, then e√ ).
+∙ Ifeis small and for a known𝛿the plaintextsmandm+𝛿are encrypted
+with the same(n,e),mcan often be determined efficiently.
+149/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems
+--- Page 150 ---
+Improvement: Padded RSA
+The weaknesses mentioned can be eliminated by using padding schemes.
+Functionality and properties of Padded RSA:
+∙ Processes only plaintextsmthat are significantly shorter than|n|
+∙ Appends a random word of a given structure tom
+(e.g.,□s□for a sufficiently long, randoms∈(Σ−{□}) ∗)
+∙ The markers□allow the removal of the added characters after decoding
+∙ The scheme is probabilistic and does not have the weaknesses mentioned
+above
+∙ For certain cases (e.g., 1-bit message and longs), security can be proven
+under cryptographic assumptions
+150/150 Prof. Dr. Titus Dose|Advanced Algorithms|Algorithmic Number Theory and Cryptography › Asymmetric Cryptosystems

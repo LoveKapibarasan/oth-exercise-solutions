@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --lidl-blue: #0050aa;
+            --lidl-red: #df002e;
+            --lidl-yellow: #ffcc00;
+            --bg-color: #f5f5f5;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* スマホの外枠 */
+        .iphone {
+            width: 360px;
+            height: 740px;
+            background: white;
+            border: 12px solid #333;
+            border-radius: 40px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ステータスバー風 */
+        .status-bar {
+            height: 40px;
+            background: white;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* ヘッダー */
+        header {
+            background-color: var(--lidl-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        .user-greeting {
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* メインアクションエリア */
+        .main-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 10px 20px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-bottom: 5px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-card:active {
+            transform: scale(0.95);
+        }
+
+        .card-blue { border-color: var(--lidl-blue); }
+        .card-red { border-color: var(--lidl-red); }
+
+        .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .card-desc {
+            font-size: 11px;
+            color: #777;
+        }
+
+        /* QRスキャンボタン */
+        .scan-banner {
+            margin: 20px;
+            background: linear-gradient(135deg, var(--lidl-blue), #003a7a);
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,80,170,0.3);
+        }
+
+        .scan-btn {
+            background: var(--lidl-yellow);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        /* 下部ナビゲーション */
+        nav {
+            margin-top: auto;
+            height: 70px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #999;
+            font-size: 10px;
+        }
+
+        .nav-item.active {
+            color: var(--lidl-blue);
+        }
+    </style>
+</head>
+<body>
+
+<div class="iphone">
+    <div class="status-bar">
+        <span>Lidl Mobile</span>
+        <span>12:45</span>
+    </div>
+
+    <header>
+        <h1>Lidl Plus</h1>
+    </header>
+
+    <div class="user-greeting">
+        Hello, Takanori! 👋
+    </div>
+
+    <div class="main-actions">
+        <div class="action-card card-blue">
+            <div class="icon">🛒</div>
+            <div class="card-title">Click & Collect</div>
+            <div class="card-desc">Pre-select &<br>Fast Pickup</div>
+        </div>
+        <div class="action-card card-red">
+            <div class="icon">📦</div>
+            <div class="card-title">Scan & Deliver</div>
+            <div class="card-desc">In-store Scan &<br>Home Delivery</div>
+        </div>
+    </div>
+
+    <div class="scan-banner">
+        <div style="font-size: 18px; font-weight: bold;">Ready to Shop?</div>
+        <div style="font-size: 13px; margin-top: 5px; opacity: 0.9;">Scan the QR code on the Lidl Box crate</div>
+        <button class="scan-btn">SCAN NOW</button>
+    </div>
+
+    <nav>
+        <div class="nav-item active">🏠<br>Home</div>
+        <div class="nav-item">📋<br>History</div>
+        <div class="nav-item">🎫<br>Coupons</div>
+        <div class="nav-item">👤<br>Profile</div>
+    </nav>
+</div>
+
+</body>
+</html>

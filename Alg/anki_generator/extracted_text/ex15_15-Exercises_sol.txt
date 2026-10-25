@@ -1,0 +1,285 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 15
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+15.1RSA Signatures without Hash Functions
+Digital signature methods ensure that messages originate from the stated sender, cannot be forged,
+and that the sender cannot subsequently deny authorship. In practice, long documents are typically
+compressed using acryptographic hash functionprior to signing.
+A hash function over an alphabetΣis a mappingh:Σ ∗ →Σ n for ann∈N. A cryptographic hash
+function must becollision resistant. A collision ofhis a pair(x,y)∈(Σ ∗)2 withx̸=yandh(x) =
+h(y). Thus, the goal of a cryptographic hash function is to make it practically impossible to find such
+collisions.
+In this exercise, we consider the RSA signature schemeomittingthe cryptographic hash functionh. The
+protocol is defined as follows:
+Alice signs a textx:
+• Alice generates a key pair as in standard RSA:
+–Randomly chooses distinct primesp,q.
+–Computesn=pq, soφ(n) = (p−1)(q−1).
+–Chooses a randome∈ {2, . . . ,φ(n)−1}with gcd(e,φ(n)) =1.
+–Computesd=e −1 modφ(n).
+–Alice’s public key is(n,e), and her private key is(n,d).
+• Alice signs:
+–She computes the signature sig A(x) =x d modnand sends the pair(x, sig A(x))to Bob.
+• Bob verifies the signature by checking whetherx=sig A(x) e modn.
+Answer the following questions:
+(a)Forgery:Show that an attacker, without knowledge ofd, can generate a valid pair(x,σ), such
+thatσis a valid signature forx(i.e.,σ=sig A(x)holds). In this scenario, the attacker cannot
+freely choose the messagex; instead,xis derived from their choice ofσ. Describe the attacker’s
+procedure.
+(b)Multiplicative Property:If an attacker intercepts two messages signed by Alice,(m 1, sigA(m1))
+and(m 2, sigA(m2)), how can they use them to generate another valid signed message(m3, sigA(m3))
+that Alice never actually signed?
+(c)Chosen-Message-Attack:Suppose the attacker wants to obtain the signature sig A(m)for a specific
+messagem(e.g., a fraudulent contract). They cannot directly ask Alice to signm, as she would
+verify its contents. However, they can ask Alice to sign a different, harmless-looking (or illegible)
+messagem ′.
+Describe how the attacker must constructm′ to calculate the valid signature sigA(m)for their target
+messagemusing the obtained signature sig A(m′).
+Hint: The attacker chooses a random r∈Z ∗
+n and uses the homomorphic property of RSA to ”blind” m
+(m′ =m·r e modn).
+Solution:
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+(a)Forgery:The attackers simply choose an arbitrary signatureσ∈ {1, . . . ,n−1}. They then
+computex=σ e modn. Since they used Alice’s public exponente, the pair(x,σ)will pass
+Bob’s verification check becausex≡σ e (modn). The attacker successfully forged a signa-
+ture, although the resulting messagexis likely meaningless gibberish.
+(b)Multiplicative Property:The attacker computes the product of the two messages and their
+corresponding signatures:
+m3 = (m1 ·m 2)modn
+σ3 = (sigA(m1)·sig A(m2))modn
+Thus, we have:
+σe
+3 ≡(sig A(m1)·sig A(m2))e ≡(m d
+1 ·m d
+2)e ≡(m 1 ·m 2)de ≡m 1 ·m 2 ≡m 3 (modn)
+Thus,σ 3 is a valid signature form 3.
+(c)Chosen-Message-Attack:The attacker selects a random valuer∈Z ∗
+n (with gcd(r,n) =1)
+and computes a ”blinded” message:
+m′ =m·r e modn
+They send this unintelligible messagem ′ to Alice. Alice signs it, producing:
+σ′ =sig A(m′) = (m′)d ≡(m·r e)d ≡m d ·r ed ≡m d ·r(modn)
+Upon receivingσ ′, the attacker removes the blinding factorrby multiplying with its modular
+inverser −1 modn:
+σ=σ ′ ·r −1 ≡(m d ·r)·r −1 ≡m d ≡sig A(m) (modn)
+The attacker has successfully obtained a valid signature for the fraudulent messagem.
+15.2Implementing the RSA Signature
+As we have seen in the previous task, the basic RSA signature scheme (without a hash function) is
+vulnerable to forgery, multiplicative property exploitation, and chosen-message attacks. To prevent
+these attacks, the message is always hashed with a cryptographic hash functionhbefore being signed.
+The complete RSA signature protocol works as follows:
+•Key Generation (Alice):
+–Randomly choose distinct primesp,q.
+–Computen=pq, soφ(n) = (p−1)(q−1).
+–Choose a randome∈ {2, . . . ,φ(n)−1}with gcd(e,φ(n)) =1.
+–Computed=e −1 modφ(n).
+–Alice’s public key is(n,e), and her private key is(n,d).
+–Leth:{0, 1} ∗ → {0, . . . ,n−1}be a public, cryptographic hash function.
+•Signing (Alice):
+–To sign a messagex, Alice computesm=h(x).
+–She computes the signature sig A(m) =m d modnand sends(x, sig A(m))to Bob.
+•Verification (Bob):
+–Bob verifies the signature by checking whetherh(x) =sig A(m)e modn.
+In the provided repository, you will find a Python skeletonrsa signature skeleton.pyin which
+the Miller-Rabin primality test, the extended Euclidean algorithm, and a cryptographic hash function
+(Hash) using SHA-256 are already implemented.
+Complete the implementation of the following functions in the provided file:
+T. Dose 2 SS2026
+--- Page 3 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+•RSASignatureto sign a messagex.
+•RSASignatureVerifyto verify the signature of a message.
+Test your implementation using the providedRSASignatureTest()function.
+Solution:
+importrandom
+importh a s h l i b
+importsys
+defIsPrime ( n , s = 5 0 ) :# M i l l e r −Rabin p r i m a l i t y t e s t
+i fn<2 :returnF a l s e
+forjin range( 1 , s + 1 ) :
+a = random . randint ( 1 , n − 1 )
+i = n − 1
+b = [ ]
+while( i>0 ) :
+b . append ( i % 2 )
+i = i // 2
+d = 1
+foriin range(len( b ) − 1 , −1 , −1 ):
+x = d
+d = ( d * d ) % n
+i fd == 1andx != 1andx != n − 1 :
+returnF a l s e
+i fb [ i ] == 1 :
+d = ( d * a ) % n
+i fd != 1 :
+returnF a l s e
+returnTrue
+defegcd ( ld , d ) :# e x t e n d e d E u c l i d e a n a l g o r i t h m
+( lx , x ) = ( 1 , 0 )
+( ly , y ) = ( 0 , 1 )
+whiled != 0 :
+q = ld//d
+( d , ld ) = ( ld% d , d )
+( x , l x ) = ( lx −q * x , x )
+( y , ly ) = ( ly −q *y , y )
+return( ld , lx , ly )
+defgcd ( a , b ) :# g r e a t e s t common d i v i s o r
+returnegcd ( a , b ) [ 0 ]
+defModExp( x , y , n ) :# Modular e x p o n e n t i a t i o n
+z= i =1
+p=x%n
+while( i<=y ) :# I n v a r i a n t : p = ( x ˆ i )%n
+i fi&y>0 :
+z = ( z *p)%n
+i = i + i
+p=(p *p)%n
+returnz
+T. Dose 3 SS2026
+--- Page 4 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+defModInv ( e , n ) :# I n v e r s e mod n
+( d , x , y)= egcd ( e , n )
+returnx%n
+defRSAKeyGen( r = 1 0 2 4 ) :
+l =( r +2)//2
+p=q=0
+while(notIsPrime ( p ) ) :
+p=random . randint ( 2 * * l , ( 2 * * ( l +1)) −1)
+while(not( p!= qandIsPrime ( q ) ) ) :
+q=random . randint ( 2 * * l , ( 2 * * ( l +1)) −1)
+n=p* q
+phi =(p − 1 )* ( q−1)
+e=random . randint ( 2 , phi −1)
+while( gcd ( e , phi ) ! = 1 ) :
+e=random . randint ( 2 , phi −1)
+d=ModInv ( e , phi )
+return( ( n , e ) , ( n , d ) )
+defHash (m) :# r e t u r n s t h e SHA256 hash v a l u e f o r s t r i n g m i n{0 , . . . , 2 * *2 5 6 − 1}
+h= h a s h l i b . sha256 (bytearray(m, ’UTF8 ’ ) )# c o n v e r t t o b y t e a r r a y f o r SHA
+s=h . hexdigest ( )# s t r i n g with hash v a l u e i n hex
+return i n t( s , 1 6 )# hash v a l u e a s i n t e g e r
+defRSASignature ( sk ,m) :# s i g n s a message m
+( n , d)= sk
+h = Hash (m)
+s = ModExp( h , d , n )
+return(m, s )
+defRSASignatureVerify ( pk , s i g ) :# v e r i f i e s a s i g n a t u r e
+( n , e )=pk
+(m, s )= s i g
+i fModExp( s , e , n ) != Hash (m) :
+returnF a l s e
+returnTrue
+defRSASignatureTest ( ) :
+( pk , sk )=RSAKeyGen ( 2 5 7 )# g e n e r a t e RSA modulus n>2 ** 256
+sys . s e t i n t m a x s t r d i g i t s ( 3 1 0 0 0 )# i n c r e a s e l i m i t f o r s t r ( . . . )
+m =s t r( 7 7 7 7 * *7 7 7 7 )# p l a i n t e x t with 30259 c h a r a c t e r s
+s i g =RSASignature ( sk ,m)
+p r i n t( ” Signed document : s i g = ” +s t r( s i g [ 1 ] ) )
+p r i n t( ” V e r i f i c a t i o n :” +s t r( RSASignatureVerify ( pk , s i g ) ) )
+return
+15.3Commitment Protocol
+A cryptographic commitment scheme allows one party to ”commit” to a chosen value (or statement)
+while keeping it hidden from others, with the ability to reveal the committed value later. It is designed
+to be bothhiding(the receiver cannot know the value before it’s revealed) andbinding(the sender cannot
+change the value after committing to it).
+For a coin flip over the telephone, Mallory proposes the following protocol:
+T. Dose 4 SS2026
+--- Page 5 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+• Alice and Mallory agree on an odd bit widthkfor the numbers used in the protocol (e.g.,k=129).
+• Alice chooses a random bitb a ∈ {0, 1}; Mallory chooses a random bitbm ∈ {0, 1}.
+•Alice’s Commitment:She chooses two numbersx a,y a with 2k−1 ≤x a ≤y a ≤2 k −1, such that the
+middle bit of the binary representation ofx a has the valueb a. Alice sendsn a =x a ·y a to Mallory.
+•Mallory’s Commitment:She chooses two numbersx m,y m with 2k−1 ≤x m ≤y m ≤2 k −1, such
+that the middle bit of the binary representation ofxm has the valueb m. Mallory sendsn m =x m ·y m
+to Alice.
+• Alice reveals her commitment by sending(x a,y a)to Mallory.
+• Mallory reveals her commitment by sending(x m,y m)to Alice.
+• Alice verifies that 2 k−1 ≤x m ≤y m ≤2 k −1 andn m =x m ·y m.
+• Mallory verifies that 2 k−1 ≤x a ≤y a ≤2 k −1 andn a =x a ·y a.
+• The result of the coin flip is the bitb= (b a +b m)mod 2.
+(a) How can Mallory manipulate the result of the coin flip? Demonstrate that your idea works by
+writing a short script to simulate it.
+(b) Modify the protocol so that neither Alice nor Mallory has sole control over the outcome of the coin
+flip.
+Solution:
+(a) If Alice chooses the numbersx a andy a cleverly (e.g., as prime numbers), they cannot be
+factorized by Mallory. Thus, Mallory cannot determineb a beforehand.
+However, Mallory can choose four prime numbersa,b,c,deach with a bit length of approxi-
+mately≈k/2, such that the following holds:
+•x 1 :=a·b,y 1 :=c·d,x 2 :=a·c,y 2 :=b·dall have binary representations of lengthk.
+•x 1 ≤y 1 andx 2 ≤y 2.
+•x 1 andx 2 have different middle bits.
+To force the outcomeb∈ {0, 1}of the coin flip, Mallory simply waits until she receives the pair
+(xa,y a)from Alice. From this, she calculatesb a and then the required bitbm := (b+b a)mod 2.
+If the middle bit ofx 1 has the valueb m, Mallory sends the factorization(x 1,y 1). Otherwise,
+the middle bit ofx 2 has the valueb m, and Mallory sends(x 2,y 2).
+Sincea,b,c,dare large prime numbers, Alice cannot efficiently factorize the numbern m =
+a·b·c·dsent by Mallory, so she accepts whichever factorization Mallory reveals.
+The following program calculates the prime numbersa,b,c,drequired by Mallory:
+importrandom
+defIsPrime ( n , s = 5 0 ) :# M i l l e r −Rabin p r i m a l i t y t e s t
+i fn<2 :returnF a l s e
+forjin range( 1 , s + 1 ) :
+a = random . randint ( 1 , n − 1 )
+i = n − 1
+b = [ ]
+while( i>0 ) :
+b . append ( i % 2 )
+i = i // 2
+d = 1
+foriin range(len( b ) − 1 , −1 , −1 ):
+T. Dose 5 SS2026
+--- Page 6 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+x = d
+d = ( d * d ) % n
+i fd == 1andx != 1andx != n − 1 :
+returnF a l s e
+i fb [ i ] == 1 :
+d = ( d * a ) % n
+i fd != 1 :
+returnF a l s e
+returnTrue
+defMidBit ( x ) :
+b =bin( x ) [ 2 : ]
+return i n t( b [len( b ) / / 2 ] )
+defCommitmentFraud ( b i t c o u n t ) :
+l = b i t c o u n t // 2
+whileTrue :
+# Find 4 prime numbers with l e n g t h approx . b i t c o u n t / / 2
+a=b=c=d=0
+while(notIsPrime ( a ) ) : a=random . randint ( 2 * *( l −2 ) , 2 * *( l + 1 ) )
+while(notIsPrime ( b ) ) : b=random . randint ( 2 * *( l −2 ) , 2 * *( l + 1 ) )
+while(notIsPrime ( c ) ) : c=random . randint ( 2 * *( l −2 ) , 2 * *( l + 1 ) )
+while(notIsPrime ( d ) ) : d=random . randint ( 2 * *( l −2 ) , 2 * *( l + 1 ) )
+n = a * b * c * d
+x1 =min( a * b , c * d )
+x2 =min( a * c , b * d )
+i f len(bin( x1 ) ) − 2 == b i t c o u n tand len(bin( x2 ) ) − 2 == b i t c o u n t :
+i f len(bin( n//x1 ) ) − 2 == b i t c o u n tand len(bin( n//x2 ) ) − 2 == b i t c o u n t :
+i fMidBit ( x1 ) != MidBit ( x2 ) :
+return( n , x1 , x2 )
+defmain ( b i t c o u n t = 1 2 9 ) :
+( n , x1 , x2 ) = CommitmentFraud ( b i t c o u n t )
+p r i n t( ”n = ” +s t r( n ) + ” = x1 * y1 = ” +s t r( x1 ) + ” * ” +s t r( n//x1 ) )
+p r i n t( ”n = ” +s t r( n ) + ” = x2 * y2 = ” +s t r( x2 ) + ” * ” +s t r( n//x2 ) )
+p r i n t( ”x1 = ” +bin( x1 ) [ 2 : ] )
+p r i n t( ”y1 = ” +bin( n//x1 ) [ 2 : ] )
+p r i n t( ”x2 = ” +bin( x2 ) [ 2 : ] )
+p r i n t( ”y2 = ” +bin( n//x2 ) [ 2 : ] )
+return
+main ( 1 2 9 )
+(b) To make the protocol secure, we must require thatx a,y a,x m,y m are all prime numbers.
+At the end of the protocol, Alice and Mallory can use theMiller-Rabin primality testto verify
+whether the other player actually chose prime numbers. With this modification,n m uniquely
+determines the bit chosen by Mallory, preventing the fraud described in (a).
+T. Dose 6 SS2026

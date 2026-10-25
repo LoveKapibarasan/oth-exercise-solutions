@@ -1,0 +1,17 @@
+[
+  {
+    "sheet": "Exercise 14.1",
+    "question": "Explain the Left-to-Right version of the Square-and-Multiply algorithm for modular exponentiation ($x^y \\pmod n$), tracing it for $4^{23} \\pmod{37}$ (where $23 = 10111_2$).",
+    "answer": "Start with accumulator $z = 1$. Scan the binary representation of the exponent ($y = 10111_2$) from left to right:\n\n* **Bit 1 (MSB):** Square and multiply: $z \\equiv 1^2 \\cdot 4 \\equiv 4 \\pmod{37}$.\n* **Bit 0:** Square only: $z \\equiv 4^2 \\equiv 16 \\pmod{37}$.\n* **Bit 1:** Square and multiply: $z \\equiv 16^2 \\cdot 4 \\equiv 256 \\cdot 4 \\equiv (-3) \\cdot 4 \\equiv -12 \\equiv 25 \\pmod{37}$.\n* **Bit 1:** Square and multiply: $z \\equiv 25^2 \\cdot 4 \\equiv (-12)^2 \\cdot 4 \\equiv 144 \\cdot 4 \\equiv (-4) \\cdot 4 \\equiv -16 \\equiv 21 \\pmod{37}$.\n* **Bit 1 (LSB):** Square and multiply: $z \\equiv 21^2 \\cdot 4 \\equiv (-16)^2 \\cdot 4 \\equiv 256 \\cdot 4 \\equiv (-3) \\cdot 4 \\equiv -12 \\equiv 25 \\pmod{37}$.\n\n**Result:** $25$.\n\n*Benefit:* The Left-to-Right version is preferred because it processes bits sequentially without storing all powers of 2, interleaving squaring and multiplication in a single accumulator."
+  },
+  {
+    "sheet": "Exercise 14.2",
+    "question": "Prove the equivalence: In RSA where $n=pq$ for distinct primes $p, q$, factoring $n$ is computationally equivalent to computing $\\phi(n)$.",
+    "answer": "**Direction 1: Factorization $\\implies$ Computing $\\phi(n)$:**\n* If we can factor $n$, we obtain $p$ and $q$. We then compute $\\phi(n) = (p-1)(q-1) = n - p - q + 1$ in $O(1)$ arithmetic operations.\n\n**Direction 2: Computing $\\phi(n) \\implies$ Factorization:**\n* Assume we know $\\phi(n)$. Since $\\phi(n) = n - (p+q) + 1$, we can compute:\n  $$p+q = n - \\phi(n) + 1$$\n* Consider the quadratic polynomial whose roots are $p$ and $q$:\n  $$f(x) = (x-p)(x-q) = x^2 - (p+q)x + pq = x^2 - (n-\\phi(n)+1)x + n$$\n* We can solve $f(x) = 0$ using the quadratic formula:\n  $$x_{1,2} = \\frac{(n-\\phi(n)+1) \\pm \\sqrt{(n-\\phi(n)+1)^2 - 4n}}{2}$$\n* Calculating the square root can be done in polynomial time (using binary search). The roots $x_1, x_2$ give the exact factors $p, q$."
+  },
+  {
+    "sheet": "Exercise 14.4",
+    "question": "Explain Håstad's Broadcast Attack on Plain RSA and how it can be carried out when a message $m$ is encrypted with $e=3$ to three different recipients with moduli $n_1, n_2, n_3$.",
+    "answer": "When the same message $m$ is encrypted with $e=3$, we intercept:\n$$c_1 \\equiv m^3 \\pmod{n_1},\\quad c_2 \\equiv m^3 \\pmod{n_2},\\quad c_3 \\equiv m^3 \\pmod{n_3}$$\n\n1. **Chinese Remainder Theorem (CRT):** Since $\\gcd(n_i, n_j) = 1$, we can use the CRT to find the unique $C \\in [0, n_1 n_2 n_3 - 1]$ satisfying:\n   $$C \\equiv m^3 \\pmod{n_1 n_2 n_3}$$\n2. **Cube Root Recovery:** Since the message $m$ must be smaller than each modulus $n_i$ ($m < n_i$), it follows that $m^3 < n_1 n_2 n_3$. Thus, the modular equation $C \\equiv m^3 \\pmod{n_1 n_2 n_3}$ holds as a pure integer equation:\n   $$C = m^3$$\n3. We can recover $m$ by computing the exact integer cube root of $C$ using binary search, completely bypassing the RSA security."
+  }
+]

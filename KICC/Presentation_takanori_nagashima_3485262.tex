@@ -1,0 +1,427 @@
+%\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{multimedia} 
+
+% Title Information
+\title[Lab 06: Cloud ML]{Lab Exercise 06: Machine Learning in the Cloud with Microsoft Azure}
+\subtitle{ Human-like Shogi AI}
+\author{Takanori Nagashima}
+\institute{Introduction to Cloud Computing}
+\date{\today}
+\AtBeginSection[]{
+  \begin{frame}{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{document}
+
+% --- Slide 1: Title ---
+\frame{\titlepage}
+
+\begin{frame}{Outline}             % \begin{frame}{Title} sets the slide heading
+    \tableofcontents               % Generates TOC (auto-linked)
+\end{frame}
+
+\section{Introduction}
+% --- Slide 2: ---
+\begin{frame}{Project Overview: Human-like Shogi AI}
+    \begin{block}{Concept}
+        Development of a Shogi AI that emulates human-like decision-making processes rather than purely focusing on win-rate maximization.
+    \end{block}
+    
+    \begin{itemize}
+        \item \textbf{Data Source:} Supervised learning based on professional game records (\textit{.kif}).
+        \item \textbf{Purpose:} Create a human-like tutor to counter the issue of current AIs being too strong.
+        \item \textbf{Platform:} Utilizing \textbf{Microsoft Azure} for large-scale model training and deployment.
+    \end{itemize}
+\end{frame}
+
+
+% --- Slide 2: What is Shogi? ---
+\begin{frame}{What is Shogi?}
+    \begin{center}
+        \includegraphics[width=0.3\textwidth]{assets/board_image.jpeg}
+    \end{center}
+    \begin{itemize}
+        \item A traditional Japanese strategy board game.
+        \item Similar to Chess, but featuring a unique "Drop Rule" where captured pieces can be returned to the board as your own.
+        \item Known for its extreme complexity ($>$ Chess) and deep strategic possibilities.
+    \end{itemize}
+\end{frame}
+
+
+% --- Slide 3: Azure Setup ---
+\begin{frame}{Azure Setup}
+    \begin{itemize}
+        \item \textbf{Resource Provisioning:} Used \textbf{Azure CLI} for environment setup.
+        \item \textbf{Deployment Script:} \texttt{01-azure.sh}
+            \begin{itemize}
+                \item This script automates the creation and configuration of the necessary Azure resources.
+            \end{itemize}
+        \item \textbf{Region Selection: \texttt{japaneast}}
+            \begin{itemize}
+                \item Chosen for its geographical proximity to the target Japanese user base.
+                \item Intended to optimize network performance and minimize latency.
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\section{Data Collection}
+% --- Slide 3: Data Collection - 1 ---
+\begin{frame}{Data Collection - 1}
+    \textbf{Target Platform:} Shogi Wars (The most popular Shogi application)
+    \begin{itemize}
+        \item URL: \url{https://shogiwars.heroz.jp/}
+    \end{itemize}
+
+    \begin{center}
+        \includegraphics[height=0.3\textheight]{assets/shogiwars_image.jpeg}
+    \end{center}
+
+    \begin{block}{The Problem}
+        The Shogi Wars provider officially offers neither game record (kif) data for public download nor a public API interface.
+    \end{block}
+\end{frame}
+
+% --- Slide 4: Data Collection - 2 ---
+\begin{frame}{Data Collection - 2: Technical Approach}
+    \begin{itemize}
+        \item \textbf{Exploration of Methods:} Two potential approaches:
+            \begin{enumerate}
+                \item Investigating the request structure to identify data endpoints.
+                \item \textbf{Extracting KIF strings directly from HTML source.}
+            \end{enumerate}
+        \item \textbf{Investigation via \texttt{curl}:} 
+            \begin{itemize}
+                \item Manually tested multiple pages using \texttt{curl} scripts.
+                \item Confirmed that no specific data endpoints exist; the kif data was embedded within the HTML.
+            \end{itemize}
+        \item \textbf{Final Decision:} Selected the method of scraping KIF strings from HTML using Python.
+    \end{itemize}
+\end{frame}
+
+% --- Slide 5: Data Collection Methodology ---
+\begin{frame}{Data Collection - 3: Basic Idea}
+    \begin{algorithm}[H]
+        \caption{Data Extraction and Conversion Pipeline}
+        \begin{algorithmic}[1]
+            \STATE \textbf{Identify Users:} Access the "Yearly Championship" page to extract active \texttt{user\_id}s.
+            \STATE \textbf{Filter Games:} For each \texttt{user\_id}, extract \texttt{game\_id}s filtered by game type: \textbf{sb (3-minute games)}.
+            \STATE \textbf{Storage:} Store the \texttt{user\_id} and \texttt{game\_id} mappings in a JSON file.
+            \STATE \textbf{Scrape KIF:} Download and extract raw \texttt{.kif} strings from the associated HTML pages.
+            \STATE \textbf{Format Conversion:} 
+            \begin{itemize}
+                \item Convert \texttt{.kif} $\rightarrow$ \texttt{.csa} format.
+                \item Tool: \textbf{ShogiHome} (\url{https://sunfish-shogi.github.io/shogihome/})
+            \end{itemize}
+        \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+\begin{frame}{Data Collection - 4: Extracting Session Data}
+    \begin{itemize}
+        \item \textbf{Challenge:} Accessing protected game records requires valid authentication tokens.
+        \item \textbf{Investigation:} Identifying \texttt{Websession} values and \texttt{Cookie} strings through browser developer tools and manual \texttt{curl} tests.
+    \end{itemize}
+
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{assets/websession.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Data Collection - 5: Main Code}
+
+    \begin{block}{Solution: Data Scraping}
+        To collect the necessary dataset, the following script was utilized to clone game records:
+        \begin{itemize}
+            \item \url{https://github.com/LoveKapibarasan/kifs}
+        \end{itemize}
+    \end{block}
+
+    \begin{alertblock}{Important Remark: Ethical Scraping}
+        \begin{itemize}
+            \item \textbf{Do not overload the server:} Implemented appropriate intervals (sleep timers) between requests.
+            \item Respecting the target platform's stability is crucial when collecting large-scale datasets.
+        \end{itemize}
+    \end{alertblock}
+    
+\end{frame}
+
+\begin{frame}{Data Collection - 6: Azure Infrastructure}
+    \begin{itemize}
+        \item \textbf{Computational Resource: Azure Virtual Machines}
+        \begin{itemize}
+            \item Used for running the Python scraping scripts and data conversion.
+            \item \textbf{Spot Instance:} Utilized Azure Spot Instances to significantly reduce operational costs (up to 90\% discount) for non-urgent background tasks.
+        \end{itemize}
+        
+        \item \textbf{Data Persistence: Azure Blob Storage}
+        \begin{itemize}
+            \item Collected \texttt{.kif} and \texttt{.csa} files are directly uploaded to Blob Storage.
+            \item Ensures data durability and accessibility for the subsequent Machine Learning phase.
+        \end{itemize}
+    \end{itemize}
+
+    \begin{block}{Why Spot Instances?}
+        Since data collection is a separable and resumable task, Spot Instances provided the ideal balance between high performance and low cost, even with the risk of eviction.
+    \end{block}
+\end{frame} 
+
+
+\begin{frame}{Azure Setup: (02--04)}
+    \begin{itemize}
+        \item \textbf{02-azure.sh}
+            \begin{itemize}
+                \item Initiates the deployment environment and run the scripts.
+            \end{itemize}
+        \item \textbf{03-azure.sh}
+            \begin{itemize}
+                \item Provisions the Virtual Machine with Ubuntu Server 24.
+            \end{itemize}
+        \item \textbf{04-azure.sh}
+            \begin{itemize}
+                \item Automates the creation of the Azure Blob Storage container.
+                \item Uploads the collected and converted Shogi game records (\texttt{.kif} / \texttt{.csa}) to the cloud for persistence.
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{First Iteration Results}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item \textbf{Data:} $\approx$ 6,000 kifs
+                \item \textbf{Training Time:} 48 min
+                \item \textbf{Status:} Pipeline validated
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \includegraphics[width=\textwidth]{assets/kif_to_csa.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Training}
+
+\begin{frame}{Development Environment \& Training}
+    \begin{itemize}
+        \item \textbf{Infrastructure:} 
+            \begin{itemize}
+                \item \textbf{Azure Machine Learning:} Managed environment for final integration and scalable deployment experiments.
+                \item \textbf{Google Colab:} Primary training environment (Selected for cost-efficiency and resource optimization\footnote{Major training phases were migrated to Colab to manage budget constraints due to high Azure compute costs.}).
+            \end{itemize}
+        \item \textbf{Model Architecture:} Deep Reinforcement Learning with Shogi-specific residual blocks.
+        \item \textbf{Style:} Human-like \textbf{Furibisha} (Ranging Rook).
+        \item \textbf{Reference:} \texttt{05-azure.sh} (Provisioning script)
+    \end{itemize}
+\end{frame}
+
+\section{Evaluation}
+
+\begin{frame}{Result: Practical Performance}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \begin{block}{AI Evaluation}
+                \begin{itemize}
+                    \item \textbf{Strength:} $\approx$ 1-kyu
+                    \item \textbf{Style:} \textbf{Furibisha} (Ranging Rook)
+                    \item \textbf{Strategy:} Professional human-like move selection.
+                \end{itemize}
+            \end{block}
+            \small
+            \textbf{Human-likeness:} Unlike typical engines, this model prefers aesthetic and tactical flexibility.
+        \end{column}
+
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{figure}
+                    \href{https://vimeo.com/1186695731}{
+                        \includegraphics[width=\textwidth]{assets/video_thumbnail.png}
+                    }
+                    \caption{\footnotesize \textcolor{blue}{\underline{Click to Watch Match Video (Vimeo)}}}
+                \end{figure}
+                \scriptsize ※ External browser will open for playback.
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Deployment \& Architecture}
+
+
+\begin{frame}{Communication \& Protocol}
+    \begin{itemize}
+        \item \textbf{Server Implementation:} 
+            \begin{itemize}
+                \item Utilized \texttt{shogi-server} for CSA protocol matching.
+                \item Configured to listen on \textbf{Port 4081} (CSA Standard Port).
+            \end{itemize}
+        
+        \item \textbf{CSA Protocol (ver. 1.2.1):}
+            \begin{itemize}
+                \item \textbf{Model:} TCP/IP server-client model.
+                \item \textbf{Standard Port:} 4081.
+                \item \textbf{Format:} Line-based 7-bit ASCII strings (LF terminated).
+                \item \textbf{Reference:} \url{http://www2.computer-shogi.org/protocol/}
+            \end{itemize}
+    \end{itemize}
+
+    \begin{block}{Core Mechanism}
+        Commands like \texttt{LOGIN}, \texttt{AGREE}, and moves (e.g., \texttt{+7776FU}) allow standardized interaction between various engines and the shogi-server.
+    \end{block}
+\end{frame}
+
+
+\begin{frame}{Cloud-Native Implementation with Azure \& Docker}
+    \begin{itemize}
+        \item \textbf{Core Engine:} \texttt{shogi-server}\footnote{https://github.com/shogi-server/shogi-server}
+            \begin{itemize}
+                \item Implemented in \textbf{Ruby 3.2+}.
+                \item Compliant with \textbf{CSA Server Protocol Ver 1.2.1}.
+            \end{itemize}
+        
+        \item \textbf{Infrastructure (Azure-Native):}
+            \begin{itemize}
+                \item \textbf{Azure Container Registry (ACR):} Managed private Docker images and facilitated automated deployment.
+                \item \textbf{Azure Container Instances (ACI):} Leveraged for rapid, serverless container execution, exposing standard \textbf{Port 4081} to the public internet.
+                \item \textbf{Reference:} \texttt{06-azure.sh} (Provisioning script)
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\section{How to Play}
+
+\section{Web UI Deployment}
+
+\begin{frame}{Web UI Deployment: Shogihome}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}
+                \item \textbf{Automation Script:} \texttt{07-azure.sh}
+                \item \textbf{Host Platform:} Azure App Service (Node.js 22-lts)
+                \item \textbf{Outcome:} Frontend interface successfully bundled and deployed to the cloud infrastructure.
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.55\textwidth}
+            \begin{center}
+                \includegraphics[width=0.95\textwidth]{assets/terminal.png}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{How to Play - 1: Connect to the Server}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Scan to Access}
+                Scan the QR code to access the Shogi client platform or view deployment details.
+            \end{block}
+            \begin{itemize}
+                \item \textbf{Server Address:} \texttt{lovekapibarasan.org}                \item \textbf{Port:} \texttt{4081} (CSA Standard)
+                \item \textbf{Engine Name:} \texttt{Server Engine}
+            \end{itemize}
+            \vspace{0.3cm}
+        \end{column}
+
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \includegraphics[width=0.6\textwidth]{assets/qrcode.png}
+                \vspace{0.2cm}
+                \footnotesize \url{https://shogihome.lovekapibarasan.org}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{How to Play - 2: Language Settings}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}
+                \item \textbf{Language Selection:} Navigate to the settings menu to toggle between Japanese and English.
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.55\textwidth}
+            \begin{center}
+                \includegraphics[width=0.9\textwidth]{assets/lang.png}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{How to Play - 3: Select the Bot Engine}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Steps to Start a Game}
+                Follow these simple steps to challenge the human-like AI:
+            \end{block}
+            \begin{enumerate}
+                \item Open the Web UI panel in your browser and select "Local Match".
+            \end{enumerate}
+        \end{column}
+
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \includegraphics[width=0.9\textwidth]{assets/how-to-play-1.png}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{How to Play - 4: Matchmaking with the Bot}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Steps to Start a Game}
+                Follow these simple steps to challenge the AI:
+            \end{block}
+            \begin{enumerate}
+                \setcounter{enumi}{1}
+                \item Select \textbf{\texttt{Server Engine}} from the engine list.
+                \item Send a challenge request to begin the match directly on the web interface.
+            \end{enumerate}
+        \end{column}
+
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \includegraphics[width=0.9\textwidth]{assets/how-to-play-2.png}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+
+\begin{frame}{Networking \& Infrastructure Trial}
+    \begin{itemize}
+        \item \textbf{Short-term Trials:} Evaluated various cloud AI services and managed networking components over a short period.
+        \item \textbf{Architecture Pivot:} Attempted an \textbf{Azure Bastion} setup to bridge local GPU resources to the cloud, but abandoned it due to excessive pricing.
+        \item \textbf{Final Solution:} Cost-effective hybrid setup using \textbf{WireGuard} and \textbf{Cloudflare}.
+    \end{itemize}
+\end{frame}
+
+\section{Summary}
+
+
+\begin{frame}{Acknowledgments}
+    \begin{block}{Acknowledgments}
+        Special thanks to the open-source foundations and projects that made this entire environment possible:
+        \vspace{0.5em}
+        \begin{itemize}
+            \item \textbf{Shogihome:} For providing the comprehensive and intuitive frontend web interface.
+            \item \textbf{shogi-server:} For managing the core CSA engine matchmaking system and protocol handling.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\end{document}

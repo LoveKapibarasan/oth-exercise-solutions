@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --lidl-blue: #0050aa;
+            --lidl-yellow: #ffcc00;
+            --discount-red: #df002e;
+        }
+        body { font-family: sans-serif; background: #f0f0f0; display: flex; justify: center; padding: 20px; }
+        .app-screen {
+            width: 320px; background: white; border: 8px solid #333; border-radius: 30px; overflow: hidden;
+        }
+        .header { background: var(--lidl-blue); color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .product-card { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; }
+        .product-img { width: 60px; height: 60px; background: #eee; border-radius: 10px; margin-right: 15px; display: flex; justify-content: center; align-items: center; font-size: 30px; }
+        .info { flex-grow: 1; }
+        .name { font-weight: bold; font-size: 16px; }
+        .stock-bar { width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-top: 8px; }
+        .stock-fill { height: 100%; background: var(--lidl-blue); border-radius: 3px; }
+        .price-tag { text-align: right; }
+        .old-price { text-decoration: line-through; color: #999; font-size: 12px; }
+        .current-price { color: var(--discount-red); font-weight: bold; font-size: 18px; }
+        .ai-badge { font-size: 9px; background: #eef5ff; color: var(--lidl-blue); padding: 2px 5px; border-radius: 4px; margin-top: 4px; display: inline-block; }
+    </small></style>
+</head>
+<body>
+    <div class="app-screen">
+        <div class="header">Live Pricing: Fresh Section</div>
+        <div class="product-card">
+            <div class="product-img">🍎</div>
+            <div class="info">
+                <div class="name">Organic Apples</div>
+                <div class="ai-badge">AI Optimized</div>
+                <div class="stock-bar"><div class="stock-fill" style="width: 80%;"></div></div>
+            </div>
+            <div class="price-tag">
+                <div class="old-price">€2.99</div>
+                <div class="current-price">€2.45</div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-img">🍞</div>
+            <div class="info">
+                <div class="name">Fresh Sourdough</div>
+                <div class="ai-badge" style="color:red; background:#fff0f0;">High Stock Alert</div>
+                <div class="stock-bar"><div class="stock-fill" style="width: 40%; background: orange;"></div></div>
+            </div>
+            <div class="price-tag">
+                <div class="old-price">€3.50</div>
+                <div class="current-price" style="font-size: 22px;">€1.80</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

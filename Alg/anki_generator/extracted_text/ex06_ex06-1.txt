@@ -1,0 +1,10 @@
+--- Page 1 ---
+Exercise 6-1: Approximation of TSP
+1. Create MST.
+MST is the lower bound of TSP.
+2. Create multigraph by duplicating edges of MST.
+Now this round trip has around double cost than TSP tour.
+3. Apply transitive(metrics) low.
+If A  B  C, then A  C cost is smaller than A  B  C cost.
+4. Now the graph is round-trip-able and has around double cost than TSP tour.
+→ → → → →

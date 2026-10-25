@@ -1,0 +1,767 @@
+\documentclass[12pt,a4paper]{exam}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{physics}
+\usepackage{braket}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{quantikz}
+
+\geometry{margin=2.5cm}
+
+\renewcommand{\solutiontitle}{\noindent\textbf{Solution:}\enspace}
+
+\header{Quantum Computing --- SoSe 2026}{Mock Examination 2}{OTH Regensburg}
+\headrule
+\footer{}{Page \thepage}{}
+\footrule
+
+\pointsinrightmargin
+\bracketedpoints
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \textbf{Quantum Computing}}\\[0.4em]
+  {\large Mock Examination 2 --- Summer Semester 2026}\\[0.3em]
+  {\large Prof.\ Dr.\ Martin Sachenbacher \quad OTH Regensburg}\\[1em]
+  \begin{tabular}{ll}
+    \textbf{Duration:}   & 120 minutes \\
+    \textbf{Total points:} & 120 points (6 questions $\times$ 20 points) \\
+    \textbf{Difficulty:} & Slightly challenging \\
+    \textbf{Aids:}       & No electronic devices. One handwritten A4 sheet allowed. \\
+  \end{tabular}
+\end{center}
+
+\bigskip
+\noindent\textbf{Instructions:} Answer all six questions. Write your solutions clearly and justify each step.
+Show all intermediate calculations. Partial credit is awarded.
+
+\bigskip\hrule\bigskip
+
+%% ============================================================
+\begin{questions}
+
+%% ============================================================
+\question[20] \textbf{Superposition, Normalization, and Single-Qubit Gates}
+
+\begin{parts}
+
+\part[5]
+Determine which of the following vectors are \textbf{valid quantum states} (i.e.\ correctly normalized).
+For each valid state, state the measurement probabilities $p(0)$ and $p(1)$.
+\[
+\text{(i)}\;\begin{pmatrix}\sqrt{0.6}\\\sqrt{0.4}\end{pmatrix},\qquad
+\text{(ii)}\;\begin{pmatrix}\tfrac{1}{2}\\\tfrac{\sqrt{3}}{2}\end{pmatrix},\qquad
+\text{(iii)}\;\begin{pmatrix}1\\-1\end{pmatrix},\qquad
+\text{(iv)}\;\begin{pmatrix}-\sqrt{0.75}\\\sqrt{0.25}\end{pmatrix}
+\]
+
+\begin{solution}
+A vector $\begin{pmatrix}a\\b\end{pmatrix}$ is a valid quantum state iff $a^2+b^2=1$.
+
+\textbf{(i)} $(\sqrt{0.6})^2+(\sqrt{0.4})^2 = 0.6+0.4 = 1$.\quad \textbf{Valid.}\quad $p(0)=0.6,\; p(1)=0.4$.
+
+\textbf{(ii)} $\bigl(\tfrac12\bigr)^2+\bigl(\tfrac{\sqrt{3}}{2}\bigr)^2 = \tfrac14+\tfrac34 = 1$.\quad \textbf{Valid.}\quad $p(0)=\tfrac14,\; p(1)=\tfrac34$.
+
+\textbf{(iii)} $1^2+(-1)^2=2\ne1$.\quad \textbf{Not valid.}
+
+\textbf{(iv)} $(-\sqrt{0.75})^2+(\sqrt{0.25})^2=0.75+0.25=1$.\quad \textbf{Valid.}\quad $p(0)=0.75,\; p(1)=0.25$.
+
+\textit{Note}: States (i) and (iv) yield different amplitude vectors but identical probability distributions---signs of amplitudes do not affect measurement probabilities.
+\end{solution}
+
+\part[5]
+The Pauli $Z$ gate is $Z = \begin{pmatrix}1&0\\0&-1\end{pmatrix}$.
+Starting from $\ket{0}$, compute the output of the gate sequence $H \to Z \to H$
+(i.e.\ apply $H$ first, then $Z$, then $H$ again).
+Show all intermediate states and identify the composite gate $HZH$.
+
+\begin{solution}
+We compute $HZH\ket{0}$ step by step.
+
+\textbf{Step 1:} $H\ket{0}=\frac{1}{\sqrt{2}}\begin{pmatrix}1\\1\end{pmatrix}=\ket{+}$.
+
+\textbf{Step 2:} $Z\ket{+}=\frac{1}{\sqrt{2}}\begin{pmatrix}1&0\\0&-1\end{pmatrix}\begin{pmatrix}1\\1\end{pmatrix}=\frac{1}{\sqrt{2}}\begin{pmatrix}1\\-1\end{pmatrix}=\ket{-}$.
+
+\textbf{Step 3:} $H\ket{-}=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}\frac{1}{\sqrt{2}}\begin{pmatrix}1\\-1\end{pmatrix}=\frac{1}{2}\begin{pmatrix}0\\2\end{pmatrix}=\begin{pmatrix}0\\1\end{pmatrix}=\ket{1}$.
+
+So $HZH\ket{0}=\ket{1}$. Analogously $HZH\ket{1}=\ket{0}$.
+
+\textbf{Direct verification:}
+\[
+HZH=\frac{1}{2}\begin{pmatrix}1&1\\1&-1\end{pmatrix}\begin{pmatrix}1&0\\0&-1\end{pmatrix}\begin{pmatrix}1&1\\1&-1\end{pmatrix}
+=\frac{1}{2}\begin{pmatrix}1&-1\\1&1\end{pmatrix}\begin{pmatrix}1&1\\1&-1\end{pmatrix}=\begin{pmatrix}0&1\\1&0\end{pmatrix}=X.
+\]
+\textbf{The composite gate $HZH = X$} (the Pauli $X$ / NOT gate). This is a fundamental circuit identity.
+\end{solution}
+
+\part[5]
+A qubit is in state $\ket{\psi}=\frac{1}{2}\ket{0}+\frac{\sqrt{3}}{2}\ket{1}$.
+\begin{enumerate}[label=(\roman*)]
+  \item What is the probability of measuring $\ket{0}$? What is the post-measurement state?
+  \item Apply $H$ to $\ket{\psi}$ \emph{before} measuring.
+        Compute the output state $H\ket{\psi}$ and the resulting measurement probabilities.
+\end{enumerate}
+
+\begin{solution}
+\textbf{(i)} $p(0) = \bigl(\tfrac12\bigr)^2 = \tfrac14$.
+Post-measurement: state collapses to $\ket{0}$ (with certainty).
+
+\textbf{(ii)}
+\[
+H\ket{\psi} = \tfrac12 H\ket{0}+\tfrac{\sqrt{3}}{2}H\ket{1}
+= \tfrac{1}{2}\cdot\tfrac{1}{\sqrt{2}}\begin{pmatrix}1\\1\end{pmatrix}+\tfrac{\sqrt{3}}{2}\cdot\tfrac{1}{\sqrt{2}}\begin{pmatrix}1\\-1\end{pmatrix}
+= \tfrac{1}{2\sqrt{2}}\begin{pmatrix}1+\sqrt{3}\\1-\sqrt{3}\end{pmatrix}.
+\]
+\[
+p(0) = \Bigl(\tfrac{1+\sqrt{3}}{2\sqrt{2}}\Bigr)^2 = \tfrac{(1+\sqrt{3})^2}{8} = \tfrac{4+2\sqrt{3}}{8}=\tfrac{2+\sqrt{3}}{4}\approx 0.933.
+\]
+\[
+p(1) = \Bigl(\tfrac{1-\sqrt{3}}{2\sqrt{2}}\Bigr)^2 = \tfrac{4-2\sqrt{3}}{8}=\tfrac{2-\sqrt{3}}{4}\approx 0.067.
+\]
+Check: $\tfrac{2+\sqrt{3}}{4}+\tfrac{2-\sqrt{3}}{4}=1$. $\checkmark$
+
+Applying $H$ before measurement rotates the state into the Hadamard basis, dramatically changing which outcome is likely.
+\end{solution}
+
+\part[5]
+Show that the Pauli matrices $X=\begin{pmatrix}0&1\\1&0\end{pmatrix}$ and
+$Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$ are \textbf{orthogonal} ($U^TU=I$) and
+\textbf{self-inverse} ($U^2=I$).
+Then explain the physical significance of these two properties for quantum gates.
+
+\begin{solution}
+\textbf{$X$ is orthogonal:} $X^T=X$ (symmetric), so $X^TX=X^2=\begin{pmatrix}0&1\\1&0\end{pmatrix}^2=\begin{pmatrix}1&0\\0&1\end{pmatrix}=I$. $\checkmark$
+
+\textbf{$Z$ is orthogonal:} $Z^T=Z$ (diagonal $\Rightarrow$ symmetric), so $Z^TZ=Z^2=\begin{pmatrix}1&0\\0&1\end{pmatrix}=I$. $\checkmark$
+
+\textbf{Self-inverse:} $X^2=I$ and $Z^2=I$ follow from the same computations. Each gate is its own inverse.
+
+\textbf{Physical significance:}
+\begin{itemize}
+  \item \textbf{Orthogonality ($U^TU=I$)}: Orthogonal matrices preserve the Euclidean norm: $\|U\vec{v}\|^2 = \vec{v}^TU^TU\vec{v} = \|\vec{v}\|^2$. This ensures a valid normalized quantum state remains normalized after the gate is applied --- a fundamental physical requirement.
+  \item \textbf{Self-inverse ($U^2=I$)}: The gate is its own reverse operation. In a quantum circuit, appending the same gate again cancels it, which is the basis of \emph{uncomputation} in ancilla management. It also means these gates are reversible (required for all quantum operations).
+\end{itemize}
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Kronecker Products and Parallel Composition}
+
+Consider two independent two-state Markov chains $A$ and $B$ with transition matrices
+\[
+\mathbf{P}_A = \begin{pmatrix}\tfrac{3}{4}&\tfrac{1}{4}\\[4pt]\tfrac{1}{2}&\tfrac{1}{2}\end{pmatrix},\qquad
+\mathbf{P}_B = \begin{pmatrix}\tfrac{2}{3}&\tfrac{1}{3}\\[4pt]\tfrac{1}{4}&\tfrac{3}{4}\end{pmatrix}
+\]
+where $P_{i,j}=\Pr(X_t=j\mid X_{t-1}=i)$.
+
+\begin{parts}
+
+\part[5]
+The joint chain $(A,B)$ with state space $\{00,01,10,11\}$ has transition matrix
+$\mathbf{P}_{AB}=\mathbf{P}_A\otimes\mathbf{P}_B$ (Kronecker product).
+Write $\mathbf{P}_{AB}$ explicitly as a $4\times4$ matrix, using the state ordering $00,01,10,11$.
+Verify that each row sums to $1$.
+
+\begin{solution}
+The Kronecker product replaces each entry $P_A(i,j)$ by $P_A(i,j)\cdot\mathbf{P}_B$:
+
+\medskip
+\noindent Computing each row $(i_A,i_B)\to(j_A,j_B)$ via $P_A(i_A,j_A)\cdot P_B(i_B,j_B)$:
+
+\medskip
+\noindent\textbf{Row $00$:}
+$\tfrac34\cdot\tfrac23=\tfrac12,\quad\tfrac34\cdot\tfrac13=\tfrac14,\quad\tfrac14\cdot\tfrac23=\tfrac16,\quad\tfrac14\cdot\tfrac13=\tfrac{1}{12}$.
+Sum: $\tfrac{6+3+2+1}{12}=1$.\,$\checkmark$
+
+\noindent\textbf{Row $01$:}
+$\tfrac34\cdot\tfrac14=\tfrac{3}{16},\quad\tfrac34\cdot\tfrac34=\tfrac{9}{16},\quad\tfrac14\cdot\tfrac14=\tfrac{1}{16},\quad\tfrac14\cdot\tfrac34=\tfrac{3}{16}$.
+Sum: $\tfrac{16}{16}=1$.\,$\checkmark$
+
+\noindent\textbf{Row $10$:}
+$\tfrac12\cdot\tfrac23=\tfrac13,\quad\tfrac12\cdot\tfrac13=\tfrac16,\quad\tfrac12\cdot\tfrac23=\tfrac13,\quad\tfrac12\cdot\tfrac13=\tfrac16$.
+Sum: $1$.\,$\checkmark$
+
+\noindent\textbf{Row $11$:}
+$\tfrac12\cdot\tfrac14=\tfrac18,\quad\tfrac12\cdot\tfrac34=\tfrac38,\quad\tfrac12\cdot\tfrac14=\tfrac18,\quad\tfrac12\cdot\tfrac34=\tfrac38$.
+Sum: $1$.\,$\checkmark$
+
+\[
+\mathbf{P}_{AB}=
+\begin{pmatrix}
+\tfrac{1}{2}   & \tfrac{1}{4}   & \tfrac{1}{6}   & \tfrac{1}{12}  \\[5pt]
+\tfrac{3}{16}  & \tfrac{9}{16}  & \tfrac{1}{16}  & \tfrac{3}{16}  \\[5pt]
+\tfrac{1}{3}   & \tfrac{1}{6}   & \tfrac{1}{3}   & \tfrac{1}{6}   \\[5pt]
+\tfrac{1}{8}   & \tfrac{3}{8}   & \tfrac{1}{8}   & \tfrac{3}{8}
+\end{pmatrix}
+\]
+\end{solution}
+
+\part[5]
+The joint system starts with $A$ in state $0$ and $B$ in state $0$.
+Express the initial joint distribution $\vec{p}(0)$ as a Kronecker product of the individual starting
+distributions, and compute $\vec{p}(1)$ after one step \textbf{in two ways}:
+(i) directly via $\vec{p}(1)=\vec{p}(0)\mathbf{P}_{AB}$, and
+(ii) by evolving each chain separately and taking the Kronecker product.
+
+\begin{solution}
+Individual starting distributions: $\vec{q}_A(0)=(1,0)$, $\vec{q}_B(0)=(1,0)$.
+Joint: $\vec{p}(0)=\vec{q}_A(0)\otimes\vec{q}_B(0)=(1,0)\otimes(1,0)=(1,0,0,0)$.
+
+\textbf{(i) Direct:} $\vec{p}(1)=\vec{p}(0)\mathbf{P}_{AB}=$ row $00$ of $\mathbf{P}_{AB}$:
+\[
+\vec{p}(1)=\Bigl(\tfrac12,\;\tfrac14,\;\tfrac16,\;\tfrac{1}{12}\Bigr).
+\]
+
+\textbf{(ii) Separate chains:}
+$\vec{q}_A(1)=(1,0)\mathbf{P}_A=\bigl(\tfrac34,\tfrac14\bigr)$,\quad
+$\vec{q}_B(1)=(1,0)\mathbf{P}_B=\bigl(\tfrac23,\tfrac13\bigr)$.
+\[
+\vec{q}_A(1)\otimes\vec{q}_B(1)=\Bigl(\tfrac34\cdot\tfrac23,\;\tfrac34\cdot\tfrac13,\;\tfrac14\cdot\tfrac23,\;\tfrac14\cdot\tfrac13\Bigr)=\Bigl(\tfrac12,\;\tfrac14,\;\tfrac16,\;\tfrac{1}{12}\Bigr).\;\checkmark
+\]
+Both methods agree, confirming the Kronecker product structure.
+\end{solution}
+
+\part[5]
+Find the stationary distributions $\vec{\pi}_A$ and $\vec{\pi}_B$ of each chain separately.
+Write down $\vec{\pi}_{AB}$ for the joint chain and \textbf{prove} it is stationary using the
+mixed-product property $(A\otimes B)(C\otimes D)=(AC)\otimes(BD)$.
+
+\begin{solution}
+\textbf{Chain $A$} ($\vec{\pi}_A\mathbf{P}_A=\vec{\pi}_A$, column $0$):
+$\pi_{A,0}=\tfrac34\pi_{A,0}+\tfrac12\pi_{A,1}\Rightarrow\tfrac14\pi_{A,0}=\tfrac12\pi_{A,1}\Rightarrow\pi_{A,0}=2\pi_{A,1}$.
+Normalization: $3\pi_{A,1}=1$, so $\pi_{A,1}=\tfrac13,\;\pi_{A,0}=\tfrac23$.
+\[\vec{\pi}_A=\Bigl(\tfrac{2}{3},\;\tfrac{1}{3}\Bigr).\]
+
+\textbf{Chain $B$} (column $0$):
+$\pi_{B,0}=\tfrac23\pi_{B,0}+\tfrac14\pi_{B,1}\Rightarrow\tfrac13\pi_{B,0}=\tfrac14\pi_{B,1}\Rightarrow\pi_{B,1}=\tfrac43\pi_{B,0}$.
+Normalization: $\pi_{B,0}(1+\tfrac43)=\pi_{B,0}\cdot\tfrac73=1$, so $\pi_{B,0}=\tfrac37,\;\pi_{B,1}=\tfrac47$.
+\[\vec{\pi}_B=\Bigl(\tfrac{3}{7},\;\tfrac{4}{7}\Bigr).\]
+
+\textbf{Joint stationary distribution:}
+\[\vec{\pi}_{AB}=\vec{\pi}_A\otimes\vec{\pi}_B=\Bigl(\tfrac{2}{7},\;\tfrac{8}{21},\;\tfrac{1}{7},\;\tfrac{4}{21}\Bigr).\]
+
+\textbf{Proof:}
+\[
+\vec{\pi}_{AB}\,\mathbf{P}_{AB}=(\vec{\pi}_A\otimes\vec{\pi}_B)(\mathbf{P}_A\otimes\mathbf{P}_B)
+\overset{\text{mixed-product}}{=}(\vec{\pi}_A\mathbf{P}_A)\otimes(\vec{\pi}_B\mathbf{P}_B)=\vec{\pi}_A\otimes\vec{\pi}_B=\vec{\pi}_{AB}.\quad\square
+\]
+\end{solution}
+
+\part[5]
+A single-qubit gate $U=\begin{pmatrix}\sqrt{0.75}&\sqrt{0.25}\\\sqrt{0.25}&-\sqrt{0.75}\end{pmatrix}$
+acts on the \textbf{top} qubit of a 2-qubit circuit (identity on the bottom qubit).
+Write the $4\times4$ matrix $M'=U\otimes I_2$, compute $M'\ket{11}$, and determine the
+measurement probability of each 2-qubit outcome.
+
+\begin{solution}
+\[
+M' = U\otimes I_2 =
+\begin{pmatrix}
+\sqrt{0.75}&0&\sqrt{0.25}&0\\
+0&\sqrt{0.75}&0&\sqrt{0.25}\\
+\sqrt{0.25}&0&-\sqrt{0.75}&0\\
+0&\sqrt{0.25}&0&-\sqrt{0.75}
+\end{pmatrix}.
+\]
+$\ket{11}=(0,0,0,1)^T$ (index $3$). Taking column $3$ of $M'$:
+\[
+M'\ket{11}=\begin{pmatrix}0\\\sqrt{0.25}\\0\\-\sqrt{0.75}\end{pmatrix}=\sqrt{0.25}\,\ket{01}-\sqrt{0.75}\,\ket{11}.
+\]
+Measurement probabilities: $p(01)=(\sqrt{0.25})^2=0.25$;\quad $p(11)=(-\sqrt{0.75})^2=0.75$;\quad
+all other outcomes have probability $0$.
+Check: $0.25+0.75=1$. $\checkmark$
+
+\textit{Interpretation:} $U\ket{1}=\sqrt{0.25}\ket{0}-\sqrt{0.75}\ket{1}$, while the bottom qubit
+$\ket{1}$ is unaffected --- exactly what $U\otimes I$ does: apply $U$ to the top qubit alone.
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Entanglement and Bell States}
+
+The four Bell states (maximally entangled 2-qubit states) are:
+\[
+\ket{\Phi^+}=\tfrac{\ket{00}+\ket{11}}{\sqrt{2}},\quad
+\ket{\Phi^-}=\tfrac{\ket{00}-\ket{11}}{\sqrt{2}},\quad
+\ket{\Psi^+}=\tfrac{\ket{01}+\ket{10}}{\sqrt{2}},\quad
+\ket{\Psi^-}=\tfrac{\ket{01}-\ket{10}}{\sqrt{2}}.
+\]
+
+\begin{parts}
+
+\part[5]
+Starting from $\ket{00}$, show step-by-step that applying $H$ to the \textbf{first} qubit (leaving
+the second unchanged), followed by $\mathrm{CNOT}_{1\to2}$ (control: qubit 1, target: qubit 2),
+produces $\ket{\Phi^+}$.
+State the intermediate result after each gate.
+
+\begin{solution}
+\textbf{Circuit:}\quad $\ket{0}$---$[H]$---$\bullet$---\qquad$\ket{0}$---\quad---$[\oplus]$---
+
+\textbf{Step 1} ($H\otimes I$ on $\ket{00}$):
+\[
+(H\otimes I)\ket{00}=H\ket{0}\otimes\ket{0}=\frac{1}{\sqrt{2}}(\ket{0}+\ket{1})\otimes\ket{0}
+=\frac{1}{\sqrt{2}}(\ket{00}+\ket{10}).
+\]
+
+\textbf{Step 2} ($\mathrm{CNOT}_{1\to2}$, which maps $\ket{x,y}\to\ket{x,x\oplus y}$):
+\[
+\frac{1}{\sqrt{2}}(\ket{00}+\ket{10})\xrightarrow{\mathrm{CNOT}}
+\frac{1}{\sqrt{2}}(\ket{0,0\oplus0}+\ket{1,1\oplus0})=\frac{1}{\sqrt{2}}(\ket{00}+\ket{11})=\ket{\Phi^+}.\;\checkmark
+\]
+\end{solution}
+
+\part[5]
+\textbf{Prove} that $\ket{\Phi^+}$ is \textbf{entangled}: it cannot be written as
+$\ket{\psi_1}\otimes\ket{\psi_2}$ for any single-qubit states $\ket{\psi_i}$.
+(\emph{Hint}: Assume such a factorization exists and derive a contradiction by
+comparing coefficients in the computational basis.)
+
+\begin{solution}
+Assume $\ket{\Phi^+}=\ket{\psi_1}\otimes\ket{\psi_2}$ where $\ket{\psi_i}=\alpha_i\ket{0}+\beta_i\ket{1}$.
+Expanding:
+\[
+\ket{\psi_1}\otimes\ket{\psi_2}=\alpha_1\alpha_2\ket{00}+\alpha_1\beta_2\ket{01}+\beta_1\alpha_2\ket{10}+\beta_1\beta_2\ket{11}.
+\]
+Comparing with $\ket{\Phi^+}=\tfrac{1}{\sqrt{2}}\ket{00}+0\cdot\ket{01}+0\cdot\ket{10}+\tfrac{1}{\sqrt{2}}\ket{11}$:
+\begin{align}
+\alpha_1\alpha_2&=\tfrac{1}{\sqrt{2}}\ne0 \tag{1}\\
+\alpha_1\beta_2&=0 \tag{2}\\
+\beta_1\alpha_2&=0 \tag{3}\\
+\beta_1\beta_2&=\tfrac{1}{\sqrt{2}}\ne0 \tag{4}
+\end{align}
+From (1): $\alpha_1\ne0$ and $\alpha_2\ne0$.
+From (2) with $\alpha_1\ne0$: $\beta_2=0$.
+But then (4): $\beta_1\cdot0=\tfrac{1}{\sqrt{2}}\ne0$. \textbf{Contradiction.} $\square$
+
+Therefore no product-state factorization exists, and $\ket{\Phi^+}$ is entangled.
+\end{solution}
+
+\part[5]
+Suppose the \textbf{first qubit} of $\ket{\Phi^+}$ is measured in the computational basis.
+\begin{enumerate}[label=(\roman*)]
+  \item With what probability is the outcome $0$? Give the post-measurement state of the full system.
+  \item With what probability is the outcome $1$? Give the post-measurement state.
+  \item What is the state of the \textbf{second qubit alone} in each case?
+        Comment on the physical significance.
+\end{enumerate}
+
+\begin{solution}
+Write $\ket{\Phi^+}=\tfrac{1}{\sqrt{2}}\ket{0}\otimes\ket{0}+\tfrac{1}{\sqrt{2}}\ket{1}\otimes\ket{1}$
+(grouped by first-qubit value).
+
+\textbf{(i) Outcome $0$:} The squared amplitude of the $\ket{0}\otimes\ket{0}$ component is $\bigl(\tfrac{1}{\sqrt{2}}\bigr)^2=\tfrac12$.
+Post-measurement state (renormalised): $\dfrac{\tfrac{1}{\sqrt{2}}\ket{00}}{\tfrac{1}{\sqrt{2}}}=\ket{00}$.
+Second qubit: $\ket{0}$.
+
+\textbf{(ii) Outcome $1$:} $p(1)=\tfrac12$. Post-measurement state: $\ket{11}$.
+Second qubit: $\ket{1}$.
+
+\textbf{(iii) Physical significance:} The second qubit is instantly determined by the measurement of the first, regardless of the spatial separation between the two qubits. Measuring qubit 1 as $0$ forces qubit 2 into $\ket{0}$, and vice versa. This \emph{perfect correlation without classical communication} is the defining property of quantum entanglement (EPR phenomenon).
+\end{solution}
+
+\part[5]
+Starting from $\ket{\Phi^+}$, show that applying the operations
+$\{I\otimes I,\; Z\otimes I,\; X\otimes I,\; XZ\otimes I\}$
+to the \textbf{first qubit} produces all four Bell states.
+(Use $X=\begin{pmatrix}0&1\\1&0\end{pmatrix}$, $Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$.)
+
+\begin{solution}
+We apply each operation to $\ket{\Phi^+}=\tfrac{1}{\sqrt{2}}(\ket{00}+\ket{11})$
+using $(U\otimes I)(\ket{\Phi^+})=\tfrac{1}{\sqrt{2}}(U\ket{0}\otimes\ket{0}+U\ket{1}\otimes\ket{1})$.
+
+\begin{itemize}
+  \item $(I\otimes I)$: $\tfrac{1}{\sqrt{2}}(\ket{00}+\ket{11})=\ket{\Phi^+}$.\,$\checkmark$
+  \item $(Z\otimes I)$: $Z\ket{0}=\ket{0}$, $Z\ket{1}=-\ket{1}$:
+    $\tfrac{1}{\sqrt{2}}(\ket{00}-\ket{11})=\ket{\Phi^-}$.\,$\checkmark$
+  \item $(X\otimes I)$: $X\ket{0}=\ket{1}$, $X\ket{1}=\ket{0}$:
+    $\tfrac{1}{\sqrt{2}}(\ket{10}+\ket{01})=\ket{\Psi^+}$.\,$\checkmark$
+  \item $(XZ\otimes I)$: $XZ\ket{0}=X\ket{0}=\ket{1}$, $XZ\ket{1}=X(-\ket{1})=-\ket{0}$:
+    $\tfrac{1}{\sqrt{2}}(\ket{10}-\ket{01})=-\tfrac{1}{\sqrt{2}}(\ket{01}-\ket{10})=-\ket{\Psi^-}$.
+    Up to global phase: $\ket{\Psi^-}$.\,$\checkmark$
+\end{itemize}
+This is the key principle behind \textbf{superdense coding}: by applying one of four local operations to a single qubit of an entangled pair, two classical bits of information can be encoded and later retrieved by a Bell-basis measurement.
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{The Deutsch-Jozsa Algorithm}
+
+The Deutsch-Jozsa (DJ) algorithm decides whether $f:\{0,1\}^n\to\{0,1\}$ is
+\emph{constant} (same output for all inputs) or \emph{balanced} (exactly $2^{n-1}$ inputs give $0$
+and $2^{n-1}$ give $1$) using a \textbf{single} query to a quantum oracle $U_f$.
+
+\begin{parts}
+
+\part[4]
+Show that $(H^{\otimes n})^2 = I_{2^n}$.
+Use the single-qubit identity $H^2=I_2$ and the mixed-product property
+$(A\otimes B)(C\otimes D)=(AC)\otimes(BD)$.
+
+\begin{solution}
+First: $H^2=\tfrac12\begin{pmatrix}1&1\\1&-1\end{pmatrix}\begin{pmatrix}1&1\\1&-1\end{pmatrix}=\tfrac12\begin{pmatrix}2&0\\0&2\end{pmatrix}=I_2$.
+
+By the mixed-product property applied $n-1$ times:
+\[
+(H^{\otimes n})^2=(H\otimes\cdots\otimes H)(H\otimes\cdots\otimes H)=(H^2)\otimes\cdots\otimes(H^2)=I_2\otimes\cdots\otimes I_2=I_{2^n}.\quad\square
+\]
+Consequence: $H^{\otimes n}$ is self-inverse, so the final Hadamard layer in DJ exactly undoes the first --- enabling the algorithm to produce a \emph{deterministic} output with zero error.
+\end{solution}
+
+\part[5]
+Trace through the DJ algorithm for $n=2$ and the \textbf{constant function} $f(x)\equiv1$ for
+all $x\in\{0,1\}^2$.
+Start from $\ket{00}\ket{1}$, and give the state after each of the three steps:
+(1) $H^{\otimes 3}$, (2) oracle $U_f$, (3) $H^{\otimes 2}$ on the query register.
+What is measured?
+
+\begin{solution}
+\textbf{After $H^{\otimes3}$:}
+$H^{\otimes2}\ket{00}\otimes H\ket{1}=\tfrac{1}{2}(\ket{00}+\ket{01}+\ket{10}+\ket{11})\otimes\ket{-}
+=\tfrac{1}{2}\sum_{x\in\{0,1\}^2}\ket{x}\otimes\ket{-}$.
+
+\textbf{After oracle $U_f$ ($f\equiv1$, phase kickback $(-1)^{f(x)}=-1$ for all $x$):}
+$-\tfrac{1}{2}\sum_x\ket{x}\otimes\ket{-}$.
+Up to unobservable global phase $-1$, the state is $\tfrac{1}{2}\sum_x\ket{x}\otimes\ket{-}=\ket{+}\ket{+}\otimes\ket{-}$.
+
+\textbf{After $H^{\otimes2}$ on query register} ($H\ket{+}=\ket{0}$):
+$\ket{0}\ket{0}\otimes\ket{-}=\ket{00}\otimes\ket{-}$.
+
+\textbf{Measurement:} query register $\to\ket{00}$ with probability $1$.
+Since the result is $\ket{00}$, we conclude $f$ is \textbf{constant}. $\checkmark$
+\end{solution}
+
+\part[5]
+Trace through the DJ algorithm for $n=2$ and the \textbf{balanced function}
+$f(x_1,x_2)=x_1\oplus x_2$.
+After the oracle step, factor the query register state and apply $H^{\otimes2}$.
+What is measured, and what does it indicate?
+
+\begin{solution}
+The function values: $f(00)=0$, $f(01)=1$, $f(10)=1$, $f(11)=0$. Balanced. $\checkmark$
+
+\textbf{After $H^{\otimes3}$:} same as above, $\tfrac{1}{2}\sum_x\ket{x}\otimes\ket{-}$.
+
+\textbf{After oracle} (phase $(-1)^{x_1\oplus x_2}$):
+\[
+\tfrac{1}{2}\bigl[\ket{00}-\ket{01}-\ket{10}+\ket{11}\bigr]\otimes\ket{-}.
+\]
+Factor the query register:
+\[
+\ket{00}-\ket{01}-\ket{10}+\ket{11}=(\ket{0}-\ket{1})\otimes(\ket{0}-\ket{1})=(\sqrt{2}\,\ket{-})\otimes(\sqrt{2}\,\ket{-})=2\,\ket{-}\otimes\ket{-}.
+\]
+So query register $=\ket{-}\otimes\ket{-}$.
+
+\textbf{After $H^{\otimes2}$} ($H\ket{-}=\ket{1}$):
+query register $\to\ket{1}\ket{1}=\ket{11}$.
+
+\textbf{Measurement:} $\ket{11}$ with probability $1$.
+Since the result $\ne\ket{00}$, we conclude $f$ is \textbf{balanced}. $\checkmark$
+\end{solution}
+
+\part[6]
+Prove the \textbf{classical deterministic lower bound}: any deterministic algorithm must make
+at least $2^{n-1}+1$ queries to $f$ to distinguish constant from balanced with certainty.
+
+\textit{Hint}: Consider an adversary argument. After $k\le2^{n-1}$ queries all returning the same value, show that both a constant and a balanced function remain consistent with the observed outputs.
+
+\begin{solution}
+Suppose a deterministic algorithm has made $k\le2^{n-1}$ queries and all outputs are $0$
+(the case all-$1$ is symmetric).
+
+\textbf{Consistent constant function:} $f\equiv0$. All $k$ observed outputs match. $\checkmark$
+
+\textbf{Consistent balanced function:} Assign $f(x)=0$ on all $k$ queried inputs, and $f(x)=1$ on
+exactly $2^{n-1}$ of the $2^n-k\ge2^{n-1}$ unqueried inputs (with the rest also 0).
+Since $2^n-k\ge2^{n-1}$, there are enough unqueried inputs to place the required $2^{n-1}$ ones. $\checkmark$
+
+Thus after $k\le2^{n-1}$ queries, both a constant and a balanced function are consistent with all observed outputs. No deterministic algorithm can decide which case holds. Hence $2^{n-1}$ queries are \emph{insufficient}.
+
+\textbf{Sufficiency of $2^{n-1}+1$ queries:} If all $2^{n-1}+1$ outputs are $0$,
+the remaining unqueried inputs number $2^n-(2^{n-1}+1)=2^{n-1}-1$.
+A balanced function needs exactly $2^{n-1}$ ones in total, but we have seen $0$ ones among $2^{n-1}+1$
+queried inputs and only $2^{n-1}-1$ unqueried inputs remain --- too few to accommodate $2^{n-1}$ ones.
+So the function \emph{must} be constant.
+
+\textbf{Conclusion:} Classical deterministic query complexity $=2^{n-1}+1$, vs.\ quantum complexity $=1$.
+This is an \textbf{exponential} separation in query complexity. $\square$
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Algebraic Normal Form (ANF) and Circuit Optimization}
+
+Every Boolean function $f:\{0,1\}^n\to\{0,1\}$ has a unique representation in
+\textbf{Algebraic Normal Form (ANF)}:
+\[
+f(x_1,\ldots,x_n)=\bigoplus_{S\subseteq\{1,\ldots,n\}} a_S\!\!\prod_{i\in S}\!\!x_i,
+\quad a_S\in\{0,1\},
+\]
+using only XOR ($\oplus$) and AND ($\cdot$). Each satisfying assignment maps directly to
+a product term (monomial), and each monomial corresponds to one CNOT or Toffoli gate.
+
+\begin{parts}
+
+\part[5]
+Convert the following operations to ANF, using only $\oplus$ and $\cdot$.
+Verify each identity by checking all input combinations.
+\begin{enumerate}[label=(\roman*)]
+  \item $\mathrm{NOT}(A)=\neg A$
+  \item $\mathrm{OR}(A,B)=A\lor B$
+  \item $\mathrm{NAND}(A,B)=\neg(A\land B)$
+\end{enumerate}
+
+\begin{solution}
+\textbf{(i) NOT:} $\neg A = 1\oplus A$.
+\begin{tabular}{c|c|c}
+$A$&$\neg A$&$1\oplus A$\\\hline
+0&1&1\,$\checkmark$\\
+1&0&0\,$\checkmark$
+\end{tabular}
+
+\textbf{(ii) OR:} $A\lor B = A\oplus B\oplus AB$.
+\begin{tabular}{cc|c|c}
+$A$&$B$&$A\lor B$&$A\oplus B\oplus AB$\\\hline
+0&0&0&0\,$\checkmark$\\
+0&1&1&1\,$\checkmark$\\
+1&0&1&1\,$\checkmark$\\
+1&1&1&$1\oplus1\oplus1=1$\,$\checkmark$
+\end{tabular}
+
+\textbf{(iii) NAND:} $\neg(AB)=1\oplus AB$.
+Follows from (i) with $A\cdot B$ substituted for $A$.\;
+$A=B=1$: $1\oplus1=0=\neg1$.\;$A=B=0$: $1\oplus0=1$.\,$\checkmark$
+\end{solution}
+
+\part[5]
+Let $f(A,B,C)=(A\lor B)\land C$.
+Convert $f$ to ANF step by step:
+first expand $A\lor B$ using part (a), then multiply by $C$ using the distributivity
+$(X\oplus Y)\cdot Z = XZ\oplus YZ$.
+
+Verify the result on at least three input combinations.
+
+\begin{solution}
+\textbf{Step 1:} $A\lor B = A\oplus B\oplus AB$.
+
+\textbf{Step 2:} Multiply by $C$:
+\[
+f=(A\oplus B\oplus AB)\cdot C = AC\oplus BC\oplus ABC.
+\]
+
+\textbf{ANF:}\quad$\boxed{f(A,B,C)=AC\oplus BC\oplus ABC}$.
+
+\textbf{Verification:}
+\begin{itemize}
+  \item $(A,B,C)=(1,1,1)$: $f=1$. ANF: $1\oplus1\oplus1=1$.\,$\checkmark$
+  \item $(A,B,C)=(1,0,1)$: $f=1$. ANF: $1\oplus0\oplus0=1$.\,$\checkmark$
+  \item $(A,B,C)=(1,1,0)$: $f=0$. ANF: $0\oplus0\oplus0=0$.\,$\checkmark$
+  \item $(A,B,C)=(0,0,1)$: $f=0$. ANF: $0\oplus0\oplus0=0$.\,$\checkmark$
+\end{itemize}
+\end{solution}
+
+\part[5]
+Using the ANF from part (b), construct a \textbf{reversible circuit} that computes
+$f$ into an ancilla qubit $y$ (initially $\ket{0}$), so that $y\leftarrow y\oplus f(A,B,C)$.
+Use only CNOT and Toffoli (CCNOT) gates.
+State the gate sequence, specifying the control and target qubits for each gate.
+One extra scratch ancilla $s=0$ may be used if needed.
+
+\begin{solution}
+ANF: $f=AC\oplus BC\oplus ABC$. We need $y\leftarrow0\oplus AC\oplus BC\oplus ABC$.
+
+Each monomial $x_{i_1}\cdots x_{i_k}$ contributes a Toffoli (CCNOT) on the product qubits with target $y$
+(degree 1 $\to$ CNOT; degree 2 $\to$ Toffoli; degree 3 $\to$ requires ancilla).
+
+\begin{enumerate}
+  \item \textbf{Toffoli$(A,C,y)$}: $y\leftarrow y\oplus AC$. \hfill[1 Toffoli]
+  \item \textbf{Toffoli$(B,C,y)$}: $y\leftarrow y\oplus BC$. \hfill[1 Toffoli]
+  \item For degree-3 term $ABC$, use scratch ancilla $s$ (initially $0$):\\
+    \textbf{Toffoli$(A,B,s)$}: $s\leftarrow AB$. \hfill[1 Toffoli]\\
+    \textbf{Toffoli$(s,C,y)$}: $y\leftarrow y\oplus ABC$. \hfill[1 Toffoli]\\
+    \textbf{Toffoli$(A,B,s)$}: $s\leftarrow0$ (uncompute). \hfill[1 Toffoli]
+\end{enumerate}
+
+\textbf{Gate summary:} 5 Toffoli gates, 0 CNOT gates, 1 scratch ancilla $s$.
+
+\textbf{Complete gate sequence:}
+\[
+\mathrm{Toffoli}(A,C,y),\quad\mathrm{Toffoli}(B,C,y),\quad\mathrm{Toffoli}(A,B,s),\quad\mathrm{Toffoli}(s,C,y),\quad\mathrm{Toffoli}(A,B,s).
+\]
+Each Toffoli gate is self-inverse, so uncomputing $s$ requires only re-applying the same gate.
+\end{solution}
+
+\part[5]
+Compare the ANF circuit from part (c) with a \textbf{naive minterm-based} circuit that uses one
+multi-controlled Toffoli gate per row of the truth table where $f=1$.
+
+\begin{enumerate}[label=(\roman*)]
+  \item List all minterms of $f(A,B,C)=(A\lor B)\land C$ and count them.
+  \item Estimate the gate count for the naive approach.
+  \item Explain why the ANF approach scales better for functions with large but structured
+        Boolean expressions.
+\end{enumerate}
+
+\begin{solution}
+\textbf{(i) Minterms} (rows where $f=1$, i.e.\ $C=1$ and $A\lor B=1$):
+$(A,B,C)\in\{(0,1,1),(1,0,1),(1,1,1)\}$. \textbf{3 minterms.}
+
+\textbf{(ii) Naive gate count:}
+Each minterm needs one 3-controlled Toffoli (controlled on 3 bits, with NOT on control lines for $0$-bits):
+\begin{itemize}
+  \item $(0,1,1)$: $X_A$, Toffoli$(A,B,C,y)$, $X_A$ (restore). $= 2\,X + 1\,\text{Toffoli}$.
+  \item $(1,0,1)$: $X_B$, Toffoli$(A,B,C,y)$, $X_B$. $= 2\,X + 1\,\text{Toffoli}$.
+  \item $(1,1,1)$: Toffoli$(A,B,C,y)$. $= 1\,\text{Toffoli}$ (with ancilla for degree-3).
+\end{itemize}
+Approximate total: 3 multi-controlled Toffolis + 4 NOT gates (plus ancilla overhead).
+
+\textbf{(iii) Scaling comparison:}
+With $n$ input bits, a function can have up to $2^{n-1}$ minterms, each requiring a degree-$n$ controlled gate decomposable into $O(n)$ 2-qubit gates. Naive approach: $O(n \cdot 2^{n-1}) = O(n\cdot2^n)$ gates in the worst case.
+
+ANF approach: for functions with \emph{sparse} ANF (few non-zero coefficients $a_S$), the circuit uses only $O(k\cdot n)$ gates where $k$ is the number of ANF terms. Many structured Boolean functions (arising from SAT problems, physical systems) have compact ANFs with $k \ll 2^n$. ANF conversion via the Möbius transform also runs in $O(n\cdot2^n)$, enabling efficient preprocessing. For the Grover oracle on NISQ hardware, the ANF approach has been shown to reduce ancilla qubit counts from $O(n)$ to a single ancilla in realistic benchmarks.
+\end{solution}
+
+\end{parts}
+
+\newpage
+%% ============================================================
+\question[20] \textbf{Quantum Complexity and Counting Arguments}
+
+\begin{parts}
+
+\part[6]
+\textbf{Counting argument}: Prove that most Boolean functions $f:\{0,1\}^n\to\{0,1\}$
+require an exponentially large number of quantum gates to compute.
+
+Concretely: show that the number of distinct circuits using at most $C$ gates from a fixed
+gate set $\mathcal{G}$ is at most $(|\mathcal{G}|\cdot n^k)^C$ for some constant $k$, and compare
+this with the total number of Boolean functions.
+
+\begin{solution}
+\textbf{Number of Boolean functions:}
+$f:\{0,1\}^n\to\{0,1\}$ is specified by $2^n$ binary output values, giving $2^{2^n}$ possible functions.
+This grows \emph{doubly exponentially} in $n$.
+
+\textbf{Number of circuits with $\le C$ gates:}
+Each gate is chosen from $|\mathcal{G}|$ types and acts on at most $k$ qubits out of $n$, giving at most $\binom{n}{k}\le n^k$ positional choices. Per gate: at most $|\mathcal{G}|\cdot n^k$ options.
+With $C$ gates in sequence:
+\[
+\#\{\text{circuits with}\le C\text{ gates}\}\le\bigl(|\mathcal{G}|\cdot n^k\bigr)^C.
+\]
+
+\textbf{Comparison:}
+Each function requires a distinct circuit to compute it exactly. For circuits to cover at least $1\%$ of all functions:
+\[
+\bigl(|\mathcal{G}|\cdot n^k\bigr)^C\ge\tfrac{1}{100}\cdot2^{2^n}
+\quad\Rightarrow\quad
+C\ge\frac{2^n-O(1)}{\log(|\mathcal{G}|\cdot n^k)}=\Omega\!\left(\frac{2^n}{n}\right).
+\]
+
+\textbf{Conclusion:} To compute even a tiny fraction of all Boolean functions, a quantum circuit must use $\Omega(2^n/n)$ gates --- \emph{exponentially many}. Quantum computers are \emph{not} faster than classical ones for most problems; speedups exist only for specific structured problems (factoring, search, simulation).
+\end{solution}
+
+\part[4]
+Define the complexity classes \textbf{EQP} and \textbf{BQP}.
+\begin{enumerate}[label=(\roman*)]
+  \item What is the key difference between them?
+  \item Give an example of a problem in BQP not known to be in P.
+  \item Why is EQP considered less robust than BQP as a definition of ``efficient quantum computation''?
+\end{enumerate}
+
+\begin{solution}
+\textbf{EQP (Exact Quantum Polynomial time):} Problems solvable in polynomial time by a quantum computer with \emph{zero} error probability. The computation always terminates with the correct answer.
+
+\textbf{BQP (Bounded-Error Quantum Polynomial time):} Problems solvable in polynomial time by a quantum computer with error probability $\le\tfrac13$. The bound $\tfrac13$ can be reduced to any $\varepsilon>0$ by repeating the algorithm $O(\log(1/\varepsilon))$ times.
+
+\textbf{(i) Key difference:} EQP requires \emph{exact} correctness; BQP permits a bounded constant error rate. BQP is a proper superset of EQP (assuming standard conjectures).
+
+\textbf{(ii) Example:} \textbf{Integer factoring} is in BQP (Shor's algorithm, 1994), but no polynomial-time classical algorithm is known --- it is widely conjectured that factoring $\notin$ P.
+
+\textbf{(iii) EQP is less robust because:}
+\begin{itemize}
+  \item EQP depends on the chosen gate set: changing the universal gate set can alter which problems fall in EQP.
+  \item Exact zero-error quantum computations are highly sensitive to the arithmetic precision of amplitudes, making the class somewhat artificial.
+  \item In contrast, BQP is gate-set independent: any two universal gate sets define the same class, making BQP the canonical and physically meaningful notion of efficient quantum computation.
+\end{itemize}
+\end{solution}
+
+\part[5]
+It is proven that $\mathrm{QPSPACE}=\mathrm{PSPACE}$.
+\begin{enumerate}[label=(\roman*)]
+  \item Define PSPACE and QPSPACE (one sentence each).
+  \item What does this equality imply about quantum vs.\ classical computation in terms of memory?
+  \item Give an intuitive explanation: how can a classical machine simulate any quantum circuit using only polynomial space?
+\end{enumerate}
+
+\begin{solution}
+\textbf{(i)} \textbf{PSPACE}: all decision problems solvable by a deterministic classical computer using polynomial memory, with no restriction on time.
+\textbf{QPSPACE}: all decision problems solvable by a quantum computer using polynomial memory, with no restriction on time.
+
+\textbf{(ii)} QPSPACE$=$PSPACE means quantum computers offer \textbf{no advantage} over classical computers when the resource of interest is \emph{memory} rather than time. Any computation performable by a quantum machine in polynomial space can also be performed classically in polynomial space.
+
+Contrast: quantum computers provide exponential speedups in \emph{time} (Shor: factoring, $O(n^3)$ vs.\ $\text{sub-exp}$) and quadratic speedups (Grover: search), but these are purely time advantages.
+
+\textbf{(iii) Simulation intuition:}
+A quantum circuit on $n$ qubits has a state vector of $2^n$ amplitudes. Storing this naively requires exponential space. However, we can compute \emph{one amplitude at a time}:
+\[
+\alpha_{x_\mathrm{out}} = \sum_{\text{all paths}} \prod_{\text{gates on path}}\text{(gate entry)}.
+\]
+Each path can be enumerated and its contribution computed in $O(n)$ space (storing only the current path and running sum). The total space is polynomial: $O(n)$ for the gate sequence plus $O(n)$ for the current path amplitude. Hence any quantum computation $\in$ QPSPACE can be classically simulated in PSPACE, giving QPSPACE $\subseteq$ PSPACE; the reverse inclusion is trivial.
+\end{solution}
+
+\part[5]
+Describe the \textbf{NISQ era} and the role of \textbf{formal methods} in practical quantum computation.
+\begin{enumerate}[label=(\roman*)]
+  \item What does NISQ stand for? Name two fundamental hardware limitations of NISQ devices.
+  \item Explain how \textbf{weighted \#SAT (WMC)} can be used for quantum circuit \textbf{simulation}.
+  \item Why does Richard Feynman's original motivation for quantum computing connect to the hardness of verifying quantum circuits classically?
+\end{enumerate}
+
+\begin{solution}
+\textbf{(i)} NISQ = \textbf{Noisy Intermediate-Scale Quantum}.
+Two fundamental limitations:
+\begin{itemize}
+  \item \textbf{Noise and decoherence:} Gate errors ($\sim 0.1\%$--$1\%$ per gate) and qubit decoherence times ($\sim$ microseconds) limit circuit depth. Fault-tolerant error correction requires $\sim10^3$ physical qubits per logical qubit --- far beyond current scale.
+  \item \textbf{Limited qubit count and connectivity:} Current devices have 50--1000 physical qubits, with sparse qubit-to-qubit connections imposing routing overhead that increases effective circuit depth.
+\end{itemize}
+
+\textbf{(ii) WMC-based simulation:}
+The circuit is encoded as a Boolean formula $F$ over qubit-value variables, one per wire per time step.
+Each gate contributes constraints (equality for reversible gates; auxiliary variable + weights for Hadamard).
+The amplitude $\alpha_{x_\mathrm{out}}$ for output string $x_\mathrm{out}$ equals:
+\[
+\alpha_{x_\mathrm{out}} = \mathrm{WMC}_W(F\land(\text{output}=x_\mathrm{out})),
+\]
+where $W$ assigns $\pm\tfrac{1}{\sqrt{2}}$ to the Hadamard auxiliary variables.
+WMC tools (e.g.\ Cachet, DPLL-based counters) then compute the exact amplitude by exploiting the circuit's structure, enabling \emph{exact classical simulation} of small quantum circuits without storing the full $2^n$-dimensional state vector.
+
+\textbf{(iii) Feynman's connection:}
+Feynman proposed quantum computers (1982) because classically simulating quantum systems (e.g.\ computing ground-state energies) requires exponential time --- the same fundamental barrier that makes verifying quantum circuits hard.
+The problem of checking whether two quantum circuits compute the same unitary, or whether a circuit produces a given output amplitude, is \textbf{BQP-hard} or even harder (QMA-hard for ground state energies). Thus the tools needed to \emph{verify} quantum circuits classically face exactly the computational complexity that quantum computers were designed to overcome: they cannot be made efficient for general inputs without resolving BQP $\stackrel{?}{=}$ P. This structural connection validates using quantum-inspired formal methods (ZX-calculus, decision diagrams, WMC) for bounded-size circuit optimization, while acknowledging their inherent scalability limits.
+\end{solution}
+
+\end{parts}
+
+\end{questions}
+
+\bigskip\hrule
+\begin{center}
+\textit{--- End of Examination 2 ---}
+\end{center}
+
+\end{document}

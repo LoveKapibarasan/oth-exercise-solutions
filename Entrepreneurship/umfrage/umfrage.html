@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Umfrage Hinweis</title>
+    <style>
+        /* A4印刷用の厳格なリセット設定 */
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            width: 210mm;
+            height: 297mm;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            font-family: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+            -webkit-print-color-adjust: exact;
+        }
+
+        /* 案内板としての締まりを出す巨大な外枠 */
+        .container {
+            width: 180mm;
+            height: 260mm;
+            border: 12px solid #000000; /* 太いフレームで目立たせる */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 20mm;
+        }
+
+        /* アイコン代わりのチェックボックス風アート */
+        .icon {
+            font-size: 80pt;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+
+        /* 最重要ワード：極太かつ超巨大 */
+        .giant-text {
+            font-size: 85pt; 
+            font-weight: 900;
+            color: #000000;
+            text-align: center;
+            line-height: 1.1;
+            text-transform: uppercase; /* 文字のインパクトを強化 */
+            letter-spacing: -2px;
+        }
+        
+        /* 区切り線 */
+        .divider {
+            width: 40%;
+            height: 6px;
+            background-color: #000000;
+            margin: 50px 0;
+        }
+
+        /* 「両面あります」のメッセージ：認識しやすいよう少し引いた絶妙なサイズ */
+        .sub-text {
+            font-size: 42pt;
+            font-weight: 900;
+            color: #000000;
+            text-align: center;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            background-color: #000000; /* 反転させて視覚的フックにする */
+            color: #ffffff;
+            padding: 10px 30px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- アンケートであることを直感させる記号 -->
+        <div class="icon">&#9745;</div> 
+        
+        <!-- メインタイトル -->
+        <div class="giant-text">Umfrage!</div>
+        
+        <!-- アクセント線 -->
+        <div class="divider"></div>
+        
+        <!-- 注意喚起 -->
+        <div class="sub-text">BEIDSEITIG</div>
+    </div>
+
+</body>
+</html>

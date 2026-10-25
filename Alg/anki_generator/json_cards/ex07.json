@@ -1,0 +1,17 @@
+[
+  {
+    "sheet": "Exercise 7.1 (Concept)",
+    "question": "What is the Negamax algorithm and how does it simplify the standard Minimax algorithm?",
+    "answer": "Negamax is a variant of Minimax that relies on the zero-sum property of a two-player game: $\\max(a, b) = -\\min(-a, -b)$.\n\nInstead of having separate player code for maximizing (Player A) and minimizing (Player B), Negamax uses a single function where the score is always evaluated from the perspective of the player whose turn it is to move. When evaluating child nodes, the value is negated:\n\n$$\\text{score} = -\\text{negamax}(\\text{child}, \\text{depth}-1, \\dots)$$"
+  },
+  {
+    "sheet": "Exercise 7.1 (Implementation)",
+    "question": "Write a clean C struct definition and function signature for a Negamax implementation in Connect Four that returns both the best move and its score.",
+    "answer": "```c\nstruct move_eval {\n    int8_t move;   // Column index of the best move (0 to 6)\n    int8_t score;  // Minimax score for the position\n};\n\nstruct move_eval negamax(char board[6][7], int depth);\n```\n*Note: returning a struct by value is highly efficient in C for small structures (only 2 bytes here).* "
+  },
+  {
+    "sheet": "Exercise 7.1 (Depth)",
+    "question": "When running Negamax on a partially filled Connect Four board, why must the initial `depth` passed to the algorithm match the exact number of free cells on the board?",
+    "answer": "If `depth` is set higher than the number of free cells, the game board will become full before `depth` reaches 0. \n\n* **The Issue:** If the game ends in a draw (board full, no winner) but the code only checks for a draw when `depth == 0`, the algorithm will fail to detect the draw and might keep attempting moves or return an incorrect evaluation (e.g., treating a draw as a loss $-43$ because it expects search to continue).\n* **The Fix:** Ensure `depth` is initialized to the number of empty cells on the board, so that `depth == 0` corresponds exactly to the board being full (and thus a draw, assuming no player has won)."
+  }
+]

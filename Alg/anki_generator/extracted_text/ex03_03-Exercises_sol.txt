@@ -1,0 +1,58 @@
+--- Page 1 ---
+Theoretical Computer Science OTH Regensburg/IM
+Advanced Algorithms
+BSc. ICS
+T . Dose
+Exercise Sheet 3
+Don’t outsource your thinking. Using AI here is like weightlifting with a forklift: the
+job gets done, but you don’t get stronger.
+Closure Properties for NP
+3.1a) Show that for allA,B∈NP the setsA∪BandA∩Bare also in NP .
+b) A student tries to proveA∈NP⇒ A∈NP for allA⊆Nas follows:
+LetAbe in NP . Then by Theorem 47, there exists a non-deterministic programacceptAthat
+acceptsA.
+Then the following program accepts A:
+def acceptNotA ( x ) :
+i f ( acceptA ( x ) == 0 ) :
+return 1
+return 0
+AsacceptAis a non-deterministic polynomial time algorithm, so isacceptNotA. Clearly,
+acceptNotAaccepts A.
+Applying Theorem 47 yields A/∈NP, which concludes the proof.
+Why is the “proof” wrong? Mark every wrong sentence in it and explain why it is incorrect.
+Solution:
+a) LetA,B∈NP. According to Theorem 47 there are non-deterministic polynomial time algo-
+rithmsaccept Aandaccept Bthat acceptAandB, respectively.
+Then the following non-deterministic polynomial time algorithms acceptA∪BandA∩B.
+def accept AorB ( x ) :
+return accept A ( x ) == 1 or accept B ( x ) == 1
+def accept AandB ( x ) :
+return accept A ( x ) == 1 and accept B ( x ) == 1
+b) The following sentence is incorrect:Clearly,acceptNotAaccepts A.
+This is wrong asacceptAis anon-deterministicalgorithm. This means that if it accepts some
+inputx, then it has at least one accepting path, but it may also contain non-accepting paths.
+If we only invert the acceptance logic, then it might be that for some inputs bothacceptA
+andacceptNotAaccept and soacceptNotAdoes not accept A.
+Counter example: It holdsA=N∈NP because of the following non-deterministic polyno-
+mial time algorithm:
+def acceptA ( x ) :
+x = 1|x = 0
+return x
+However, the algorithmacceptNotAconstructed in the student’s “proof” also acceptsN.
+T. Dose 1 SS2026
+--- Page 2 ---
+ADVANCEDALGORITHMS(AA) OTH Regensburg/IM
+Non-deterministic Polynomial Time Algorithms
+3.2Specify a non-deterministic polynomial-time algorithm that accepts 3-Color.
+Solution:
+def a c c e p t 3 c o l o r (G ) :
+n = len (G) # G i s the adjacency matrix , n i s the number of v e r t i c e s
+c o l o r i n g = [ 0 ] * n # Pre − a l l o c a t e array f o r the c o l o r i n g
+f o r i in range ( n ) :
+c o l o r i n g [ i ] = 0|c o l o r i n g [ i ] = 1|c o l o r i n g [ i ] = 2
+f o r i in range ( n ) :
+f o r j in range ( n ) :
+i f i != j and G[ i ] [ j ] and c o l o r i n g [ i ] == c o l o r i n g [ j ] :
+return 0
+return 1
+T. Dose 2 SS2026

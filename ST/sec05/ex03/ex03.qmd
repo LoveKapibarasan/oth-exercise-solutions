@@ -1,0 +1,110 @@
+---
+title: "4 - Statistical Inference"
+author: "LoveKapibarasan"
+output: html_document
+---
+
+# Hypothesis Testing
+
+
+## Notes
+
+```
+pnorm(x) = y # percentage
+# Quantile
+x = qnorm(y) # z score
+```
+
+* We use $H_0 = a$ and $ H_1 < a $ or $H_1 > a$ style.
+
+* Decide the value $ x < a $  that even if this is by chance, the value is far from expected value.
+* The percentage of type II error describes the possibility that we might miss the violated one.  
+
+
+## Tutorial 3
+**Left Side**
+
+```{r}
+v0 <- 355
+sd_x <- 6
+n <- 5
+alpha <- 0.05
+se <- sqrt(sd_x / n)
+
+z <- qnorm(alpha)
+c_val <- v0 + z * se
+cat(sprintf("Critical Value: %.3f\n", c_val))
+
+T_obs <- 353
+reject <- T_obs < c_val
+if (reject){
+    cat(sprintf("Reject H0 for T=353: %s\n", reject))
+}else{
+    # Do not use approve here
+    cat(sprintf("Failed to reject H0 for T=353: %s\n", reject))
+}
+v_true_mean <- 354
+# P(T > c_val | v = 354)
+beta <- 1 - pnorm(c_val, mean = v_true_mean, sd = se)
+cat(sprintf("Probability of Type II Error: %.4f\n", beta))
+```
+
+## Tutorial 4
+
+**Right Side**
+
+```{r}
+v0 <- 10
+sd_x <- 4
+n <- 7
+alpha <- 1 - 0.05
+se <- sqrt(sd_x / n)
+
+z <- qnorm(alpha)
+c_val <- v0 + z * se
+cat(sprintf("Critical Value: %.3f\n", c_val))
+
+T_obs <- 10.5
+reject <- T_obs > c_val
+if (reject){
+    cat(sprintf("Reject H0 for T=10.5: %s\n", reject))
+}else{
+    cat(sprintf("Failed to reject H0 for T=10.5: %s\n", reject))
+}
+v_true_mean <- 10.2
+# P(T > c_val | v = 10.2)
+beta <- 1 - pnorm(c_val, mean = v_true_mean, sd = se)
+cat(sprintf("Probability of Type II Error: %.4f\n", beta))
+
+```
+
+## Tutorial 5
+
+**Both Side**
+
+```{r}
+v0 <- 10
+sd_x <- 1.5 * 1.5
+n <- 9
+alpha <- 0.01
+se <- sqrt(sd_x / n)
+
+qnorm(1 - alpha/2)
+c_val_higher <- v0 + z * se
+c_val_lower <- v0 - z * se
+
+cat(sprintf("Critical Values: Lower=%.3f, Higher=%.3f\n", c_val_lower, c_val_higher))
+
+T_obs <- 97.2
+reject <- T_obs > c_val_higher | T_obs < c_val_lower
+if (reject){
+    cat(sprintf("Reject H0 for T=%.1f: %s\n", T_obs, reject))
+}else{
+    cat(sprintf("Fail to reject H0 for T=%.1f: %s\n", T_obs, reject))
+}
+v_true_mean <- 97.2
+# P(T > c_val | v = v')
+beta <- 1 - pnorm(c_val, mean = v_true_mean, sd = se)
+cat(sprintf("Probability of Type II Error: %.4f\n", beta))
+
+```
